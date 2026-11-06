@@ -1,0 +1,12 @@
+.venv/
+.runtime/
+.python/
+.testdata/
+.probe*
+__pycache__/
+site/
+.doc4cf-cache/
+.env
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doc4cf"
+version = "0.1.0"
+description = "Generate an offline interactive corpus reference with Context-Fabric"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["context-fabric==0.5.8"]
+
+[project.scripts]
+doc4cf = "doc4cf.generator:main"
+
+[tool.setuptools]
+packages = ["doc4cf"]
+
+[tool.setuptools.package-data]
+doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg"]
+[project.urls]
+Repository = "https://github.com/tonyjurg/Doc4CF"
+Issues = "https://github.com/tonyjurg/Doc4CF/issues"

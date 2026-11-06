@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="project-assets/doc4cf-logo.svg" type="image/svg+xml"><title>Why corpus documentation matters · Doc4CF</title><meta name="description" content="Use verified corpus coverage, feature values and edge direction to write Context-Fabric search templates. Worked examples from three corpora.">
+<link rel="stylesheet" href="project-assets/project.css"></head><body><header><strong><img src="project-assets/doc4cf-logo.svg" alt="" width="54" height="54">Doc4CF</strong><nav aria-label="Project navigation"><a href="index.html#examples">Example outputs</a><a href="query-guide.html" aria-current="page">Why corpus documentation matters</a><a href="install-guide.html">Install guide</a><a href="software-design.html">Software design</a></nav></header>
+<main><section class="intro design-copy"><div><h1>Why corpus documentation matters</h1><p>A query can run successfully and still count the wrong thing. In N1904, a lemma can be recorded on a word, a phrase and a subphrase. Counting every annotation as another word would change the apparent vocabulary of the text. The documentation helps you decide which records count as evidence for your question.</p><p>Use the feature pages to check where a value occurs, the structure browser to choose a unit of context, and the source metadata to check what was annotated. The worked queries below demonstrate the difference. <a href="#tutorial-evidence">Jump to examples from the N1904 tutorial notebooks</a>.</p></div></section>
+<div class="design-copy">
+<section><h2>Start with the annotated unit</h2>
+<p>In a Context-Fabric search template, a node line names the type to match. Feature constraints on that line apply to the <em>same node</em>. In the Doc4CF structure browser, a “valid on” link means the feature was observed on at least one node of that type. Use the feature page to inspect coverage and the spelling of values. Its frequency table summarizes all populated types together; multiple constraints still need to be tested together.</p>
+<p>In N1904, <code>sp</code> (part of speech) and <code>tense</code> occur on words, phrases and subphrases. To count lexical occurrences, choose <code>word</code>. The tense value in this corpus is <code>aorist</code>. Substituting <code>aor</code> in the working query below gave zero matches. <a href="examples/N1904/features/sp.html">Inspect sp</a> · <a href="examples/N1904/features/tense.html">Inspect tense</a></p>
+<p>Run these examples in Python with Context-Fabric 0.5.8 and N1904 TF 1.0.0. Replace the path with your local corpus directory.</p>
+<pre><code>from cfabric.core import Fabric
+
+api = Fabric(locations="N1904/tf/1.0.0").load("sp tense frame")
+verbs = api.S.search("word sp=verb tense=aorist")
+print(sum(1 for _ in verbs))  # 11803</code></pre>
+<p>A search template selects combinations of node IDs. A rendering template on the Text &amp; encoding page instead specifies how to display a node as text. <a href="https://github.com/Context-Fabric/context-fabric/blob/master/site/src/app/docs/core/tutorials/search-patterns/page.mdx">Context-Fabric search-pattern tutorial</a></p></section>
+<section><h2>Connect the match to the unit you want to report</h2>
+<p><code>verse sp=verb</code> asks for a verse node carrying that value. It returned zero results in N1904. Indenting a word under a verse expresses containment in the corpus’s slots. It does not require a direct parent edge. The diagram’s large-to-small layout suggests types to investigate; it cannot establish that two particular nodes enclose one another.</p>
+<pre><code>query = "verse\n  word sp=verb tense=aorist"
+hits = list(api.S.search(query))
+print(len(hits))                        # 11803 verse–word pairs
+print(len({v for v, w in hits}))         # 5556 distinct verses</code></pre>
+<p>Each result contains a verse ID and a word ID in template order. A verse with three matching words contributes three pairs, so count distinct verse IDs when the question is “how many verses?” <a href="https://github.com/Context-Fabric/context-fabric/blob/master/libs/core/cfabric/search/search.py">Search API and return types</a></p></section>
+<section><h2>Follow an annotated edge when position is insufficient</h2>
+<p>A word sharing a verse with a verb may have no recorded link to that verb. To find words connected by the N1904 <code>frame</code> annotation, inspect its feature page. <strong>Applies to</strong> identifies source types; <strong>Points to</strong> identifies destination types. Here both are words. The Doc4CF graph summarizes applicability at type level; the query follows actual edges between individual word IDs. <a href="examples/N1904/features/frame.html">Inspect frame</a></p>
+<pre><code>query = """pred:word sp=verb
+arg:word
+pred -frame&gt; arg"""
+pairs = list(api.S.search(query))
+print(len(pairs))  # 43893 directed pairs</code></pre>
+<p>The names <code>pred</code> and <code>arg</code> identify the two template lines. The arrow follows an outgoing edge from the first word to the second. To select an edge label, examine the outgoing target–value pairs. For example, node 10 has a link to node 9 labeled <code>A0</code> and to node 12 labeled <code>A1</code>.</p>
+<pre><code>a1_pairs = [(n, target) for (n,) in api.S.search("word sp=verb")
+            for target, value in api.E.frame.f(n) if value == "A1"]
+print(len(a1_pairs))  # 15570</code></pre>
+<p>On the compiled N1904 corpus with version 0.5.8, search rejected the inline value filter <code>-frame=A1&gt;</code> even though the edge API returned the stored labels. The two-step example above was tested on that configuration. <a href="https://github.com/Context-Fabric/context-fabric/blob/master/libs/core/cfabric/search/relations.py">Context-Fabric relation definitions</a></p></section>
+<section id="tutorial-evidence"><h2>What changes when you know the N1904 dataset?</h2>
+<p>These examples adapt research questions from the <a href="https://centerblc.github.io/N1904/tutorial/index.html#start">CenterBLC Text-Fabric tutorial notebooks</a>. The counts below were checked independently with Context-Fabric 0.5.8 on the base N1904 TF 1.0.0 corpus.</p>
+
+<h3>Count lexical occurrences at the word level</h3>
+<p>A hapax legomenon is a word occurring just once in the chosen text. The notebook measures this by lemma. Counting the nonempty lemma values on word nodes gives <strong>1,927 lemmas occurring once</strong>. Pool the lemma annotations across every node type and the same frequency test returns <strong>zero</strong>. Phrases and subphrases also carry the feature; their annotations can repeat a lemma without adding another word to the text. <a href="examples/N1904/features/lemma.html">Lemma coverage</a> · <a href="https://github.com/CenterBLC/N1904/blob/main/docs/tutorial/hapax_legomena.ipynb">Hapax notebook</a></p>
+<pre><code>from collections import Counter
+from cfabric.core import Fabric
+
+api = Fabric(locations="N1904/tf/1.0.0").load("lemma ln")
+words = api.F.otype.s("word")
+counts = Counter(api.F.lemma.v(w) for w in words)
+print(sum(n == 1 for lemma, n in counts.items() if lemma))  # 1927</code></pre>
+
+<h3>Choose the context window before measuring co-occurrence</h3>
+<p>The Agape notebook starts with occurrences of <span lang="grc">ἀγάπη</span>, finds their enclosing verses, then gathers words in each distinct verse. We found <strong>116 word occurrences in 106 verses</strong>. Expanding all 116 hits individually would count the context of a verse repeatedly whenever the lemma appears there more than once. A verse window measures shared passage context; a question about grammatical arguments calls for an annotated relation such as <a href="examples/N1904/features/frame.html">frame</a>. <a href="https://github.com/CenterBLC/N1904/blob/main/docs/tutorial/Agape.ipynb">Agape notebook</a></p>
+
+<h3>Decide which boundaries a sequence may cross</h3>
+<p>The n-gram notebook builds sequences from the ordered words of each <em>chapter</em>. For a three-word sequence, that permits crossing a verse boundary inside a chapter. Resetting at each verse instead changes the number of available windows from <strong>137,259 to 121,891</strong>. These are counts of positions at which a trigram occurs, including repetitions. The choice matters even before selecting a particular sequence or comparing its frequency. <a href="https://github.com/CenterBLC/N1904/blob/main/docs/tutorial/using_n-gram_in_text-fabric.ipynb">N-gram notebook</a></p>
+<pre><code>def trigram_windows(unit):
+    return sum(max(0, len(api.L.d(n, "word")) - 2)
+               for n in api.F.otype.s(unit))
+
+print(trigram_windows("chapter"), trigram_windows("verse"))
+# 137259 121891</code></pre>
+
+<h3>Distinguish a stored field from a code within that field</h3>
+<p>A word’s Louw–Nida field can hold several space-separated codes. Searching <code>word ln=49.5</code> found <strong>7 words</strong> whose entire field equals that code. Testing membership after splitting the field found <strong>13 words</strong>. Use equality to study exclusive assignment; use membership to include words also assigned other codes. A loose substring search can pick up longer codes. <a href="examples/N1904/features/ln.html">Louw–Nida feature</a> · <a href="https://github.com/CenterBLC/N1904/blob/main/docs/tutorial/louw-nida.ipynb">Louw–Nida notebook</a></p>
+<pre><code>exact = sum(1 for _ in api.S.search("word ln=49.5"))
+member = sum("49.5" in (api.F.ln.v(w) or "").split() for w in words)
+print(exact, member)  # 7 13</code></pre>
+
+<h3>Check what was loaded before interpreting an absence</h3>
+<p>The crasis notebook uses <code>bol_suffix=crasis</code> from an additional feature set. The base N1904 feature index does not include <code>bol_suffix</code>. Before drawing a conclusion about the Greek, check whether the annotation module is available and loaded. The notebook demonstrates the extended dataset; the counts above concern the base release. <a href="examples/N1904/features.html">Base feature index</a> · <a href="https://github.com/CenterBLC/N1904/blob/main/docs/tutorial/crasis.ipynb">Crasis notebook</a></p></section>
+<section><h2>Recheck the schema when switching corpora</h2>
+<p><strong>Dead Sea Scrolls 2.0.4.</strong> Here <code>sp</code> was observed only on words. With that feature loaded, <code>word sp=verb</code> matched 58,873 words; <code>phrase sp=verb</code> matched none. An identical feature name can have different coverage across corpora. <a href="examples/DSS/features/sp.html">DSS part-of-speech coverage</a></p>
+<p><strong>Old Babylonian 1.0.6.</strong> The cuneiform feature <code>symu</code> occurs on both signs and words. With that feature loaded, <code>sign symu=𒀀</code> matched 11,708 sign nodes; <code>word symu=𒀀</code> matched 61 word nodes. Both queries work. The research question determines which unit to count. <a href="examples/OldBabylonian/features/symu.html">Old Babylonian sign and word coverage</a></p>
+<p>Use the graph to choose candidate types, the feature pages to choose constraints, and the corpus engine to test the relationship and count the intended unit. The downloadable schema graph and the static documentation support query design; execution takes place in Context-Fabric.</p></section></div></main><footer><a href="https://github.com/tonyjurg/Doc4CF"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>Doc4CF repository</a><a href="https://github.com/tonyjurg/Doc4TF"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>Original Doc4TF repository</a><a href="https://github.com/tonyjurg/TF_Knowledge_Graph"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>TF_Knowledge_Graph repository</a></footer></body></html>

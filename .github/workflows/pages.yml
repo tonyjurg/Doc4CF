@@ -1,0 +1,52 @@
+name: Deploy documentation to GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'install-guide.html'
+      - 'software-design.html'
+      - 'query-guide.html'
+      - 'project-assets/**'
+      - 'examples/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Stage the project site and corpus documentation
+        run: |
+          mkdir _site
+          cp index.html install-guide.html software-design.html query-guide.html _site/
+          cp -r examples project-assets _site/
+          for corpus in N1904 DSS OldBabylonian; do
+            test -s "_site/examples/$corpus/index.html"
+            grep -Fq "href=\"examples/$corpus/index.html\"" _site/index.html
+          done
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: github.event.repository.private == false && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

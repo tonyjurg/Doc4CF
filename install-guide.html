@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="project-assets/doc4cf-logo.svg" type="image/svg+xml"><title>Install guide · Doc4CF</title><meta name="description" content="Install Doc4CF with pip, build your first corpus site and configure optional LLM descriptions.">
+<link rel="stylesheet" href="project-assets/project.css"></head><body><header><strong><img src="project-assets/doc4cf-logo.svg" alt="" width="54" height="54">Doc4CF</strong><nav aria-label="Project navigation"><a href="index.html#examples">Example outputs</a><a href="query-guide.html">Why corpus documentation matters</a><a href="install-guide.html" aria-current="page">Install guide</a><a href="software-design.html">Software design</a></nav></header>
+<main><section id="guide" class="design-copy"><h1>Install guide</h1><p><a href="#runtime-options">Runtime options</a> · <a href="#provider-keys">Provider keys</a> · <a href="#from-python">Run from Python</a> · <a href="#editor-notes">Review dataset notes</a></p><h2 id="setup">Install Doc4CF with pip</h2>
+<p>Use Python 3.13 or newer in an activated virtual environment. To install Doc4CF from a package index that hosts it, run:</p>
+<pre><code>python -m pip install doc4cf</code></pre>
+<p>For the current private distribution, install the supplied wheel:</p>
+<pre><code>python -m pip install ./doc4cf-0.1.0-py3-none-any.whl</code></pre>
+<h2>Build your first corpus site</h2>
+<p>Point Doc4CF at the directory containing <code>otype.tf</code> and <code>oslots.tf</code>. Give it a fresh output directory as the second argument.</p>
+<pre><code>doc4cf path/to/corpus/tf/VERSION site</code></pre>
+<p>Open <code>site/index.html</code> in your browser. Use <code>doc4cf --help</code> to see the available options.</p><h2 id="runtime-options">Runtime options</h2>
+<p>Use <code>doc4cf CORPUS OUTPUT [options]</code> in a terminal. The same arguments work with <code>python -m doc4cf</code>. Only the two paths are required.</p>
+<dl class="cli-options">
+<dt><code>corpus</code></dt><dd>Directory containing the TF files for one dataset version, for example <code>N1904/tf/1.0.0</code>.</dd>
+<dt><code>output</code></dt><dd>Destination directory for the generated HTML and assets. Choose a fresh directory to keep previous builds.</dd>
+<dt><code>--project-home URL</code></dt><dd>Add a footer link to a parent project. Omit for a standalone corpus site. A relative URL such as <code>../../index.html</code> is relative to the corpus overview.</dd>
+<dt><code>--provider NAME</code></dt><dd>Select <code>openrouter</code> (default), <code>openai</code>, <code>groq</code>, <code>gemini</code>, or <code>anthropic</code>. Used when a model is supplied.</dd>
+<dt><code>--model ID</code></dt><dd>Enable generated descriptions with a chat model available through that provider. Omit for an offline build.</dd>
+<dt><code>--dataset-context FILE</code></dt><dd>Include optional UTF-8 text or Markdown notes in each request. Requires <code>--model</code>.</dd>
+<dt><code>--describe-features NAMES</code></dt><dd>Enrich only the listed features, for example <code>lemma,tense,frame</code>. Requires <code>--model</code>. The default selects all features for enrichment when a model is enabled.</dd>
+<dt><code>--model-attribution MODE</code></dt><dd>Show provider and model on each enriched <code>feature</code> page (default), once on the <code>overview</code>, or use <code>none</code> to hide the names.</dd>
+<dt><code>--cache DIR</code></dt><dd>Store generated descriptions for reuse. The default is <code>.doc4cf-cache</code> under the working directory. Use the same cache for trial and final builds.</dd>
+<dt><code>-h</code>, <code>--help</code></dt><dd>Print the options for the installed version and exit.</dd></dl>
+<h2 id="inference">Levels of inference</h2><p>Doc4CF reads declared section names and text templates from the corpus metadata. It measures feature coverage and value frequencies directly. The diagram then uses average slot coverage to order node types from broadest to finest. That layout helps readers explore overlapping units without assuming they form a strict hierarchy.</p><h2 id="provider-keys">Provider accounts and API keys</h2>
+<p>An API key is a secret issued by the service that runs your model. For example, <code>OPENROUTER_API_KEY</code> is the <em>name</em> Doc4CF looks up in the build process’s environment. Its <em>value</em> is the key you copy from your OpenRouter account. The model ID is a separate value supplied with <code>--model</code>.</p>
+<ul><li><strong>OpenRouter</strong> — select <code>openrouter</code> and use <code>OPENROUTER_API_KEY</code>. The example model <code>openrouter/free</code> selects the free router. <a href="https://openrouter.ai/settings/keys">Create an OpenRouter key</a>.</li>
+<li><strong>OpenAI</strong> — select <code>openai</code> and use <code>OPENAI_API_KEY</code>. Choose a Chat Completions model available to your OpenAI API project. <a href="https://platform.openai.com/api-keys">Create an OpenAI project key</a>.</li>
+<li><strong>Groq</strong> — select <code>groq</code> and use <code>GROQ_API_KEY</code>. Copy a chat model ID from the Groq model catalog. <a href="https://console.groq.com/keys">Create a Groq key</a>.</li>
+<li><strong>Google Gemini</strong> — select <code>gemini</code> and use <code>GEMINI_API_KEY</code>. Choose a Gemini chat model available through the Gemini API. <a href="https://aistudio.google.com/apikey">Create a Gemini key in Google AI Studio</a>.</li>
+<li><strong>Anthropic Claude</strong> — select <code>anthropic</code>, set <code>ANTHROPIC_API_KEY</code>, and use a Claude model ID available to your Anthropic API account. For a key that requires an explicit workspace, also set <code>ANTHROPIC_WORKSPACE_ID</code>. <a href="https://platform.claude.com/settings/keys">Create a Claude API key</a>.</li></ul>
+<p>Set the key for the service you call. For example, when accessing a model through OpenRouter, use the OpenRouter key even if another company made the model. Calling that company’s API directly uses its own key and account quota.</p>
+<h2 id="from-python">Run Doc4CF from Python or a notebook</h2>
+<p>Run this in the Python environment where you installed Doc4CF. Set <code>provider</code> to one of the five names above and enter the TF directory and model ID. Python reuses an existing environment variable when available. Otherwise it asks for the key using a hidden prompt and passes it to the build process.</p>
+<pre><code>from getpass import getpass
+import os
+import subprocess
+import sys
+
+provider = "openrouter"  # or "anthropic", "openai", "groq", "gemini"
+model = "openrouter/free"  # replace with a model ID for your provider
+key_name = {
+    "openrouter": "OPENROUTER_API_KEY",
+    "openai": "OPENAI_API_KEY",
+    "groq": "GROQ_API_KEY",
+    "gemini": "GEMINI_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+}[provider]
+
+env = os.environ.copy()
+if not env.get(key_name):
+    env[key_name] = getpass(f"Enter your {provider} API key: ").strip()
+
+subprocess.run([
+    sys.executable, "-m", "doc4cf", "N1904/tf/1.0.0", "review-site",
+    "--provider", provider, "--model", model,
+    "--describe-features", "lemma", "--model-attribution", "overview",
+], env=env, check=True)</code></pre>
+<p>This builds the complete N1904 reference and requests prose only for <code>lemma</code>. For a different provider, change both <code>provider</code> and <code>model</code>; the dictionary chooses the matching key. A key entered at the prompt is available to this run. Keep its value out of notebooks, command arguments, context files, and version control. Offline builds need no provider account or key.</p>
+<h3 id="editor-notes">Try your dataset notes on three features</h3>
+<p>Save a short UTF-8 text or Markdown file, for example <code>n1904-notes.md</code>. Include conventions or verified definitions the model cannot learn from counts alone. A useful note for N1904 is “A lemma may also be recorded on a phrase or subphrase. Count word nodes when reporting word occurrences.”</p>
+<pre><code>doc4cf N1904/tf/1.0.0 review-site --model openrouter/free --dataset-context n1904-notes.md --describe-features lemma,tense,frame --model-attribution overview</code></pre>
+<p>Open the three feature pages in <code>review-site/features/</code> and compare the prose with the source metadata. The rest of the site is built normally, with measured data and no generated paragraph on unselected pages. Use a separate review directory if you want to keep an existing enriched site. Feature names are case-sensitive and omit the <code>.tf</code> extension.</p>
+<p>Each uncached feature gets its own request containing its profile and the full notes. Even with one named model, a request has no conversation history from earlier features. Include only notes you intend to share with your selected provider. OpenRouter’s free router may choose different models across requests.</p>
+<p>When ready, remove <code>--describe-features lemma,tense,frame</code> to enrich all features. With the same provider, model, evidence and notes, reviewed responses are reused from the cache. Editing the notes changes the request and triggers fresh descriptions. Renaming the file with the same contents reuses the cache. Omit <code>--dataset-context</code> to work from feature profiles alone.</p>
+<h3>Choose where to credit the model</h3><p>The default shows the provider and responding model on each enriched feature page. Use <code>--model-attribution overview</code> to list the distinct credits once on the corpus homepage, or <code>none</code> to hide them. All modes retain “Generated description”. If the provider omits a model ID, or an older cached response contains only the text, the credit identifies the model as requested. Changing this display option reuses the same prose.</p>
+<p>For a completely offline build, omit the model, feature selection and editor notes.</p></section>
+<p><a href="query-guide.html">Use the generated reference to write a Context-Fabric query →</a></p></main><footer><a href="https://github.com/tonyjurg/Doc4CF"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>Doc4CF repository</a><a href="https://github.com/tonyjurg/Doc4TF"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>Original Doc4TF repository</a><a href="https://github.com/tonyjurg/TF_Knowledge_Graph"><svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></svg>TF_Knowledge_Graph repository</a></footer></body></html>
