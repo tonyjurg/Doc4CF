@@ -39,6 +39,8 @@ After reviewing the artifacts, use `--context-dir reviewed-context` on a normal 
 
 For richer per-feature evidence, add `--targeted-evidence`. The model can request rare values or representative examples; Doc4CF retrieves those deterministically from the loaded corpus before generating the final description. Both planning and description responses are cached. See the [install guide](install-guide.html#runtime-options).
 
+Context analysis uses strict JSON Schema output with OpenRouter and OpenAI when the selected model supports it. Doc4CF falls back to JSON mode for those endpoints when schema output is rejected, and validates every response locally.
+
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
 
 ## Optional generated descriptions
