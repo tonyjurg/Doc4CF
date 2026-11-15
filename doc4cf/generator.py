@@ -248,6 +248,87 @@ def profile(api, name, info, order):
                           for v, count in values.most_common(12)], distinct=len(values))
 
 
+def dataset_inventory(src, files, api):
+    """Create a deterministic, compact inventory from corpus files and TF data."""
+    cfg = files.get("otext", {}).get("meta", {})
+    identity = {key: value for key, value in files["otype"]["meta"].items()
+                if key in ("title", "name", "acronym", "version")}
+    identity.update({key: value for key, value in cfg.items()
+                     if key in ("title", "name", "description", "version", "language", "languages")})
+    corpus = next((identity[k] for k in ("title", "name", "description", "acronym")
+                   if identity.get(k)), src.name)
+    digest = sha256()
+    for name, info in sorted(files.items()):
+        path = src / f"{name}.tf"
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+
+    order = api.F.otype.all
+    features = {}
+    for name, info in sorted(files.items()):
+        measured = profile(api, name, info, order)
+        kind = info["kind"]
+        examples = []
+        if kind == "node":
+            for _, value in api.Fs(name).items():
+                examples.append(int(value) if isinstance(value, Integral) else value)
+                if len(examples) == 5:
+                    break
+        elif kind == "edge":
+            for _, ends in api.Es(name).items():
+                if isinstance(ends, dict):
+                    examples.extend(int(value) if isinstance(value, Integral) else value
+                                    for value in list(ends.values())[:5 - len(examples)])
+                if len(examples) >= 5:
+                    break
+        features[name] = {
+            "kind": kind,
+            "metadata": dict(sorted(info["meta"].items())),
+            "encoding": info["encoding"],
+            "value_type": info["meta"].get("valueType"),
+            "observed_node_types": list(measured["sources"]),
+            "sources": measured["sources"],
+            "targets": measured["targets"],
+            "distinct_values": measured["distinct"],
+            "frequent_values": [{"value": value, "count": count}
+                                for value, count in measured["frequent"]],
+            "examples": examples,
+        }
+
+    slot_type = api.F.otype.slotType
+    node_types = [{"name": name, "node_count": len(api.F.otype.s(name)),
+                   "is_slot_type": name == slot_type} for name in order]
+    return {
+        "inventory_version": "1.0",
+        "dataset": identity,
+        "corpus_label": corpus,
+        "source": {"content_sha256": digest.hexdigest(),
+                   "declared_version": identity.get("version")},
+        "structure": {"node_types_in_corpus_order": node_types,
+                      "slot_type": slot_type,
+                      "reference_sections": [part for part in cfg.get("sectionTypes", "").split(",") if part]},
+        "features": features,
+    }
+
+
+def export_inventory(corpus_path, output_path):
+    """Export inventory JSON without generating a site or contacting a model."""
+    src = corpus_path.resolve()
+    output_path = output_path.resolve()
+    files = {p.stem: header(p) for p in sorted(src.glob("*.tf"))}
+    if not {"otype", "oslots"} <= files.keys():
+        raise ValueError("Expected a corpus directory containing otype.tf and oslots.tf")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    api = load_corpus(src, files, output_path.parent)
+    if not api:
+        raise RuntimeError("Context-Fabric could not load the corpus")
+    inventory = dataset_inventory(src, files, api)
+    output_path.write_text(json.dumps(inventory, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return inventory
+
+
 def load_corpus(src, files, out):
     features = [n for n, f in files.items() if f["kind"] != "config"]
     if "otext" in files:
@@ -402,7 +483,7 @@ def generate(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("corpus", type=Path)
-    parser.add_argument("output", type=Path)
+    parser.add_argument("output", type=Path, nargs="?")
     parser.add_argument("--project-home", help="Link every page to the parent project homepage")
     parser.add_argument("--provider", choices=PROVIDERS, default="openrouter", help="LLM provider (default: openrouter)")
     parser.add_argument("--model", help="Chat model ID on the selected provider; omit for an offline build")
@@ -411,8 +492,15 @@ def main():
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
                         help="Show the provider and responding model on each feature, once on the overview, or nowhere")
     parser.add_argument("--cache", type=Path, default=Path(".doc4cf-cache"))
+    parser.add_argument("--export-inventory", type=Path, metavar="FILE",
+                        help="Export a deterministic corpus inventory as JSON and exit (no model calls)")
     args = parser.parse_args()
     try:
+        if args.export_inventory:
+            export_inventory(args.corpus, args.export_inventory)
+            return
+        if args.output is None:
+            parser.error("output is required unless --export-inventory is used")
         generate(args)
     except (ValueError, OSError, RuntimeError) as error:
         parser.exit(1, f"doc4cf: {error}\n")

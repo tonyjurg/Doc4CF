@@ -29,6 +29,10 @@ Share the wheel from `dist/` with recipients. They can run `python -m pip instal
 
 The [install guide](install-guide.html) covers setup, usage, and optional LLM descriptions. The [software design page](software-design.html) explains how Doc4CF uses Context-Fabric to combine feature documentation with a knowledge graph.
 
+The planned evolution of optional AI enrichment, including evidence safeguards and independent PR-sized steps, is in [AI_STRATEGY.md](AI_STRATEGY.md).
+
+Export a deterministic, model-free inventory for review or downstream analysis with `doc4cf path/to/corpus/tf/VERSION --export-inventory inventory.json`. The versioned inventory and AI context artifact schemas ship under `doc4cf/schemas/`.
+
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
 
 ## Optional generated descriptions
