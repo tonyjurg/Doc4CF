@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doc4cf.org/schemas/feature-relationships-1.0.schema.json",
+  "title": "Doc4CF feature relationship artifact",
+  "type": "object",
+  "required": ["relationships_version", "inventory_sha256", "relationships"],
+  "properties": {
+    "relationships_version": {"const": "1.0"},
+    "inventory_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_feature", "target_feature", "relationship", "status", "evidence", "needs_review"],
+        "properties": {
+          "source_feature": {"type": "string"},
+          "target_feature": {"type": "string"},
+          "relationship": {"type": "string"},
+          "status": {"enum": ["verified", "inferred", "needs_review"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "needs_review": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

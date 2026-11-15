@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doc4cf.org/schemas/feature-families-1.0.schema.json",
+  "title": "Doc4CF feature family artifact",
+  "type": "object",
+  "required": ["families_version", "inventory_sha256", "families"],
+  "properties": {
+    "families_version": {"const": "1.0"},
+    "inventory_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "purpose", "features", "status", "evidence", "needs_review"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$"},
+          "label": {"type": "string"},
+          "purpose": {"type": "string"},
+          "features": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "status": {"enum": ["verified", "inferred", "needs_review"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "needs_review": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
