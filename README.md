@@ -41,6 +41,8 @@ For richer per-feature evidence, add `--targeted-evidence`. The model can reques
 
 Context analysis uses strict JSON Schema output with OpenRouter and OpenAI when the selected model supports it. Doc4CF falls back to JSON mode for those endpoints when schema output is rejected, and validates every response locally.
 
+Context artifacts also record provider, requested and responding model IDs, and prompt version alongside the inventory hash. The dataset architecture page shows this provenance when available.
+
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
 
 ## Optional generated descriptions

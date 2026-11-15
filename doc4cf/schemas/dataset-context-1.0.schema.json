@@ -10,9 +10,21 @@
     "dataset_profile": {"type": "string"},
     "conventions": {"type": "array", "items": {"$ref": "#/$defs/interpretation"}},
     "ambiguities": {"type": "array", "items": {"type": "string"}},
-    "needs_review": {"type": "boolean"}
+    "needs_review": {"type": "boolean"},
+    "analysis": {"$ref": "#/$defs/analysis"}
   },
   "$defs": {
+    "analysis": {
+      "type": "object",
+      "required": ["provider", "requested_model", "responding_model", "prompt_version"],
+      "properties": {
+        "provider": {"enum": ["anthropic", "openrouter", "openai", "groq", "gemini"]},
+        "requested_model": {"type": "string"},
+        "responding_model": {"type": ["string", "null"]},
+        "prompt_version": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
     "interpretation": {
       "type": "object",
       "required": ["claim", "status", "evidence"],

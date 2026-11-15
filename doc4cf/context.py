@@ -241,19 +241,35 @@ def load_context_artifacts(context_dir, inventory):
         relationships = json.loads((folder / "feature_relationships.json").read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"Could not read context artifacts from {folder}: {error}") from error
-    _keys(dataset, ("context_version", "inventory_sha256", "dataset_profile", "conventions", "ambiguities", "needs_review"))
+    _keys(dataset, ("context_version", "inventory_sha256", "dataset_profile", "conventions", "ambiguities", "needs_review"), ("analysis",))
     if dataset["context_version"] != "1.0" or dataset["inventory_sha256"] != expected_hash:
         raise ValueError("Dataset context version or inventory hash does not match this corpus")
     validate_dataset_context({key: dataset[key] for key in ("dataset_profile", "conventions", "ambiguities", "needs_review")})
-    _keys(families, ("families_version", "inventory_sha256", "families"))
-    _keys(relationships, ("relationships_version", "inventory_sha256", "relationships"))
+    if "analysis" in dataset:
+        validate_analysis_provenance(dataset["analysis"])
+    _keys(families, ("families_version", "inventory_sha256", "families"), ("analysis",))
+    _keys(relationships, ("relationships_version", "inventory_sha256", "relationships"), ("analysis",))
+    if "analysis" in families:
+        validate_analysis_provenance(families["analysis"])
+    if "analysis" in relationships:
+        validate_analysis_provenance(relationships["analysis"])
     if families["families_version"] != "1.0" or relationships["relationships_version"] != "1.0":
         raise ValueError("Unsupported context artifact version")
     if families["inventory_sha256"] != expected_hash or relationships["inventory_sha256"] != expected_hash:
         raise ValueError("Feature context inventory hash does not match this corpus")
     combined = {"families": families["families"], "relationships": relationships["relationships"]}
     validate_family_context(combined, names)
-    return dataset, families["families"], relationships["relationships"]
+    return dataset, families["families"], relationships["relationships"], families.get("analysis")
+
+
+def validate_analysis_provenance(data):
+    _keys(data, ("provider", "requested_model", "responding_model", "prompt_version"))
+    if data["provider"] not in PROVIDERS:
+        raise ValueError("Context artifact analysis provider is unsupported")
+    _string(data["requested_model"], "analysis.requested_model")
+    if data["responding_model"] is not None:
+        _string(data["responding_model"], "analysis.responding_model")
+    _string(data["prompt_version"], "analysis.prompt_version")
 
 
 def validate_feature_response(data, feature_names, observed_values):
@@ -390,7 +406,7 @@ def contextual_description_record(evidence, model, cache, provider, feature_name
 
 def feature_context_hashes(inventory, dataset, families, relationships, provider, model, targeted_evidence=False):
     """Return stable input fingerprints for each feature's contextual description."""
-    dataset_part = {key: value for key, value in dataset.items() if key != "inventory_sha256"}
+    dataset_part = {key: value for key, value in dataset.items() if key not in ("inventory_sha256", "analysis")}
     dataset_hash = inventory_digest(dataset_part)
     prompt = FEATURE_SYSTEM + (EVIDENCE_SYSTEM if targeted_evidence else "")
     prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
@@ -410,7 +426,7 @@ def feature_context_hashes(inventory, dataset, families, relationships, provider
     return result
 
 
-def context_pages(inventory, dataset, families, relationships, review):
+def context_pages(inventory, dataset, families, relationships, review, family_analysis=None):
     """Render optional evidence-labeled dataset and relationship page bodies."""
     h = lambda value: escape(str(value), quote=True)
     feature_link = lambda name: f'<a href="features/{h(name)}.html">{h(name)}</a>'
@@ -430,6 +446,19 @@ def context_pages(inventory, dataset, families, relationships, review):
         f"<td>{' · '.join(feature_link(name) for name in item['features'])}</td><td>{evidence(item['evidence'])}</td></tr>"
         for item in families
     ) or '<tr><td colspan="5">No feature families proposed.</td></tr>'
+    global_provenance = dataset.get("analysis")
+    provenance_rows = ""
+    if global_provenance:
+        provenance_rows += (f"<tr><td>Dataset context</td><td>{h(global_provenance['provider'])}</td>"
+                            f"<td>{h(global_provenance['requested_model'])}</td><td>{h(global_provenance['responding_model'] or 'Unavailable')}</td>"
+                            f"<td>{h(global_provenance['prompt_version'])}</td></tr>")
+    if family_analysis:
+        provenance_rows += (f"<tr><td>Families and relationships</td><td>{h(family_analysis['provider'])}</td>"
+                            f"<td>{h(family_analysis['requested_model'])}</td><td>{h(family_analysis['responding_model'] or 'Unavailable')}</td>"
+                            f"<td>{h(family_analysis['prompt_version'])}</td></tr>")
+    provenance_section = ("<h2>Analysis provenance</h2>" + table_html(
+        ["Artifact", "Provider", "Requested model", "Responding model", "Prompt version"], provenance_rows)
+        if provenance_rows else "")
     dataset_body = (
         f"<p><strong>Model-generated interpretation.</strong> {h(dataset['dataset_profile'])}</p>"
         f"<p>Context inventory hash: <code>{h(dataset['inventory_sha256'])}</code>. Review required: {h(dataset['needs_review'])}.</p>"
@@ -439,6 +468,7 @@ def context_pages(inventory, dataset, families, relationships, review):
         + table_html(["Node type", "Node count", "Note"], node_rows)
         + "<h2>Feature families and terminology</h2><p>Family names and purposes are model interpretations. Use the linked source metadata and feature profiles to review them.</p>"
         + table_html(["Family", "Proposed purpose", "Evidence status", "Features", "Evidence"], family_rows)
+        + provenance_section
         + "<h2>Research starting points</h2><p>These proposed family groupings can help identify features to inspect for a research question. Validate each feature against its profile before using it.</p>"
         + "<ul>" + "".join(f"<li>{h(item['purpose'])}: {' · '.join(feature_link(name) for name in item['features'])}</li>" for item in families) + "</ul>"
     )
@@ -484,7 +514,10 @@ def analyze_context(corpus, output_dir, provider, dataset_model, family_model, c
                                       cache, "dataset", validate_dataset_context)
     dataset_data = dataset_record["data"]
     validate_dataset_context(dataset_data)
-    dataset_data = {"context_version": "1.0", "inventory_sha256": inventory_hash, **dataset_data}
+    dataset_provenance = {"provider": provider, "requested_model": dataset_model,
+                          "responding_model": dataset_record.get("model"), "prompt_version": PROMPT_VERSION}
+    dataset_data = {"context_version": "1.0", "inventory_sha256": inventory_hash,
+                    "analysis": dataset_provenance, **dataset_data}
     _atomic_json(output_dir / "dataset_context.json", dataset_data)
 
     family_record = _analysis_record(FAMILY_SYSTEM,
@@ -494,8 +527,11 @@ def analyze_context(corpus, output_dir, provider, dataset_model, family_model, c
     family_data = family_record["data"]
     validate_family_context(family_data, set(inventory["features"]))
     family_data = {"families_version": "1.0", "inventory_sha256": inventory_hash,
+                   "analysis": {"provider": provider, "requested_model": family_model,
+                                "responding_model": family_record.get("model"), "prompt_version": PROMPT_VERSION},
                    "families": family_data["families"]}
     relationships_data = {"relationships_version": "1.0", "inventory_sha256": inventory_hash,
+                          "analysis": family_data["analysis"],
                           "relationships": family_record["data"]["relationships"]}
     _atomic_json(output_dir / "feature_families.json", family_data)
     _atomic_json(output_dir / "feature_relationships.json", relationships_data)
