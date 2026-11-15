@@ -57,7 +57,7 @@ For a corpus documented with one model, use `--model-attribution overview` to li
 doc4cf N1904/tf/1.0.0 site --provider openai --model MODEL_ID --model-attribution overview
 ```
 
-This sends the corpus title and each feature's profile (including common values) to the selected provider. The CLI sends one request per uncached feature (61 for a complete uncached N1904 build). The OpenRouter example selects the free router; other model choices may incur charges. Generated paragraphs appear separately from source metadata. Successful requests are cached by model, prompt and evidence in `.doc4cf-cache`; rerun after an interrupted request to reuse completed responses. Keys stay in the build process. All three checked-in examples include live descriptions generated in batches through `openrouter/free`. Each generated paragraph identifies the responding model. The sites can be read offline.
+This sends the corpus title and each feature's profile (including common values) to the selected provider. The CLI sends one request per uncached feature (61 for a complete uncached N1904 build). The OpenRouter example selects the free router; other model choices may incur charges. Generated paragraphs appear separately from source metadata. Successful requests are cached by model, prompt and evidence in `.doc4cf-cache`; rerun after an interrupted request to reuse completed responses. Keys stay in the build process. All three checked-in examples include live descriptions from free models through OpenRouter. N1904 is regenerated feature by feature with `nvidia/nemotron-3.5-super-vl:free` and the accompanying editorial context; DSS and Old Babylonian retain their original batched `openrouter/free` descriptions. The notebooks use the supported feature-by-feature CLI for future builds. Each generated paragraph identifies the responding model. The sites can be read offline.
 
 ## Why corpus documentation matters
 
@@ -71,6 +71,8 @@ The [guide to using corpus documentation](query-guide.html) shows how to use obs
 - Text and encoding shows declared rendering formats, contributing features and up to twelve nodes of each format’s target type rendered through Context-Fabric. Without declared formats it lists populated string fields on slots, ranked by coverage, with samples in slot order. Byte encoding is checked across whole files. Unicode normalization is reported only for the frequent-value sample.
 
 ## Example corpora
+
+The [three generation notebooks](notebooks/README.md) explain how to rebuild each example, from a pinned corpus revision to the complete static site. They include offline and free OpenRouter options, safe key entry, validation, and an optional publication step. The N1904 notebook uses the [N1904 editorial context](notebooks/contexts/N1904.txt) for enriched descriptions.
 
 ### N1904 validation
 

@@ -10,3 +10,4 @@ site/
 dist/
 build/
 *.egg-info/
+.notes

@@ -32,6 +32,7 @@
 <li><strong>Anthropic Claude</strong> — select <code>anthropic</code>, set <code>ANTHROPIC_API_KEY</code>, and use a Claude model ID available to your Anthropic API account. For a key that requires an explicit workspace, also set <code>ANTHROPIC_WORKSPACE_ID</code>. <a href="https://platform.claude.com/settings/keys">Create a Claude API key</a>.</li></ul>
 <p>Set the key for the service you call. For example, when accessing a model through OpenRouter, use the OpenRouter key even if another company made the model. Calling that company’s API directly uses its own key and account quota.</p>
 <h2 id="from-python">Run Doc4CF from Python or a notebook</h2>
+<p>For complete, reproducible examples, use the <a href="https://github.com/tonyjurg/Doc4CF/tree/main/notebooks">three generation notebooks</a>. Each covers a pinned corpus revision, installation, offline or free OpenRouter generation, checks, and copying the reviewed result into this website. The N1904 notebook also supplies the accompanying editorial context file.</p>
 <p>Run this in the Python environment where you installed Doc4CF. Set <code>provider</code> to one of the five names above and enter the TF directory and model ID. Python reuses an existing environment variable when available. Otherwise it asks for the key using a hidden prompt and passes it to the build process.</p>
 <pre><code>from getpass import getpass
 import os

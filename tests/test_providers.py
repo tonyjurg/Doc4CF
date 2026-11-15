@@ -10,6 +10,22 @@ from doc4cf.generator import describe, main
 
 
 class ProviderOptions(unittest.TestCase):
+    def test_free_router_budget_and_incomplete_response_not_cached(self):
+        with TemporaryDirectory() as tmp, patch.dict("os.environ", OPENROUTER_API_KEY="test"):
+            cache = Path(tmp)
+            incomplete = {"choices": [{"finish_reason": "length", "message": {"content": "Cut off"}}]}
+            with patch("doc4cf.generator.urlopen", return_value=io.BytesIO(json.dumps(incomplete).encode())) as send:
+                with self.assertRaisesRegex(ValueError, "incomplete"):
+                    describe({}, "openrouter/free", cache)
+                payload = json.loads(send.call_args.args[0].data)
+                self.assertEqual(payload["max_tokens"], 8192)
+                self.assertEqual(payload["reasoning"], {"effort": "low", "exclude": True})
+            self.assertEqual(list(cache.iterdir()), [])
+            complete = {"choices": [{"finish_reason": "stop", "message": {"content": "Complete paragraph."}}]}
+            with patch("doc4cf.generator.urlopen", return_value=io.BytesIO(json.dumps(complete).encode())):
+                self.assertEqual(describe({}, "openrouter/free", cache), "Complete paragraph.")
+            self.assertEqual(len(list(cache.glob("*.json"))), 1)
+
     def test_routing_and_provider_specific_cache(self):
         providers = (
             ("openrouter", "OPENROUTER_API_KEY", "openrouter.ai"),
