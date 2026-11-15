@@ -40,9 +40,9 @@ The explicit `--analyze-context DIR` command writes the inventory and three cont
 
 Normal feature enrichment can consume the saved artifacts with `--context-dir`, passing global context and only the relevant family/relationships alongside local feature evidence. It preserves source descriptions as authoritative input, returns structured JSON with declared feature/value references and uncertainties, and validates references against the current corpus before caching or rendering. A stale inventory hash is rejected. Omitting context artifacts retains the existing feature-only enrichment flow.
 
-### PR 4 — Incremental review and supplementary documentation
+### PR 4 — Incremental review and supplementary documentation (implemented)
 
-Add a review workflow for context changes and contradictions surfaced during feature analysis. Use artifact/evidence hashes to identify only affected descriptions for regeneration. Add optional dataset architecture, glossary, relationship index, and research-question guidance pages, with links from the existing site. These pages must label inferred relationships and cite their supporting inventory evidence.
+The build writes a context manifest and `context_review.json`, compares dataset/family/relationship/evidence/prompt/model inputs per feature, and reports descriptions whose inputs changed. Versioned schemas for the manifest and review report are in `doc4cf/schemas/`. Context-aware feature responses can flag contradictions, inconsistencies, and missing evidence; the build reports these without changing the reusable context artifacts. Cache keys keep unchanged feature requests reusable. `--context-pages` adds optional dataset architecture/glossary, relationship index, and review pages linked from the overview. Pages label model interpretations and show supplied evidence paths.
 
 ## Current implementation
 

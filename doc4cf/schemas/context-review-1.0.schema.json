@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doc4cf.org/schemas/context-review-1.0.schema.json",
+  "title": "Doc4CF context review report",
+  "type": "object",
+  "required": ["inventory_sha256", "affected_descriptions", "processed_descriptions", "context_flags"],
+  "properties": {
+    "inventory_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "affected_descriptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["feature", "reasons"],
+        "properties": {"feature": {"type": "string"}, "reasons": {"type": "array", "items": {"type": "string"}}},
+        "additionalProperties": false
+      }
+    },
+    "processed_descriptions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "context_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["feature", "flags"],
+        "properties": {
+          "feature": {"type": "string"},
+          "flags": {"type": "array", "items": {"$ref": "context-manifest-1.0.schema.json#/$defs/contextFlag"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
