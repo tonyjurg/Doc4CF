@@ -391,8 +391,8 @@ def generate(args):
     if context_dir is not None:
         from .context import feature_context_hashes, inventory_digest, load_context_artifacts
         inventory = dataset_inventory(src, files, api)
-        dataset_context, families, relationships = load_context_artifacts(context_dir, inventory)
-        context_data = (dataset_context, families, relationships)
+        dataset_context, families, relationships, family_analysis = load_context_artifacts(context_dir, inventory)
+        context_data = (dataset_context, families, relationships, family_analysis)
         context_inputs = feature_context_hashes(inventory, dataset_context, families,
                                                 relationships, provider, feature_model,
                                                 getattr(args, "targeted_evidence", False))
@@ -460,7 +460,7 @@ def generate(args):
                 evidence["corpus_editor_notes"] = notes
             if context_data:
                 from .context import contextual_description_record
-                dataset_context, families, relationships = context_data
+                dataset_context, families, relationships, _ = context_data
                 related_family = next((family for family in families if n in family["features"]), None)
                 related_relationships = [relation for relation in relationships
                                          if n in (relation["source_feature"], relation["target_feature"])]
@@ -576,7 +576,7 @@ def generate(args):
     overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(credits)) + "</p>" if credits and attribution == "overview" else ""
     if context_data:
         from .context import _atomic_json, context_pages as render_context_pages
-        dataset_context, families, relationships = context_data
+        dataset_context, families, relationships, family_analysis = context_data
         flags = [{"feature": name, "flags": items} for name, items in sorted(context_flags.items())
                  if items and applied_inputs.get(name) == context_inputs.get(name)]
         review = {"inventory_sha256": dataset_context["inventory_sha256"],
@@ -592,7 +592,7 @@ def generate(args):
                       "relationships.html": "Feature relationship index",
                       "context-review.html": "Context review"}
             for filename, body in render_context_pages(inventory, dataset_context, families,
-                                                        relationships, review).items():
+                                                        relationships, review, family_analysis).items():
                 page(filename, titles[filename], body)
     cards = [("features.html", "Explore features"), ("structure.html", "Browse corpus structure"),
              ("diagram.html", "Explore the corpus diagram"), ("text.html", "Inspect transcription and encoding")]

@@ -52,6 +52,10 @@ With `--targeted-evidence`, an optional planning request can ask for a bounded s
 
 OpenRouter and OpenAI requests use strict JSON Schema response formats for each analysis stage. Providers/models that reject schema-constrained output fall back to JSON mode; other providers continue to use JSON mode or prompt-constrained JSON as supported. Every response still passes Doc4CF's local validation before caching or artifact export.
 
+### PR 7 — Context artifact provenance (implemented)
+
+New dataset, family, and relationship artifacts record the provider, requested model, responding model when available, and prompt version. The fields are optional in the version 1.0 schemas so older reviewed artifacts remain readable. Provenance changes alone do not invalidate feature descriptions when the reviewed context itself is unchanged.
+
 ## Current implementation
 
 Today Doc4CF supports optional per-feature descriptions through OpenRouter by default, plus OpenAI, Anthropic, Gemini, and Groq. It sends a feature profile and optional editor notes, caches completed responses, supports selecting features for enrichment, and leaves deterministic site generation available without a model. The staged PRs above extend that feature-by-feature flow into reusable dataset-level context; they do not replace it.

@@ -7,6 +7,7 @@
   "properties": {
     "families_version": {"const": "1.0"},
     "inventory_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "analysis": {"$ref": "#/$defs/analysis"},
     "families": {
       "type": "array",
       "items": {
@@ -23,6 +24,19 @@
         },
         "additionalProperties": false
       }
+    }
+  },
+  "$defs": {
+    "analysis": {
+      "type": "object",
+      "required": ["provider", "requested_model", "responding_model", "prompt_version"],
+      "properties": {
+        "provider": {"enum": ["anthropic", "openrouter", "openai", "groq", "gemini"]},
+        "requested_model": {"type": "string"},
+        "responding_model": {"type": ["string", "null"]},
+        "prompt_version": {"type": "string"}
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false
