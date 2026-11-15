@@ -36,9 +36,9 @@ The `--export-inventory FILE` command exports a local-only inventory with corpus
 
 The explicit `--analyze-context DIR` command writes the inventory and three context artifacts without building the HTML site. `--context-model` and `--family-model` allow separate model selection. JSON mode is requested from compatible endpoints and all results are validated locally before artifact export. Valid analysis responses are resumably cached by full inventory, provider, model, and prompt version; malformed or structurally invalid responses are not cached.
 
-### PR 3 — Context-aware feature descriptions and validation
+### PR 3 — Context-aware feature descriptions and validation (implemented)
 
-Allow normal feature enrichment to consume the saved artifacts, passing only relevant family/relationship context alongside local evidence. Preserve source descriptions as authoritative input. Validate response structure and referenced feature/value names, flag unsupported or uncertain claims, and keep generated text separate from source metadata. Retain compatibility with current feature-only enrichment when no context artifacts are supplied.
+Normal feature enrichment can consume the saved artifacts with `--context-dir`, passing global context and only the relevant family/relationships alongside local feature evidence. It preserves source descriptions as authoritative input, returns structured JSON with declared feature/value references and uncertainties, and validates references against the current corpus before caching or rendering. A stale inventory hash is rejected. Omitting context artifacts retains the existing feature-only enrichment flow.
 
 ### PR 4 — Incremental review and supplementary documentation
 
