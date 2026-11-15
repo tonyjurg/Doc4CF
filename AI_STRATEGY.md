@@ -48,6 +48,10 @@ The build writes a context manifest and `context_review.json`, compares dataset/
 
 With `--targeted-evidence`, an optional planning request can ask for a bounded set of rare values or representative examples that would improve a feature description. Doc4CF validates the request type/count, retrieves matching values/examples directly from the loaded corpus, and supplies those observations to the final description request. Planning and description responses are separately cached. Unsupported evidence requests fail validation rather than triggering arbitrary corpus queries or external research.
 
+### PR 6 — Provider-supported strict JSON output (implemented)
+
+OpenRouter and OpenAI requests use strict JSON Schema response formats for each analysis stage. Providers/models that reject schema-constrained output fall back to JSON mode; other providers continue to use JSON mode or prompt-constrained JSON as supported. Every response still passes Doc4CF's local validation before caching or artifact export.
+
 ## Current implementation
 
 Today Doc4CF supports optional per-feature descriptions through OpenRouter by default, plus OpenAI, Anthropic, Gemini, and Groq. It sends a feature profile and optional editor notes, caches completed responses, supports selecting features for enrichment, and leaves deterministic site generation available without a model. The staged PRs above extend that feature-by-feature flow into reusable dataset-level context; they do not replace it.
