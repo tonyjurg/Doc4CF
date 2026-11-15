@@ -10,13 +10,14 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["dataset_context_sha256", "feature_context_sha256", "feature_evidence_sha256", "provider", "model", "prompt_sha256"],
+        "required": ["dataset_context_sha256", "feature_context_sha256", "feature_evidence_sha256", "provider", "model", "evidence_mode", "prompt_sha256"],
         "properties": {
           "dataset_context_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "feature_context_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "feature_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "provider": {"type": "string"},
           "model": {"type": "string"},
+          "evidence_mode": {"enum": ["compact", "targeted"]},
           "prompt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
         },
         "additionalProperties": false

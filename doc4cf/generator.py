@@ -349,6 +349,8 @@ def generate(args):
     context_dir = getattr(args, "context_dir", None)
     if getattr(args, "feature_model", None) and not args.model:
         raise ValueError("--feature-model requires --model")
+    if getattr(args, "targeted_evidence", False) and (not args.model or context_dir is None):
+        raise ValueError("--targeted-evidence requires --model and --context-dir")
     selection = getattr(args, "describe_features", None)
     selected = set(files)
     context_pages_enabled = getattr(args, "context_pages", False)
@@ -392,7 +394,8 @@ def generate(args):
         dataset_context, families, relationships = load_context_artifacts(context_dir, inventory)
         context_data = (dataset_context, families, relationships)
         context_inputs = feature_context_hashes(inventory, dataset_context, families,
-                                                relationships, provider, feature_model)
+                                                relationships, provider, feature_model,
+                                                getattr(args, "targeted_evidence", False))
         manifest_path = out / "context_manifest.json"
         if manifest_path.exists():
             try:
@@ -414,6 +417,7 @@ def generate(args):
                     "dataset_context_sha256": "dataset context changed",
                     "feature_context_sha256": "feature family or relationships changed",
                     "feature_evidence_sha256": "feature evidence changed",
+                    "evidence_mode": "evidence retrieval mode changed",
                     "prompt_sha256": "feature prompt changed",
                 }
                 if args.model:
@@ -464,7 +468,9 @@ def generate(args):
                                         "feature_family": related_family,
                                         "feature_relationships": related_relationships}
                 record = contextual_description_record(
-                    evidence, feature_model, args.cache, provider, set(files), observed_values)
+                    evidence, feature_model, args.cache, provider, set(files), observed_values,
+                    api=api, feature_kind=kind,
+                    targeted_evidence=getattr(args, "targeted_evidence", False))
                 context_flags[n] = record["context_flags"]
                 applied_inputs[n] = context_inputs[n]
             else:
@@ -483,6 +489,11 @@ def generate(args):
                     f"<li><strong>{e(item['status'].replace('_', ' ').title())}:</strong> {e(item['issue'])} — {e(', '.join(item['evidence']))}</li>"
                     for item in record["context_flags"]
                 ) + "</ul>"
+            if record.get("additional_evidence"):
+                body += '<details><summary>Additional evidence retrieved on request</summary><ul>' + "".join(
+                    f"<li><strong>{e(item['kind'])}:</strong> {e(item['rationale'])}<pre>{e(json.dumps(item, ensure_ascii=False, indent=2))}</pre></li>"
+                    for item in record["additional_evidence"]
+                ) + "</ul></details>"
         for field, heading, unit in [("sources","Applies to","Populated nodes"), ("targets","Points to","Incoming edges")]:
             if p[field]:
                 body += f"<h2>{heading}</h2>" + table(["Node type",unit], [(link(f"../structure.html#type-{t}",t),f"{count:,}") for t,count in p[field].items()])
@@ -605,6 +616,8 @@ def main():
     parser.add_argument("--context-pages", action="store_true",
                         help="With --context-dir, add dataset architecture, glossary, relationship, and review pages")
     parser.add_argument("--feature-model", help="Model for feature descriptions (defaults to --model)")
+    parser.add_argument("--targeted-evidence", action="store_true",
+                        help="Let the model request missing feature evidence, retrieve it locally, then generate the description")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
                         help="Show the provider and responding model on each feature, once on the overview, or nowhere")

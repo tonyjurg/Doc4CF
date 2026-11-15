@@ -44,6 +44,10 @@ Normal feature enrichment can consume the saved artifacts with `--context-dir`, 
 
 The build writes a context manifest and `context_review.json`, compares dataset/family/relationship/evidence/prompt/model inputs per feature, and reports descriptions whose inputs changed. Versioned schemas for the manifest and review report are in `doc4cf/schemas/`. Context-aware feature responses can flag contradictions, inconsistencies, and missing evidence; the build reports these without changing the reusable context artifacts. Cache keys keep unchanged feature requests reusable. `--context-pages` adds optional dataset architecture/glossary, relationship index, and review pages linked from the overview. Pages label model interpretations and show supplied evidence paths.
 
+### PR 5 — Targeted evidence retrieval (implemented)
+
+With `--targeted-evidence`, an optional planning request can ask for a bounded set of rare values or representative examples that would improve a feature description. Doc4CF validates the request type/count, retrieves matching values/examples directly from the loaded corpus, and supplies those observations to the final description request. Planning and description responses are separately cached. Unsupported evidence requests fail validation rather than triggering arbitrary corpus queries or external research.
+
 ## Current implementation
 
 Today Doc4CF supports optional per-feature descriptions through OpenRouter by default, plus OpenAI, Anthropic, Gemini, and Groq. It sends a feature profile and optional editor notes, caches completed responses, supports selecting features for enrichment, and leaves deterministic site generation available without a model. The staged PRs above extend that feature-by-feature flow into reusable dataset-level context; they do not replace it.

@@ -37,6 +37,8 @@ Generate reusable dataset and feature-family context with `doc4cf path/to/corpus
 
 After reviewing the artifacts, use `--context-dir reviewed-context` on a normal site build to enrich feature descriptions with global and relevant family context. Add `--context-pages` for dataset architecture/glossary, relationship, and review pages. The build rejects stale context and model-declared feature/value references that do not exist in the current corpus. It records affected descriptions and context flags in `context_review.json`; unchanged requests reuse the cache. Omitting `--context-dir` keeps the existing feature-only behavior.
 
+For richer per-feature evidence, add `--targeted-evidence`. The model can request rare values or representative examples; Doc4CF retrieves those deterministically from the loaded corpus before generating the final description. Both planning and description responses are cached. See the [install guide](install-guide.html#runtime-options).
+
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
 
 ## Optional generated descriptions
