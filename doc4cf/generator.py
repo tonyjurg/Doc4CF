@@ -346,10 +346,13 @@ def generate(args):
     if not {"otype", "oslots"} <= files.keys():
         raise ValueError("Expected a corpus directory containing otype.tf and oslots.tf")
     context_file = getattr(args, "dataset_context", None)
+    context_dir = getattr(args, "context_dir", None)
+    if getattr(args, "feature_model", None) and not args.model:
+        raise ValueError("--feature-model requires --model")
     selection = getattr(args, "describe_features", None)
     selected = set(files)
-    if (context_file is not None or selection is not None) and not args.model:
-        raise ValueError("--dataset-context and --describe-features require --model")
+    if (context_file is not None or context_dir is not None or selection is not None) and not args.model:
+        raise ValueError("--dataset-context, --context-dir, and --describe-features require --model")
     if selection is not None:
         selected = {name.strip() for name in selection.split(",")}
         unknown = selected.difference(files)
@@ -372,6 +375,29 @@ def generate(args):
         write_page(out, url, title, body, corpus, getattr(args, "project_home", None))
     (out / "features").mkdir(exist_ok=True)
     provider = getattr(args, "provider", "openrouter")
+    feature_model = getattr(args, "feature_model", None) or args.model
+    context_data = None
+    inventory = None
+    observed_values = {}
+    if context_dir is not None:
+        from .context import inventory_digest, load_context_artifacts
+        inventory = dataset_inventory(src, files, api)
+        dataset_context, families, relationships = load_context_artifacts(context_dir, inventory)
+        context_data = (dataset_context, families, relationships)
+        # Validation uses the complete set of observed values, while prompts
+        # remain compact and include only the current feature's measured profile.
+        for name, info in files.items():
+            kind = info["kind"]
+            values = set()
+            if kind == "node":
+                values.update(value for _, value in api.Fs(name).items())
+            elif kind == "edge":
+                for _, ends in api.Es(name).items():
+                    if isinstance(ends, dict):
+                        values.update(ends.values())
+            observed_values[name] = values
+        if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
+            raise ValueError("Context inventory does not match the current corpus")
     attribution = getattr(args, "model_attribution", "feature")
     credits = set()
     order = api.F.otype.all
@@ -391,12 +417,28 @@ def generate(args):
             evidence = dict(corpus=corpus, **p)
             if notes:
                 evidence["corpus_editor_notes"] = notes
-            record = description_record(evidence, args.model, args.cache, provider)
-            model_name = record["model"] or f"{args.model} (requested; response model unavailable)"
+            if context_data:
+                from .context import contextual_description_record
+                dataset_context, families, relationships = context_data
+                related_family = next((family for family in families if n in family["features"]), None)
+                related_relationships = [relation for relation in relationships
+                                         if n in (relation["source_feature"], relation["target_feature"])]
+                evidence["context"] = {"dataset": dataset_context,
+                                        "feature_family": related_family,
+                                        "feature_relationships": related_relationships}
+                record = contextual_description_record(
+                    evidence, feature_model, args.cache, provider, set(files), observed_values)
+            else:
+                record = description_record(evidence, args.model, args.cache, provider)
+            model_name = record["model"] or f"{feature_model} (requested; response model unavailable)"
             credit = f"{PROVIDERS[provider][0]} · {model_name}"
             credits.add(credit)
             byline = f"<small>{e(credit)}</small>" if attribution == "feature" else ""
             body += f'<aside><h2>Generated description</h2><p>{e(record["text"])}</p>{byline}</aside>'
+            if record.get("uncertainties"):
+                body += "<h2>Generated description uncertainties</h2><ul>" + "".join(
+                    f"<li>{e(item)}</li>" for item in record["uncertainties"]
+                ) + "</ul>"
         for field, heading, unit in [("sources","Applies to","Populated nodes"), ("targets","Points to","Incoming edges")]:
             if p[field]:
                 body += f"<h2>{heading}</h2>" + table(["Node type",unit], [(link(f"../structure.html#type-{t}",t),f"{count:,}") for t,count in p[field].items()])
@@ -488,6 +530,9 @@ def main():
     parser.add_argument("--provider", choices=PROVIDERS, default="openrouter", help="LLM provider (default: openrouter)")
     parser.add_argument("--model", help="Chat model ID on the selected provider; omit for an offline build")
     parser.add_argument("--dataset-context", type=Path, metavar="FILE", help="UTF-8 editor notes to include with each selected feature")
+    parser.add_argument("--context-dir", type=Path, metavar="DIR",
+                        help="Use matching dataset_context.json, feature_families.json, and feature_relationships.json for enrichment")
+    parser.add_argument("--feature-model", help="Model for feature descriptions (defaults to --model)")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
                         help="Show the provider and responding model on each feature, once on the overview, or nowhere")
