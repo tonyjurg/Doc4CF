@@ -351,8 +351,11 @@ def generate(args):
         raise ValueError("--feature-model requires --model")
     selection = getattr(args, "describe_features", None)
     selected = set(files)
-    if (context_file is not None or context_dir is not None or selection is not None) and not args.model:
-        raise ValueError("--dataset-context, --context-dir, and --describe-features require --model")
+    context_pages_enabled = getattr(args, "context_pages", False)
+    if (context_file is not None or selection is not None or (context_dir is not None and not context_pages_enabled)) and not args.model:
+        raise ValueError("--dataset-context and --describe-features require --model; --context-dir without a model requires --context-pages")
+    if context_pages_enabled and context_dir is None:
+        raise ValueError("--context-pages requires --context-dir")
     if selection is not None:
         selected = {name.strip() for name in selection.split(",")}
         unknown = selected.difference(files)
@@ -379,11 +382,45 @@ def generate(args):
     context_data = None
     inventory = None
     observed_values = {}
+    context_inputs = {}
+    applied_inputs = {}
+    context_flags = {}
+    review_candidates = []
     if context_dir is not None:
-        from .context import inventory_digest, load_context_artifacts
+        from .context import feature_context_hashes, inventory_digest, load_context_artifacts
         inventory = dataset_inventory(src, files, api)
         dataset_context, families, relationships = load_context_artifacts(context_dir, inventory)
         context_data = (dataset_context, families, relationships)
+        context_inputs = feature_context_hashes(inventory, dataset_context, families,
+                                                relationships, provider, feature_model)
+        manifest_path = out / "context_manifest.json"
+        if manifest_path.exists():
+            try:
+                previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                applied_inputs = previous_manifest.get("applied", {})
+                context_flags = previous_manifest.get("context_flags", {})
+                if not isinstance(applied_inputs, dict):
+                    applied_inputs = {}
+                if not isinstance(context_flags, dict):
+                    context_flags = {}
+            except (OSError, json.JSONDecodeError, AttributeError):
+                applied_inputs, context_flags = {}, {}
+        for name, current in context_inputs.items():
+            previous = applied_inputs.get(name)
+            if previous is None:
+                reasons = ["No previously applied contextual description"]
+            else:
+                labels = {
+                    "dataset_context_sha256": "dataset context changed",
+                    "feature_context_sha256": "feature family or relationships changed",
+                    "feature_evidence_sha256": "feature evidence changed",
+                    "prompt_sha256": "feature prompt changed",
+                }
+                if args.model:
+                    labels.update({"provider": "provider changed", "model": "feature model changed"})
+                reasons = [label for key, label in labels.items() if previous.get(key) != current.get(key)]
+            if reasons:
+                review_candidates.append({"feature": name, "reasons": reasons})
         # Validation uses the complete set of observed values, while prompts
         # remain compact and include only the current feature's measured profile.
         for name, info in files.items():
@@ -428,6 +465,8 @@ def generate(args):
                                         "feature_relationships": related_relationships}
                 record = contextual_description_record(
                     evidence, feature_model, args.cache, provider, set(files), observed_values)
+                context_flags[n] = record["context_flags"]
+                applied_inputs[n] = context_inputs[n]
             else:
                 record = description_record(evidence, args.model, args.cache, provider)
             model_name = record["model"] or f"{feature_model} (requested; response model unavailable)"
@@ -438,6 +477,11 @@ def generate(args):
             if record.get("uncertainties"):
                 body += "<h2>Generated description uncertainties</h2><ul>" + "".join(
                     f"<li>{e(item)}</li>" for item in record["uncertainties"]
+                ) + "</ul>"
+            if record.get("context_flags"):
+                body += "<h2>Context review flags</h2><ul>" + "".join(
+                    f"<li><strong>{e(item['status'].replace('_', ' ').title())}:</strong> {e(item['issue'])} — {e(', '.join(item['evidence']))}</li>"
+                    for item in record["context_flags"]
                 ) + "</ul>"
         for field, heading, unit in [("sources","Applies to","Populated nodes"), ("targets","Points to","Incoming edges")]:
             if p[field]:
@@ -519,7 +563,33 @@ def generate(args):
     text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
     page("text.html","Text & encoding",text_body)
     overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(credits)) + "</p>" if credits and attribution == "overview" else ""
-    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p><div class="cards">' + "".join(link(url,title) for url,title in [("features.html","Explore features"),("structure.html","Browse corpus structure"),("diagram.html","Explore the corpus diagram"),("text.html","Inspect transcription and encoding")]) + "</div>" + overview_credit)
+    if context_data:
+        from .context import _atomic_json, context_pages as render_context_pages
+        dataset_context, families, relationships = context_data
+        flags = [{"feature": name, "flags": items} for name, items in sorted(context_flags.items())
+                 if items and applied_inputs.get(name) == context_inputs.get(name)]
+        review = {"inventory_sha256": dataset_context["inventory_sha256"],
+                  "affected_descriptions": review_candidates,
+                  "processed_descriptions": sorted(n for n in selected if args.model and n in context_inputs and applied_inputs.get(n) == context_inputs[n]),
+                  "context_flags": flags}
+        _atomic_json(out / "context_review.json", review)
+        if args.model:
+            _atomic_json(out / "context_manifest.json", {"manifest_version": "1.0",
+                         "applied": applied_inputs, "context_flags": context_flags})
+        if context_pages_enabled:
+            titles = {"dataset.html": "Dataset architecture and glossary",
+                      "relationships.html": "Feature relationship index",
+                      "context-review.html": "Context review"}
+            for filename, body in render_context_pages(inventory, dataset_context, families,
+                                                        relationships, review).items():
+                page(filename, titles[filename], body)
+    cards = [("features.html", "Explore features"), ("structure.html", "Browse corpus structure"),
+             ("diagram.html", "Explore the corpus diagram"), ("text.html", "Inspect transcription and encoding")]
+    if context_pages_enabled:
+        cards.extend([("dataset.html", "Dataset architecture and glossary"),
+                      ("relationships.html", "Feature relationship index"),
+                      ("context-review.html", "Context review")])
+    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p><div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
 
 
 def main():
@@ -532,6 +602,8 @@ def main():
     parser.add_argument("--dataset-context", type=Path, metavar="FILE", help="UTF-8 editor notes to include with each selected feature")
     parser.add_argument("--context-dir", type=Path, metavar="DIR",
                         help="Use matching dataset_context.json, feature_families.json, and feature_relationships.json for enrichment")
+    parser.add_argument("--context-pages", action="store_true",
+                        help="With --context-dir, add dataset architecture, glossary, relationship, and review pages")
     parser.add_argument("--feature-model", help="Model for feature descriptions (defaults to --model)")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",

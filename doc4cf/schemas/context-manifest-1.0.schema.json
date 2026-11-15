@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doc4cf.org/schemas/context-manifest-1.0.schema.json",
+  "title": "Doc4CF contextual description input manifest",
+  "type": "object",
+  "required": ["manifest_version", "applied", "context_flags"],
+  "properties": {
+    "manifest_version": {"const": "1.0"},
+    "applied": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["dataset_context_sha256", "feature_context_sha256", "feature_evidence_sha256", "provider", "model", "prompt_sha256"],
+        "properties": {
+          "dataset_context_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "feature_context_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "feature_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "provider": {"type": "string"},
+          "model": {"type": "string"},
+          "prompt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "context_flags": {
+      "type": "object",
+      "additionalProperties": {"type": "array", "items": {"$ref": "#/$defs/contextFlag"}}
+    }
+  },
+  "$defs": {
+    "contextFlag": {
+      "type": "object",
+      "required": ["issue", "status", "evidence"],
+      "properties": {
+        "issue": {"type": "string"},
+        "status": {"enum": ["contradiction", "inconsistency", "missing_evidence"]},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
