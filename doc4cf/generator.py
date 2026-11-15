@@ -494,8 +494,25 @@ def main():
     parser.add_argument("--cache", type=Path, default=Path(".doc4cf-cache"))
     parser.add_argument("--export-inventory", type=Path, metavar="FILE",
                         help="Export a deterministic corpus inventory as JSON and exit (no model calls)")
+    parser.add_argument("--analyze-context", type=Path, metavar="DIR",
+                        help="Analyze dataset and feature families; write inventory and context JSON files, then exit")
+    parser.add_argument("--context-model", help="Model for dataset-level context analysis (defaults to --model)")
+    parser.add_argument("--family-model", help="Model for feature-family and relationship analysis (defaults to --context-model or --model)")
     args = parser.parse_args()
     try:
+        if args.analyze_context and args.export_inventory:
+            parser.error("--analyze-context and --export-inventory are separate commands")
+        if args.analyze_context:
+            dataset_model = args.context_model or args.model
+            family_model = args.family_model or dataset_model
+            if not dataset_model:
+                parser.error("--analyze-context requires --context-model or --model")
+            from .context import analyze_context
+            result = analyze_context(args.corpus, args.analyze_context, args.provider,
+                                     dataset_model, family_model, args.cache)
+            print(f"Context artifacts written to {args.analyze_context}")
+            print(f"Inventory SHA-256: {result['inventory_sha256']}")
+            return
         if args.export_inventory:
             export_inventory(args.corpus, args.export_inventory)
             return

@@ -32,9 +32,9 @@ Each PR should deliver a useful capability on its own and preserve the offline p
 
 The `--export-inventory FILE` command exports a local-only inventory with corpus identity/version, content hash, feature metadata and measured profiles. Versioned JSON Schemas for the inventory, dataset context, feature families, and feature relationships live under `doc4cf/schemas/`; interpretations carry evidence/status fields. No model calls or site generation are involved.
 
-### PR 2 — Dataset and family context analysis
+### PR 2 — Dataset and family context analysis (implemented)
 
-Add an explicit command to analyze the compact inventory and write the three context artifacts. Support separate global and family analysis model settings, structured output when available, local schema validation, resumable caching, and clear review status. Re-running this step must not rebuild the HTML site or regenerate feature descriptions.
+The explicit `--analyze-context DIR` command writes the inventory and three context artifacts without building the HTML site. `--context-model` and `--family-model` allow separate model selection. JSON mode is requested from compatible endpoints and all results are validated locally before artifact export. Valid analysis responses are resumably cached by full inventory, provider, model, and prompt version; malformed or structurally invalid responses are not cached.
 
 ### PR 3 — Context-aware feature descriptions and validation
 
