@@ -33,6 +33,8 @@ The planned evolution of optional AI enrichment, including evidence safeguards a
 
 Export a deterministic, model-free inventory for review or downstream analysis with `doc4cf path/to/corpus/tf/VERSION --export-inventory inventory.json`. The versioned inventory and AI context artifact schemas ship under `doc4cf/schemas/`.
 
+Generate reusable dataset and feature-family context with `doc4cf path/to/corpus/tf/VERSION --analyze-context reviewed-context --provider openrouter --context-model MODEL_ID --family-model MODEL_ID`. This writes the inventory plus dataset, feature-family, and feature-relationship JSON artifacts. Analysis is an explicit, cacheable command; it does not build or change the HTML site. See the [install guide](install-guide.html#runtime-options) for details.
+
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
 
 ## Optional generated descriptions

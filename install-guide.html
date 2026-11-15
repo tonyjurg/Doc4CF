@@ -11,7 +11,7 @@
 <p>Point Doc4CF at the directory containing <code>otype.tf</code> and <code>oslots.tf</code>. Give it a fresh output directory as the second argument.</p>
 <pre><code>doc4cf path/to/corpus/tf/VERSION site</code></pre>
 <p>Open <code>site/index.html</code> in your browser. Use <code>doc4cf --help</code> to see the available options.</p><h2 id="runtime-options">Runtime options</h2>
-<p>Use <code>doc4cf CORPUS OUTPUT [options]</code> in a terminal. The same arguments work with <code>python -m doc4cf</code>. Only the two paths are required.</p>
+<p>Use <code>doc4cf CORPUS OUTPUT [options]</code> to build a site, or use the standalone inventory/context commands below. The same arguments work with <code>python -m doc4cf</code>.</p>
 <dl class="cli-options">
 <dt><code>corpus</code></dt><dd>Directory containing the TF files for one dataset version, for example <code>N1904/tf/1.0.0</code>.</dd>
 <dt><code>output</code></dt><dd>Destination directory for the generated HTML and assets. Choose a fresh directory to keep previous builds.</dd>
@@ -22,7 +22,12 @@
 <dt><code>--describe-features NAMES</code></dt><dd>Enrich only the listed features, for example <code>lemma,tense,frame</code>. Requires <code>--model</code>. The default selects all features for enrichment when a model is enabled.</dd>
 <dt><code>--model-attribution MODE</code></dt><dd>Show provider and model on each enriched <code>feature</code> page (default), once on the <code>overview</code>, or use <code>none</code> to hide the names.</dd>
 <dt><code>--cache DIR</code></dt><dd>Store generated descriptions for reuse. The default is <code>.doc4cf-cache</code> under the working directory. Use the same cache for trial and final builds.</dd>
+<dt><code>--export-inventory FILE</code></dt><dd>Write a deterministic corpus inventory as JSON and exit without a model call or HTML build. The output positional argument can be omitted.</dd>
+<dt><code>--analyze-context DIR</code></dt><dd>Run dataset-level and feature-family analysis, validate the JSON responses, and write <code>inventory.json</code>, <code>dataset_context.json</code>, <code>feature_families.json</code>, and <code>feature_relationships.json</code> to the directory. Requires a model and provider API key; no HTML site is built.</dd>
+<dt><code>--context-model ID</code></dt><dd>Choose the model for dataset-level analysis. Defaults to <code>--model</code>.</dd>
+<dt><code>--family-model ID</code></dt><dd>Choose the model for feature-family and relationship analysis. Defaults to <code>--context-model</code> or <code>--model</code>.</dd>
 <dt><code>-h</code>, <code>--help</code></dt><dd>Print the options for the installed version and exit.</dd></dl>
+<p>For example, analyze and review a dataset before generating feature descriptions:</p><pre><code>doc4cf path/to/corpus/tf/VERSION --analyze-context reviewed-context --provider openrouter --context-model MODEL_ID --family-model MODEL_ID</code></pre><p>Analysis results are cached under <code>.doc4cf-cache/context/</code>. The cache key includes the full inventory, prompt version, provider, and requested model. Invalid or unparseable responses are not cached. The exported artifacts carry a hash of the inventory they describe.</p>
 <h2 id="inference">Levels of inference</h2><p>Doc4CF reads declared section names and text templates from the corpus metadata. It measures feature coverage and value frequencies directly. The diagram then uses average slot coverage to order node types from broadest to finest. That layout helps readers explore overlapping units without assuming they form a strict hierarchy.</p><h2 id="provider-keys">Provider accounts and API keys</h2>
 <p>An API key is a secret issued by the service that runs your model. For example, <code>OPENROUTER_API_KEY</code> is the <em>name</em> Doc4CF looks up in the build process’s environment. Its <em>value</em> is the key you copy from your OpenRouter account. The model ID is a separate value supplied with <code>--model</code>.</p>
 <ul><li><strong>OpenRouter</strong> — select <code>openrouter</code> and use <code>OPENROUTER_API_KEY</code>. The example model <code>openrouter/free</code> selects the free router. <a href="https://openrouter.ai/settings/keys">Create an OpenRouter key</a>.</li>
