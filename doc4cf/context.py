@@ -9,7 +9,9 @@ from tempfile import NamedTemporaryFile
 from urllib.error import HTTPError
 from urllib.request import Request
 
-from .generator import PROVIDERS, export_inventory, request_with_retry
+from .generator import (
+    PROVIDERS, export_inventory, request_with_completion_retry,
+)
 
 
 PROMPT_VERSION = "context-analysis-1"
@@ -143,7 +145,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         headers["Authorization"] = f"Bearer {api_key}"
     request = Request(endpoint, data=payload, headers=headers)
     try:
-        reply = request_with_retry(request)
+        reply = request_with_completion_retry(request)
     except HTTPError as error:
         if format_mode != "json_schema" or error.code not in (400, 422):
             raise
@@ -152,7 +154,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         request_data["response_format"] = {"type": "json_object"}
         payload = json.dumps(request_data, ensure_ascii=False).encode("utf-8")
         request = Request(endpoint, data=payload, headers=headers)
-        reply = request_with_retry(request)
+        reply = request_with_completion_retry(request)
         format_mode = "json_object_fallback"
     data, actual_model = _object_response(provider, reply)
     validator(data)

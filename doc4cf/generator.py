@@ -116,6 +116,44 @@ def request_with_retry(req, timeout=90, max_retries=6, base_delay=5, max_delay=1
 
     raise RuntimeError("HTTP retry loop ended unexpectedly")
 
+
+def request_with_completion_retry(req, timeout=90, max_token_retries=2):
+    """Retry a completion only when the provider truncates it at its token limit.
+
+    Each retry doubles the request's ``max_tokens`` budget. Other failures,
+    including content-filter responses, are returned to the caller unchanged.
+    """
+    request_data = json.loads(req.data.decode("utf-8"))
+    token_budget = request_data.get("max_tokens")
+    if not isinstance(token_budget, int) or token_budget < 1:
+        return request_with_retry(req, timeout=timeout)
+
+    for attempt in range(max_token_retries + 1):
+        if attempt:
+            request_data["max_tokens"] = token_budget
+            req = Request(
+                req.full_url,
+                data=json.dumps(request_data, ensure_ascii=False).encode("utf-8"),
+                headers=req.headers,
+                origin_req_host=req.origin_req_host,
+                unverifiable=req.unverifiable,
+                method=req.get_method(),
+            )
+        reply = request_with_retry(req, timeout=timeout)
+        choice = reply.get("choices", [{}])[0] if reply.get("choices") else {}
+        truncated = (
+            choice.get("finish_reason") == "length"
+            or reply.get("stop_reason") == "max_tokens"
+        )
+        if not truncated or attempt == max_token_retries:
+            return reply
+        token_budget *= 2
+        print(
+            "Completion was truncated at the output-token limit; "
+            f"retrying with max_tokens={token_budget:,}.",
+            flush=True,
+        )
+
 def e(value):
     return escape(str(value), quote=True)
 
@@ -204,7 +242,7 @@ def description_record(evidence, model, cache, provider):
     else:
         headers["Authorization"] = f"Bearer {key}"
     req = Request(endpoint, data=payload, headers=headers)
-    reply = request_with_retry(req)
+    reply = request_with_completion_retry(req)
     if provider == "anthropic":
         if reply.get("stop_reason") in ("max_tokens", "refusal"):
             raise ValueError(f"Claude returned an incomplete description ({reply['stop_reason']})")
