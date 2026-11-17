@@ -106,6 +106,12 @@ def _object_response(provider, reply):
 
 
 def _analysis_record(system, user_data, provider, model, cache, stage, validator):
+    """Request, validate, and cache one context-analysis stage.
+
+    The cache key includes the prompt version and full request. Responses are
+    validated locally even when the provider accepts the JSON Schema; invalid
+    but parseable responses receive at most two correction requests.
+    """
     label, key_name, endpoint = PROVIDERS[provider]
     messages = [
         {"role": "system", "content": system},
@@ -233,6 +239,7 @@ def _status(value):
 
 
 def validate_dataset_context(data):
+    """Reject dataset context that has missing fields or invalid value types."""
     _keys(data, ("dataset_profile", "conventions", "ambiguities", "needs_review"))
     _string(data["dataset_profile"], "dataset_profile")
     _string_list(data["ambiguities"], "ambiguities")
@@ -246,6 +253,11 @@ def validate_dataset_context(data):
 
 
 def validate_family_context(data, feature_names):
+    """Validate family and relationship records against corpus feature names.
+
+    Every referenced feature must exist in the inventory; an empty family or
+    relationship list is valid when the analysis finds no supported grouping.
+    """
     _keys(data, ("families", "relationships"))
     if not isinstance(data["families"], list) or not isinstance(data["relationships"], list):
         raise ValueError("Context families and relationships must be arrays")
@@ -277,12 +289,17 @@ def validate_family_context(data, feature_names):
 
 
 def inventory_digest(inventory):
+    """Hash canonical JSON so equivalent inventories produce the same digest."""
     return hashlib.sha256(json.dumps(inventory, ensure_ascii=False, sort_keys=True,
                                      separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
 def load_context_artifacts(context_dir, inventory):
-    """Load context files only when they match and reference the current corpus."""
+    """Load validated context files whose version and digest match the corpus.
+
+    A stale inventory hash is rejected before context can be used for feature
+    descriptions, preventing notes from another corpus state being applied.
+    """
     folder = Path(context_dir)
     expected_hash = inventory_digest(inventory)
     names = set(inventory["features"])
@@ -324,6 +341,11 @@ def validate_analysis_provenance(data):
 
 
 def validate_feature_response(data, feature_names, observed_values):
+    """Validate generated references against known features and measured values.
+
+    This catches valid JSON that nevertheless invents a feature name or cites
+    a value that is absent from the current corpus data.
+    """
     _keys(data, ("description", "feature_references", "value_references", "uncertainties", "context_flags"))
     _string(data["description"], "description")
     _string_list(data["feature_references"], "feature_references")
@@ -397,7 +419,11 @@ def _node_example(api, node, feature, value):
 
 
 def retrieve_requested_evidence(api, feature, kind, request, feature_kind):
-    """Resolve an allowed model request from the loaded TF data deterministically."""
+    """Resolve a bounded evidence request using only the loaded corpus data.
+
+    Rare values are ranked by frequency and examples are selected in corpus
+    order with stable tie-breaking; no external source is queried.
+    """
     count = request["count"]
     result = {"kind": kind, "rationale": request["rationale"], "items": []}
     if kind == "rare_values":
@@ -433,6 +459,11 @@ def retrieve_requested_evidence(api, feature, kind, request, feature_kind):
 
 def contextual_description_record(evidence, model, cache, provider, feature_names, observed_values,
                                    api=None, feature_kind=None, targeted_evidence=False):
+    """Return a validated feature description and its review evidence.
+
+    In targeted mode, a model first requests up to two evidence samples; Doc4CF
+    resolves those requests locally before asking for the final description.
+    """
     requested = []
     supplied = evidence
     if targeted_evidence:
@@ -456,7 +487,11 @@ def contextual_description_record(evidence, model, cache, provider, feature_name
 
 
 def feature_context_hashes(inventory, dataset, families, relationships, provider, model, targeted_evidence=False):
-    """Return stable input fingerprints for each feature's contextual description."""
+    """Fingerprint the context, evidence, prompt, and model inputs per feature.
+
+    These hashes let site builds identify descriptions whose source inputs
+    changed while allowing unchanged feature requests to reuse cached results.
+    """
     dataset_part = {key: value for key, value in dataset.items() if key not in ("inventory_sha256", "analysis")}
     dataset_hash = inventory_digest(dataset_part)
     prompt = FEATURE_SYSTEM + (EVIDENCE_SYSTEM if targeted_evidence else "")
@@ -478,7 +513,11 @@ def feature_context_hashes(inventory, dataset, families, relationships, provider
 
 
 def context_pages(inventory, dataset, families, relationships, review, family_analysis=None):
-    """Render optional evidence-labeled dataset and relationship page bodies."""
+    """Render HTML bodies for dataset, relationship, and context-review pages.
+
+    The caller supplies already validated artifacts; values are HTML-escaped
+    here before they are inserted into generated page markup.
+    """
     h = lambda value: escape(str(value), quote=True)
     feature_link = lambda name: f'<a href="features/{h(name)}.html">{h(name)}</a>'
     status = lambda value: f'<span class="context-status">{h(value.replace("_", " ").title())}</span>'
@@ -563,7 +602,11 @@ def analyze_context(
     family_model: str,
     cache: Path,
 ) -> dict:
-    """Analyze a corpus and save validated, reusable context artifacts.
+    """Analyze corpus metadata and save validated, reusable context artifacts.
+
+    Two model stages draft dataset context and feature families/relationships.
+    Doc4CF validates both against the measured inventory and records the
+    inventory hash and model provenance with the saved artifacts.
 
     Args:
         corpus: Directory containing the corpus version's ``.tf`` files.
@@ -581,6 +624,8 @@ def analyze_context(
             corpus features.
         OSError: If inputs cannot be read or artifacts cannot be written.
         RuntimeError: If Context-Fabric cannot load the corpus.
+
+    This function does not generate an HTML site or feature descriptions.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     inventory = export_inventory(corpus, output_dir / "inventory.json")
