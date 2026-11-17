@@ -1,16 +1,19 @@
 Python API
 ==========
 
-The package-level entry points are exported by :mod:`doc4cf`. The command line
-is the recommended interface for complete site builds.
+The package exports :func:`doc4cf.describe`, :func:`doc4cf.export_inventory`,
+:func:`doc4cf.generate`, and :func:`doc4cf.main`. The implementation modules
+below document the functions used to inspect corpus data, build pages, and
+create reusable context artifacts.
 
-``doc4cf``
-----------
+Corpus inventory and site generation
+-------------------------------------
 
-.. automodule:: doc4cf
+.. automodule:: doc4cf.generator
    :members:
 
-Context analysis
-----------------
+Context analysis and validation
+-------------------------------
 
-.. autofunction:: doc4cf.context.analyze_context
+.. automodule:: doc4cf.context
+   :members:

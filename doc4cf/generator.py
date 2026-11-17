@@ -22,6 +22,7 @@ from cfabric.core import Fabric
 
 
 def header(path):
+    """Read a Text-Fabric header and return its kind, metadata, and encoding."""
     # Decode the entire source strictly before claiming UTF-8.
     raw = path.read_bytes()
     lines = raw.decode("utf-8-sig").splitlines()
@@ -160,24 +161,33 @@ def request_with_completion_retry(req, timeout=90, max_token_retries=2):
         )
 
 def e(value):
+    """Escape a value for safe insertion into an HTML text or attribute."""
     return escape(str(value), quote=True)
 
 
 def table(headings, rows):
+    """Render a table from headings and pre-rendered cell contents."""
     head = "".join(f"<th>{e(h)}</th>" for h in headings)
     body = "".join("<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>" for row in rows)
     return f"<div class=scroll><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
 
 
 def link(url, label):
+    """Render an HTML link, escaping its URL and visible label."""
     return f'<a href="{e(url)}">{e(label)}</a>'
 
 
 def feature(name):
+    """Link to the generated reference page for a feature name."""
     return link(f"features/{quote(name)}.html", name)
 
 
 def write_page(out, filename, title, body, corpus, project_home=None):
+    """Write one complete responsive HTML page with corpus navigation.
+
+    Relative asset paths are calculated from the page location so nested
+    feature pages can share root-level styles and scripts.
+    """
     prefix = "../" * (len(Path(filename).parts) - 1)
     if project_home and not (urlsplit(project_home).scheme or project_home.startswith("/")):
         project_home = prefix + project_home

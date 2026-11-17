@@ -331,6 +331,7 @@ def load_context_artifacts(context_dir, inventory):
 
 
 def validate_analysis_provenance(data):
+    """Validate the provider, model identifiers, and prompt version fields."""
     _keys(data, ("provider", "requested_model", "responding_model", "prompt_version"))
     if data["provider"] not in PROVIDERS:
         raise ValueError("Context artifact analysis provider is unsupported")
@@ -590,6 +591,7 @@ def context_pages(inventory, dataset, families, relationships, review, family_an
 
 
 def table_html(headings, body_rows):
+    """Wrap rendered body rows in a horizontally scrollable HTML table."""
     head = "".join(f"<th>{escape(str(title), quote=True)}</th>" for title in headings)
     return f'<div class="scroll"><table><thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table></div>'
 
