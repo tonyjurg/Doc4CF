@@ -1,0 +1,1423 @@
+{
+  "inventory_sha256": "7c253755315c32dd182766b7633391148b4517627cc40724781ef16dfca8390c",
+  "affected_descriptions": [
+    {
+      "feature": "ARK",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "after",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "afterr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "afteru",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "atf",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "atfpost",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "atfpre",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "author",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "col",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "collated",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "collection",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "comment",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "damage",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "det",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "docnote",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "docnumber",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "excavation",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "excised",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "face",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "flags",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "fraction",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "genre",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "grapheme",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "graphemer",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "graphemeu",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lang",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "langalt",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "ln",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lnc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lnno",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "material",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "missing",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "museumcode",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "museumname",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "object",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "operator",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "operatorr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "operatoru",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "oslots",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "otext",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "otype",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "period",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "pnumber",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "primecol",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "primeln",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "pubdate",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "question",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "reading",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "readingr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "readingu",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "remarkable",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "remarks",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "repeat",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "srcLn",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "srcLnNum",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "srcfile",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "subgenre",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "supplied",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "sym",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "symr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "symu",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "trans",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "transcriber",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "translation@en",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "type",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "uncertain",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "volume",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    }
+  ],
+  "processed_descriptions": [
+    "ARK",
+    "after",
+    "afterr",
+    "afteru",
+    "atf",
+    "atfpost",
+    "atfpre",
+    "author",
+    "col",
+    "collated",
+    "collection",
+    "comment",
+    "damage",
+    "det",
+    "docnote",
+    "docnumber",
+    "excavation",
+    "excised",
+    "face",
+    "flags",
+    "fraction",
+    "genre",
+    "grapheme",
+    "graphemer",
+    "graphemeu",
+    "lang",
+    "langalt",
+    "ln",
+    "lnc",
+    "lnno",
+    "material",
+    "missing",
+    "museumcode",
+    "museumname",
+    "object",
+    "operator",
+    "operatorr",
+    "operatoru",
+    "oslots",
+    "otext",
+    "otype",
+    "period",
+    "pnumber",
+    "primecol",
+    "primeln",
+    "pubdate",
+    "question",
+    "reading",
+    "readingr",
+    "readingu",
+    "remarkable",
+    "remarks",
+    "repeat",
+    "srcLn",
+    "srcLnNum",
+    "srcfile",
+    "subgenre",
+    "supplied",
+    "sym",
+    "symr",
+    "symu",
+    "trans",
+    "transcriber",
+    "translation@en",
+    "type",
+    "uncertain"
+  ],
+  "context_flags": [
+    {
+      "feature": "ARK",
+      "flags": [
+        {
+          "issue": "ARK coverage is partial relative to the document inventory",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.ARK.sources.document (853)",
+            "inventory.structure.node_types_in_corpus_order (document 1,285)",
+            "context ambiguities: metadata coverage incomplete for ARK (853/1285)"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "after",
+      "flags": [
+        {
+          "issue": "afterr is described as inserting a space between adjacent signs, but no equivalent rule is documented for after, leaving the precise scope of each variant unclear",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.after.metadata.description",
+            "inventory.features.afterr.metadata.description",
+            "context.ambiguities[1]"
+          ]
+        },
+        {
+          "issue": "the after-to-afterr variant relationship is marked inferred and needs review rather than verified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.feature_relationships[1]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "afterr",
+      "flags": [
+        {
+          "issue": "Scope distinction among after, afterr, and afteru is unclear",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[1]",
+            "inventory.features.after.metadata.description",
+            "inventory.features.afterr.metadata.description"
+          ]
+        },
+        {
+          "issue": "Conversion rules between afterr and parallel ASCII/Unicode variants are unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[2]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "afteru",
+      "flags": [
+        {
+          "issue": "Unclear semantic boundary among after, afterr, and afteru",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[1]",
+            "inventory.features.afteru.metadata.description",
+            "inventory.features.afterr.metadata.description"
+          ]
+        },
+        {
+          "issue": "afterr variant_of afteru relationship is inferred and flagged needs_review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships[1]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "atf",
+      "flags": [
+        {
+          "issue": "Feature source count for word nodes (76,503) differs from context-reported observed node count for words (76,505).",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.atf.sources.word",
+            "inventory.structure.node_types_in_corpus_order",
+            "inventory.features.otype.sources"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "atfpost",
+      "flags": [
+        {
+          "issue": "atfpost sources report 21,969 sign entries while the corpus contains 203,219 sign nodes; the counting basis or sparsity is unexplained.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.atfpost.sources",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        },
+        {
+          "issue": "The semantics of 'cluster closings' and the division of ATF characters among atfpre, atfpost, after, and afteru are not explicitly defined.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.atfpost.metadata.description",
+            "feature_family.purpose"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "author",
+      "flags": [
+        {
+          "issue": "Author coverage is 1,284 of 1,285 documents; the inventory does not state whether the missing value is absent or unparsed.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.author.sources.document (1284)",
+            "inventory.structure.node_types_in_corpus_order (1,285 documents)"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "col",
+      "flags": [
+        {
+          "issue": "col and primecol are separate features but their interaction is not specified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.col.metadata.description",
+            "inventory.features.primecol.metadata.description",
+            "feature_relationship: col qualifies primecol (status inferred)"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "collated",
+      "flags": [
+        {
+          "issue": "The inventory supplies only a minimal description and frequency count for collated; detailed semantics, conversion rules, or contextual examples of the asterisk marker are absent.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.collated.metadata.description",
+            "inventory.features.collated.distinct",
+            "inventory.features.collated.frequent",
+            "inventory.features.collated.sources"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "collection",
+      "flags": [
+        {
+          "issue": "Corpus label “AbB” conflicts with collection feature values that include non-AbB collections such as CT, VS, YOS, and TCL.",
+          "status": "contradiction",
+          "evidence": [
+            "context.dataset.ambiguities",
+            "inventory.features.collection.frequent",
+            "context.dataset_profile"
+          ]
+        },
+        {
+          "issue": "Collection metadata coverage is incomplete at 1,284 of 1,285 documents; it is unclear whether the missing value is absent or unparsed.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.collection.sources.document",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "comment",
+      "flags": [
+        {
+          "issue": "The comment description references comments to line, but sources attest only sign (971) and targets is empty.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.comment.description",
+            "inventory.features.comment.sources.sign",
+            "inventory.features.comment.targets"
+          ]
+        },
+        {
+          "issue": "The semantics of the ATF dollar-sign notation in \"$ comment to line or inline comment to slot ($ and $)\" are not specified.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.comment.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "damage",
+      "flags": [
+        {
+          "issue": "The corpus label 'AbB Old Babylonian Cuneiform' conflicts with collection coverage that includes many non-AbB collections such as CT, VS, YOS, and TCL.",
+          "status": "inconsistency",
+          "evidence": [
+            "context.ambiguities: corpus_label and dataset.name both read 'AbB Old Babylonian Cuneiform', but the collection feature includes many non-AbB collections (CT, VS, YOS, TCL, etc.)",
+            "dataset_profile"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "det",
+      "flags": [
+        {
+          "issue": "Absence of det on most signs (203,219 total vs 6,796 with det=1) is not explicitly interpreted as negative or unannotated",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.det.sources.sign",
+            "inventory.features.det.distinct",
+            "inventory.features.det.frequent",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "docnote",
+      "flags": [
+        {
+          "issue": "docnote coverage and sources semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.docnote.sources.document: 108",
+            "inventory.structure.node_types_in_corpus_order: document 1,285"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "docnumber",
+      "flags": [
+        {
+          "issue": "docnumber coverage is incomplete relative to the document inventory",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.docnumber.sources.document: 1202",
+            "inventory.structure.node_types_in_corpus_order: 1,285 documents",
+            "context.ambiguities: docnumber (1202/1285), unclear whether missing values are truly absent or unparsed"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "excavation",
+      "flags": [
+        {
+          "issue": "excavation is a document-level feature observed on only 2 of 1,285 documents, but the context's incomplete metadata coverage list does not include excavation",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.excavation.sources.document: 2",
+            "inventory.structure.node_types_in_corpus_order: document 1,285",
+            "context.dataset.ambiguities: incomplete coverage list omits excavation"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "face",
+      "flags": [
+        {
+          "issue": "Empty string face value semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "face.frequent includes [\"\", 4]; inventory does not state whether empty strings are absent face names or unparsed values."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "flags",
+      "flags": [
+        {
+          "issue": "Potential overlap between the dedicated question feature and the flags value '?' for marking question signs",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.question.metadata.description",
+            "inventory.features.flags.frequent_values"
+          ]
+        },
+        {
+          "issue": "Semantic definitions for individual flag values and combinations are not provided",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.flags.metadata.description",
+            "inventory.features.flags.frequent_values"
+          ]
+        },
+        {
+          "issue": "Co-occurrence and interaction rules between flags and other sign-status boolean features are not described",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.flags.metadata.description",
+            "inventory.feature_family.features"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "genre",
+      "flags": [
+        {
+          "issue": "Corpus label scope ambiguity",
+          "status": "inconsistency",
+          "evidence": [
+            "context.dataset.ambiguities: corpus_label and dataset.name both read \"AbB Old Babylonian Cuneiform\", but the collection feature includes many non-AbB collections (CT, VS, YOS, TCL, etc.)"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "grapheme",
+      "flags": [
+        {
+          "issue": "grapheme sources report 3,011 sign nodes while corpus structure reports 203,219 signs; coverage scope is unclear",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.grapheme.sources.sign: 3011",
+            "inventory.structure.node_types_in_corpus_order: sign 203,219"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "graphemer",
+      "flags": [
+        {
+          "issue": "graphemer reports sources on only 3,011 sign nodes while the corpus contains 203,219 signs",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.graphemer.sources.sign",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        },
+        {
+          "issue": "variant_of relationships linking grapheme to graphemer and graphemer to graphemeu are marked inferred and needs_review rather than verified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.feature_family.feature_relationships"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "graphemeu",
+      "flags": [
+        {
+          "issue": "Semantic boundary between graphemeu and related rendering layers (reading, sym, atf) is not specified.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[0]: exact semantic boundary between atf, sym, reading, and grapheme is not specified, especially for word nodes."
+          ]
+        },
+        {
+          "issue": "Normalization or conversion rules between graphemeu and parallel ASCII/non-ASCII layers are not stated.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[2]: reading/readingr/readingu, sym/symr/symu, and grapheme/graphemer/graphemeu appear to be parallel layers, but the inventory does not state normalization or conversion rules between them."
+          ]
+        },
+        {
+          "issue": "graphemeu coverage is sparse (3011 sign targets) relative to corpus size (203,219 signs).",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.graphemeu.sources.sign: 3011; inventory.structure.node_types_in_corpus_order: sign 203,219"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "langalt",
+      "flags": [
+        {
+          "issue": "The lang-to-langalt relationship is recorded as inferred and flagged for review; no explicit rule documents how sign-level alternate language relates to document-level lang.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.feature_relationships.source_feature=lang",
+            "inventory.feature_relationships.target_feature=langalt",
+            "inventory.feature_relationships.status=inferred",
+            "inventory.feature_relationships.needs_review=true"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "ln",
+      "flags": [
+        {
+          "issue": "ln and lnno overlap conceptually but co-occurrence/disambiguation rules are not described",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.ln.metadata.description",
+            "inventory.features.lnno.metadata.description",
+            "feature_relationships (ln overlaps lnno, status inferred)",
+            "context.ambiguities (ln/lnno overlap)"
+          ]
+        },
+        {
+          "issue": "ln reports 26,406 sources on line nodes while the corpus contains 27,375 lines; coverage of remaining lines is unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.ln.sources.line",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lnc",
+      "flags": [
+        {
+          "issue": "lnc overlaps conceptually with ln and lnno, but co-occurrence or disambiguation rules are not described.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: ln and lnno overlap conceptually and co-occurrence rules are not described",
+            "inventory.features.lnc.description"
+          ]
+        },
+        {
+          "issue": "sources indicate lnc occurs on 969 line nodes but targets is empty.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.lnc.sources",
+            "inventory.features.lnc.targets"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lnno",
+      "flags": [
+        {
+          "issue": "Conceptual overlap between `ln` and `lnno` without specified disambiguation or co-occurrence rules",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.ln.metadata.description",
+            "inventory.features.lnno.metadata.description",
+            "context.ambiguities: ln/lnno overlap"
+          ]
+        },
+        {
+          "issue": "Interaction of `lnno` with `col` and `primecol` (prepended column number and prime presence) is unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.col.sources.line",
+            "inventory.features.primecol.sources.line",
+            "context.ambiguities: col/primecol interaction"
+          ]
+        },
+        {
+          "issue": "Inferred overlap relationship between `ln` and `lnno` is flagged for review rather than verified",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_relationships: source_feature ln, target_feature lnno, relationship overlaps, status inferred, needs_review true"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "museumcode",
+      "flags": [
+        {
+          "issue": "Corpus label \"AbB Old Babylonian Cuneiform\" may not reflect the full range of collection and museumcode values, which include BM, LB, and Todd identifiers.",
+          "status": "inconsistency",
+          "evidence": [
+            "context.dataset.ambiguities[8]",
+            "museumcode.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "museumname",
+      "flags": [
+        {
+          "issue": "Metadata coverage count mismatch for museumname/collection",
+          "status": "contradiction",
+          "evidence": [
+            "inventory.features.museumname.sources.document reports 1,285 documents",
+            "inventory.features.museumname.frequent values sum to 1,285",
+            "context.ambiguities lists collection coverage as 1284/1,285 documents"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "operator",
+      "flags": [
+        {
+          "issue": "Parallel operator/operatorr/operatoru layers lack documented normalization or conversion rules",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.operator.metadata.description",
+            "inventory.features.operatorr.metadata.description",
+            "inventory.features.operatoru.metadata.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "operatoru",
+      "flags": [
+        {
+          "issue": "operatoru is sourced from only 122 sign nodes out of 203,219 corpus signs, and targets is empty",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.operatoru.sources.sign",
+            "inventory.features.operatoru.targets",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        },
+        {
+          "issue": "No normalization or conversion rules are specified for the operator/operatorr/operatoru parallel layers",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities (parallel ASCII/non-ASCII/cuneiform-Unicode layers)",
+            "feature_family.features (operator, operatorr, operatoru)"
+          ]
+        },
+        {
+          "issue": "Whether ␣ is a literal space character or a notation placeholder is not clarified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.operatoru.description",
+            "inventory.features.operatoru.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "oslots",
+      "flags": [
+        {
+          "issue": "oslots semantics missing despite nonzero targets",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: oslots is an edge feature with zero distinct values and no examples, yet it reports 853,696 targets on sign; its semantics are not described in the inventory.",
+            "inventory.features.oslots.targets.sign: 853696",
+            "feature_family.status: needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "otext",
+      "flags": [
+        {
+          "issue": "Corpus label 'AbB Old Babylonian Cuneiform' is inconsistent with collection feature coverage, which includes many non-AbB collections such as CT, VS, YOS, and TCL.",
+          "status": "inconsistency",
+          "evidence": [
+            "context.dataset.ambiguities: corpus_label and dataset.name both read 'AbB Old Babylonian Cuneiform' while collection includes many non-AbB collections",
+            "context.dataset_profile: collection includes CT, VS, YOS, TCL, etc."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "otype",
+      "flags": [
+        {
+          "issue": "The supplied inventory entry for otype has an empty description field.",
+          "status": "missing_evidence",
+          "evidence": [
+            "description"
+          ]
+        },
+        {
+          "issue": "The type-to-otype refinement relationship is marked inferred and needs review; the ambiguity over shared versus namespaced values is unresolved.",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships[1]",
+            "context.ambiguities[3]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "pnumber",
+      "flags": [
+        {
+          "issue": "Corpus label scope ambiguity",
+          "status": "inconsistency",
+          "evidence": [
+            "context.dataset.ambiguities: corpus_label and dataset.name both read 'AbB Old Babylonian Cuneiform', but collection includes many non-AbB collections (CT, VS, YOS, TCL, etc.), so the scope of 'AbB' in the label is ambiguous."
+          ]
+        },
+        {
+          "issue": "pnumber–docnumber relationship unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.pnumber.sources.document reports 1285/1285",
+            "inventory.features.docnumber.sources.document reports 1202/1285",
+            "no inventory text defines how pnumber and docnumber relate or whether missing docnumber values are absent or unparsed."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "primecol",
+      "flags": [
+        {
+          "issue": "Interaction between col and primecol is not specified",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: col and primecol are separate features but their interaction is not described",
+            "inventory.features.col.metadata.description",
+            "inventory.features.primecol.metadata.description"
+          ]
+        },
+        {
+          "issue": "Only value 1 is attested for primecol; encoding of prime absence is unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.primecol.distinct: 1",
+            "inventory.features.primecol.frequent: [[1, 4]]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "primeln",
+      "flags": [
+        {
+          "issue": "primeln marks a prime on a line number, while lnno also may carry a prime; the inventory does not specify how primeln, ln, and lnno co-occur or disambiguate.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.primeln.description",
+            "inventory.features.ln.description",
+            "inventory.features.lnno.description",
+            "context.ambiguities[4]"
+          ]
+        },
+        {
+          "issue": "primeln reports only one distinct value (1) on 1,825 line nodes, but the corpus has 27,375 lines; whether absent primeln means no prime or missing data is unspecified.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.primeln.distinct",
+            "inventory.features.primeln.frequent",
+            "inventory.features.primeln.sources",
+            "context.dataset_profile"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "question",
+      "flags": [
+        {
+          "issue": "Relationship between question and flags features",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.question.metadata.description",
+            "inventory.features.flags.metadata.description",
+            "inventory.features.flags.frequent_values"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "reading",
+      "flags": [
+        {
+          "issue": "Semantic boundary between reading and parallel sign rendering layers is ambiguous",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[0]",
+            "context.ambiguities[2]"
+          ]
+        },
+        {
+          "issue": "Reading feature covers 199,359 of 203,219 signs, leaving approximately 3,860 signs without a recorded source",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.reading.sources.sign",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "readingr",
+      "flags": [
+        {
+          "issue": "Normalization or conversion rules between reading, readingr, and readingu are not stated",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: reading/readingr/readingu parallel layers lack stated normalization or conversion rules",
+            "inventory.features.reading.metadata.description",
+            "inventory.features.readingr.metadata.description",
+            "inventory.features.readingu.metadata.description"
+          ]
+        },
+        {
+          "issue": "Semantic boundary between readingr and related sign rendering features (atf, sym, grapheme) is unspecified, especially for word nodes",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: exact semantic boundary between atf, sym, reading, and grapheme is not specified, especially for word nodes"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "readingu",
+      "flags": [
+        {
+          "issue": "Normalization or conversion rules between reading, readingr, and readingu are not stated.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[2]",
+            "inventory.features.readingu.metadata.description",
+            "inventory.features.readingr.metadata.description",
+            "inventory.features.reading.metadata.description"
+          ]
+        },
+        {
+          "issue": "Semantic boundary between readingu and graphemeu is unspecified, especially for word nodes.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities[0]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "remarkable",
+      "flags": [
+        {
+          "issue": "The inventory does not define the semantics of values other than 1, nor does it explain the empty targets object.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.remarkable.metadata.description",
+            "inventory.features.remarkable.distinct",
+            "inventory.features.remarkable.frequent",
+            "inventory.features.remarkable.targets"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "srcLn",
+      "flags": [
+        {
+          "issue": "srcLn overlaps conceptually with line-number features ln and lnno, but co-occurrence or disambiguation rules are not described",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: ln and lnno overlap conceptually, and their co-occurrence or disambiguation rules are not described",
+            "inventory.features.srcLn.sources"
+          ]
+        },
+        {
+          "issue": "srcLn is sourced on document, face, and line nodes, but inheritance or independence of values across these levels is unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.srcLn.sources: {\"document\": 1285, \"face\": 2834, \"line\": 27375}"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "srcLnNum",
+      "flags": [
+        {
+          "issue": "srcLnNum is described as 'line number in source file' but is attested as a node feature with sources on document, face, and line node types; the inventory does not explain its presence on document and face nodes.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.srcLnNum.description",
+            "inventory.features.srcLnNum.sources",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        },
+        {
+          "issue": "The description references ln and lnno, but the inventory provides no disambiguation or co-occurrence rules between srcLnNum and these ATF line-number features.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.srcLnNum.description",
+            "context.ambiguities: ln and lnno overlap conceptually; co-occurrence rules not described"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "subgenre",
+      "flags": [
+        {
+          "issue": "subgenre reports document-level sources but targets object is empty",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.subgenre.sources.document",
+            "inventory.features.subgenre.targets"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "sym",
+      "flags": [
+        {
+          "issue": "Semantic boundary and conversion rules among sym, symr, and symu are unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities.2",
+            "inventory.features.sym.metadata.description",
+            "inventory.features.symr.metadata.description",
+            "inventory.features.symu.metadata.description"
+          ]
+        },
+        {
+          "issue": "Relationship sym refines atf is marked inferred and needs review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships.1",
+            "inventory.features.atf.metadata.description",
+            "inventory.features.sym.metadata.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "symr",
+      "flags": [
+        {
+          "issue": "Feature description says symr uses non-ASCII characters, but frequent values include ASCII-only strings such as x, a, ma, na, i, d, li, am.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.symr.metadata.description",
+            "inventory.features.symr.frequent_values"
+          ]
+        },
+        {
+          "issue": "The inventory does not state normalization or conversion rules between symr, sym, and symu, despite their presentation as parallel layers.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.dataset.ambiguities",
+            "inventory.features.symr.metadata.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "symu",
+      "flags": [
+        {
+          "issue": "Normalization or conversion rules between sym, symr, and symu are not stated",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: sym/symr/symu appear to be parallel ASCII/non-ASCII/cuneiform-Unicode layers but inventory does not state normalization or conversion rules"
+          ]
+        },
+        {
+          "issue": "Corpus label 'AbB Old Babylonian Cuneiform' is inconsistent with collection feature containing non-AbB collections",
+          "status": "inconsistency",
+          "evidence": [
+            "context.ambiguities: corpus_label and dataset.name read AbB but collection includes CT, VS, YOS, TCL, etc."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "trans",
+      "flags": [
+        {
+          "issue": "Feature `trans` is sourced on only 134 line nodes while the corpus contains 27,375 lines; it is unclear whether unobserved lines have no translation or lack parsed values.",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.trans.sources.line",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        },
+        {
+          "issue": "The feature family is labeled \"Line Structure and Numbering,\" but `trans` concerns translation presence rather than line structure or numbering.",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_family.label",
+            "inventory.features.trans.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "transcriber",
+      "flags": [
+        {
+          "issue": "The transcriber description defines the feature as a person, but the frequent value \"no atf\" is not a person.",
+          "status": "inconsistency",
+          "evidence": [
+            "inventory.features.transcriber.metadata.description",
+            "inventory.features.transcriber.frequent_values"
+          ]
+        },
+        {
+          "issue": "Transcriber is sourced on 1,281 of 1,285 documents; the status of the 4 missing values is unspecified.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities (transcriber 1281/1285)",
+            "inventory.features.transcriber.sources.document",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "type",
+      "flags": [
+        {
+          "issue": "The inventory does not clarify whether type values are shared across clusters and signs or namespaced by node type",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.type.metadata.description",
+            "context.dataset.ambiguities: type namespace across node types unclear"
+          ]
+        },
+        {
+          "issue": "The feature relationship from type to otype is marked inferred rather than verified",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships[0].status: inferred",
+            "inventory.features.type.metadata.description",
+            "inventory.features.otype"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "uncertain",
+      "flags": [
+        {
+          "issue": "Meaning of the single distinct value and treatment of non-uncertain signs are unspecified",
+          "status": "missing_evidence",
+          "evidence": [
+            "inventory.features.uncertain.distinct",
+            "inventory.features.uncertain.frequent",
+            "inventory.features.uncertain.sources",
+            "inventory.structure.node_types_in_corpus_order"
+          ]
+        }
+      ]
+    }
+  ]
+}

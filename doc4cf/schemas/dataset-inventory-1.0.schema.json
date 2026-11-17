@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doc4cf.org/schemas/dataset-inventory-1.0.schema.json",
+  "title": "Doc4CF deterministic dataset inventory",
+  "type": "object",
+  "required": ["inventory_version", "dataset", "corpus_label", "source", "structure", "features"],
+  "properties": {
+    "inventory_version": {"const": "1.0"},
+    "dataset": {"type": "object", "additionalProperties": {"type": "string"}},
+    "corpus_label": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "required": ["content_sha256", "declared_version"],
+      "properties": {
+        "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "declared_version": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "structure": {
+      "type": "object",
+      "required": ["node_types_in_corpus_order", "slot_type", "reference_sections"],
+      "properties": {
+        "node_types_in_corpus_order": {"type": "array", "items": {"type": "object", "required": ["name", "node_count", "is_slot_type"], "properties": {"name": {"type": "string"}, "node_count": {"type": "integer", "minimum": 0}, "is_slot_type": {"type": "boolean"}}, "additionalProperties": false}},
+        "slot_type": {"type": "string"},
+        "reference_sections": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["kind", "metadata", "encoding", "value_type", "observed_node_types", "sources", "targets", "distinct_values", "frequent_values", "examples"],
+        "properties": {
+          "kind": {"enum": ["node", "edge", "config"]},
+          "metadata": {"type": "object", "additionalProperties": {"type": "string"}},
+          "encoding": {"type": "string"},
+          "value_type": {"type": ["string", "null"]},
+          "observed_node_types": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "sources": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+          "targets": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+          "distinct_values": {"type": "integer", "minimum": 0},
+          "frequent_values": {"type": "array", "items": {"type": "object", "required": ["value", "count"], "properties": {"value": {}, "count": {"type": "integer", "minimum": 1}}, "additionalProperties": false}},
+          "examples": {"type": "array", "items": {}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
