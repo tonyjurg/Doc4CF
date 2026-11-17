@@ -19,7 +19,12 @@ version = release
 docs_version = os.environ.get("DOC4CF_DOCS_VERSION", f"Current (main · {release})")
 docs_versions = json.loads(os.environ.get("DOC4CF_DOCS_VERSIONS", "[]"))
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.viewcode"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinxcontrib.mermaid",
+]
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 autodoc_default_options = {"members": True, "member-order": "bysource"}
