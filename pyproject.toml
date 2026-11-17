@@ -10,6 +10,12 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = ["context-fabric==0.5.8"]
 
+[project.optional-dependencies]
+docs = [
+  "sphinx>=8.2,<10",
+  "sphinx-rtd-theme>=3,<4",
+]
+
 [project.scripts]
 doc4cf = "doc4cf.generator:main"
 

@@ -1,0 +1,39 @@
+{% extends "!layout.html" %}
+
+{% block sidebartitle %}
+<a class="doc4cf-brand" href="{{ pathto('index') }}">
+  <img src="{{ pathto('_static/doc4cf-logo.svg', 1) }}" alt="Doc4CF API reference" />
+</a>
+<p class="brand-caption">Python API</p>
+{% include "searchbox.html" %}
+{% if docs_versions %}
+<nav class="version-picker" aria-label="Documentation version">
+  <label for="docs-version">Version</label>
+  <select id="docs-version" onchange="window.location.href = this.value;">
+    {% for entry in docs_versions %}
+    <option value="{{ pathto('_static', 1) }}/{{ entry.relative_url }}"{% if entry.label == docs_version %} selected{% endif %}>{{ entry.label }}</option>
+    {% endfor %}
+  </select>
+  <noscript>
+    {% for entry in docs_versions %}
+    <a href="{{ pathto('_static', 1) }}/{{ entry.relative_url }}">{{ entry.label }}</a>
+    {% endfor %}
+  </noscript>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block navigation %}
+{{ super() }}
+<div class="project-links">
+  <a href="{{ documentation_url }}">Documentation home <span aria-hidden="true">↗</span></a>
+  <a href="{{ repository_url }}">GitHub repository <span aria-hidden="true">↗</span></a>
+</div>
+{% endblock %}
+
+{% block mobile_nav %}
+<button type="button" data-toggle="wy-nav-top" class="menu-toggle" aria-label="Open navigation">
+  <span class="fa fa-bars" aria-hidden="true"></span>
+</button>
+<a href="{{ pathto('index') }}">Doc4CF API</a>
+{% endblock %}

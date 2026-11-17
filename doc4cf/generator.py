@@ -198,8 +198,24 @@ PROVIDERS = {
 }
 
 
-def describe(evidence, model, cache, provider="openrouter"):
-    """Return the description text for existing Python callers."""
+def describe(evidence: dict, model: str, cache: Path, provider: str = "openrouter") -> str:
+    """Return a generated description for one feature profile.
+
+    Args:
+        evidence: JSON-serializable feature evidence and optional editor notes.
+        model: Provider-specific chat model identifier.
+        cache: Directory used to reuse successful responses.
+        provider: Provider name from ``PROVIDERS`` (defaults to OpenRouter).
+
+    Returns:
+        The generated description text. New provider responses are checked for
+        completeness and non-empty text before they are cached and returned.
+
+    Raises:
+        KeyError: If ``provider`` is not a supported provider.
+        ValueError: If the provider returns an invalid or incomplete response.
+        OSError: If the response cache cannot be read or written.
+    """
     return description_record(evidence, model, cache, provider)["text"]
 
 
@@ -351,8 +367,22 @@ def dataset_inventory(src, files, api):
     }
 
 
-def export_inventory(corpus_path, output_path):
-    """Export inventory JSON without generating a site or contacting a model."""
+def export_inventory(corpus_path: Path, output_path: Path) -> dict:
+    """Export a deterministic inventory without generating a site or using a model.
+
+    Args:
+        corpus_path: Directory containing the corpus version's ``.tf`` files.
+        output_path: Destination JSON file. Its parent directory is created when
+            needed.
+
+    Returns:
+        The inventory dictionary written to ``output_path``.
+
+    Raises:
+        ValueError: If the corpus is missing required structural features.
+        RuntimeError: If Context-Fabric cannot load the corpus.
+        OSError: If the inventory cannot be written.
+    """
     src = corpus_path.resolve()
     output_path = output_path.resolve()
     files = {p.stem: header(p) for p in sorted(src.glob("*.tf"))}
@@ -378,7 +408,19 @@ def load_corpus(src, files, out):
         return Fabric(locations=[temp, src]).load(features)
 
 
-def generate(args):
+def generate(args: argparse.Namespace) -> None:
+    """Build the HTML corpus reference described by parsed CLI arguments.
+
+    ``args`` is an :class:`argparse.Namespace` with ``corpus`` and ``output``
+    paths plus the optional switches accepted by :func:`main`. Model-backed
+    features are opt-in; omitting ``args.model`` keeps the build deterministic.
+
+    Raises:
+        ValueError: If the corpus, selected features, or context options are
+            invalid or inconsistent.
+        RuntimeError: If Context-Fabric cannot load the corpus.
+        OSError: If output files cannot be written.
+    """
     src, out = args.corpus.resolve(), args.output.resolve()
     files = {p.stem: header(p) for p in sorted(src.glob("*.tf"))}
     if not {"otype", "oslots"} <= files.keys():
@@ -641,7 +683,8 @@ def generate(args):
     page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p><div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
 
 
-def main():
+def main() -> None:
+    """Run the ``doc4cf`` command-line interface."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("corpus", type=Path)
     parser.add_argument("output", type=Path, nargs="?")

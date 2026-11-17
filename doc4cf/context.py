@@ -555,8 +555,33 @@ def table_html(headings, body_rows):
     return f'<div class="scroll"><table><thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table></div>'
 
 
-def analyze_context(corpus, output_dir, provider, dataset_model, family_model, cache):
-    """Analyze a corpus and save validated, reusable context artifacts."""
+def analyze_context(
+    corpus: Path,
+    output_dir: Path,
+    provider: str,
+    dataset_model: str,
+    family_model: str,
+    cache: Path,
+) -> dict:
+    """Analyze a corpus and save validated, reusable context artifacts.
+
+    Args:
+        corpus: Directory containing the corpus version's ``.tf`` files.
+        output_dir: Directory for the inventory and context JSON artifacts.
+        provider: Provider name from ``doc4cf.generator.PROVIDERS``.
+        dataset_model: Model used to draft dataset-level context.
+        family_model: Model used to draft feature families and relationships.
+        cache: Directory for successful, reusable model responses.
+
+    Returns:
+        A mapping with responding model identifiers and the inventory hash.
+
+    Raises:
+        ValueError: If a response is malformed, stale, or refers to unknown
+            corpus features.
+        OSError: If inputs cannot be read or artifacts cannot be written.
+        RuntimeError: If Context-Fabric cannot load the corpus.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     inventory = export_inventory(corpus, output_dir / "inventory.json")
     inventory_hash = inventory_digest(inventory)
