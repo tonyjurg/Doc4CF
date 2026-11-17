@@ -149,7 +149,7 @@ Doc4CF is authored and maintained by Tony Jurg, with OpenAI Codex credited as an
 
 ## Tools used
 
-[OpenAI Codex](https://chatgpt.com/codex) has assisted with selected code and documentation changes and with preparing pull requests. Tony Jurg reviews and accepts the changes made with this assistance.
+[OpenAI Codex](https://chatgpt.com/codex) has assisted with selected code and documentation changes and with preparing pull requests. Tony Jurg reviews and accepts the changes made with this assistance. Codex-assisted commits use GitHub's co-author trailer, `Co-authored-by: Codex <codex@openai.com>`, when Codex contributed to the committed changes.
 
 ## Project website
 
