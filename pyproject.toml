@@ -8,6 +8,10 @@ version = "0.1.0"
 description = "Generate an offline interactive corpus reference with Context-Fabric"
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [
+  { name = "Tony Jurg" },
+  { name = "OpenAI Codex" },
+]
 dependencies = ["context-fabric==0.5.8"]
 
 [project.optional-dependencies]

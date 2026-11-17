@@ -10,10 +10,9 @@ ROOT = Path(os.environ.get("DOC4CF_DOCS_SOURCE", Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 project = "Doc4CF"
-author = "Tony Jurg"
-release = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))[
-    "project"
-]["version"]
+project_metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+author = " and ".join(item["name"] for item in project_metadata["authors"])
+release = project_metadata["version"]
 version = release
 
 docs_version = os.environ.get("DOC4CF_DOCS_VERSION", f"Current (main · {release})")

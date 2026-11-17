@@ -143,6 +143,14 @@ doc4cf oldbabylonian/tf/1.0.6 site-oldbabylonian
 
 The Doc4CF software is licensed under the MIT License in [LICENSE](LICENSE). Corpus data and corpus-derived example content are governed by the separate license notice included with each example; the software license does not replace those data licenses.
 
+## Authorship
+
+Doc4CF is authored and maintained by Tony Jurg, with OpenAI Codex credited as an AI coding contributor.
+
+## Tools used
+
+[OpenAI Codex](https://chatgpt.com/codex) has assisted with selected code and documentation changes and with preparing pull requests. Tony Jurg reviews and accepts the changes made with this assistance.
+
 ## Project website
 
 The rebuild commands above write to separate output directories. To generate a site under `examples/<corpus>/`, add `--project-home ../../index.html` for a project link in each page’s footer. The header logo links to the corpus overview. Rebuilding over a checked-in example without `--model` replaces its enriched feature pages with offline output.
