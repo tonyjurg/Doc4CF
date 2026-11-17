@@ -44,6 +44,7 @@ html_favicon = "_static/doc4cf-logo.svg"
 html_title = docs_version
 html_static_path = ["_static"]
 html_css_files = ["doc4cf-api.css"]
+mermaid_zoom = True
 html_context = {
     "docs_version": docs_version,
     "docs_versions": docs_versions,

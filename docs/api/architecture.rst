@@ -9,6 +9,7 @@ feature metadata.
 .. mermaid::
    :caption: Corpus data flow from Text-Fabric files to the generated reference site.
    :name: doc4cf-data-flow
+   :zoom:
 
    flowchart TD
        TF["Versioned .tf corpus"] --> LOAD["Text-Fabric load and measurement"]
