@@ -9,7 +9,26 @@ on:
       - 'query-guide.html'
       - 'project-assets/**'
       - 'examples/**'
+      - 'docs/api/**'
+      - 'doc4cf/**'
+      - 'pyproject.toml'
+      - 'scripts/build_api_docs.py'
       - '.github/workflows/pages.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'install-guide.html'
+      - 'software-design.html'
+      - 'query-guide.html'
+      - 'project-assets/**'
+      - 'examples/**'
+      - 'docs/api/**'
+      - 'doc4cf/**'
+      - 'pyproject.toml'
+      - 'scripts/build_api_docs.py'
+      - '.github/workflows/pages.yml'
+  release:
+    types: [published, edited, deleted]
   workflow_dispatch:
 
 permissions:
@@ -24,22 +43,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install package and documentation dependencies
+        run: python -m pip install -e '.[docs]'
       - name: Stage the project site and corpus documentation
         run: |
-          mkdir _site
+          mkdir -p _site
           cp index.html install-guide.html software-design.html query-guide.html _site/
           cp -r examples project-assets _site/
           for corpus in N1904 DSS OldBabylonian; do
             test -s "_site/examples/$corpus/index.html"
             grep -Fq "href=\"examples/$corpus/index.html\"" _site/index.html
           done
+      - name: Build the versioned Sphinx API reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/build_api_docs.py --output _site/api
+      - name: Verify the combined site
+        run: |
+          test -s _site/index.html
+          test -s _site/api/index.html
+          grep -Fq 'href="api/index.html"' _site/index.html
       - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
         with:
           path: _site
 
   deploy:
     needs: build
-    if: github.event.repository.private == false && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.event.repository.private == false && (github.ref == 'refs/heads/main' || github.event_name == 'release')
     runs-on: ubuntu-latest
     permissions:
       pages: write

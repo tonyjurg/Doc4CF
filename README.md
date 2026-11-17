@@ -27,9 +27,20 @@ python -m build
 
 Share the wheel from `dist/` with recipients. They can run `python -m pip install path/to/doc4cf-0.1.0-py3-none-any.whl` and then `doc4cf --help`. Pip resolves Context-Fabric during installation. The wheel includes the JavaScript, CSS, and SVG logos; readers need only the generated site and a browser.
 
+## Build the API reference
+
+Install the optional documentation dependencies and build the current source version locally:
+
+```sh
+python -m pip install -e ".[docs]"
+python scripts/build_api_docs.py --current-only --output .testdata/api
+```
+
+GitHub Pages builds the same Sphinx reference and adds published release versions to the selector.
+
 ## Software setup, levels of inference, and usage examples
 
-The [install guide](install-guide.html) covers setup, usage, and optional LLM descriptions. The [software design page](software-design.html) explains how Doc4CF uses Context-Fabric to combine feature documentation with a knowledge graph.
+The [install guide](install-guide.html) covers setup, usage, and optional LLM descriptions. The [software design page](software-design.html) explains how Doc4CF uses Context-Fabric to combine feature documentation with a knowledge graph. The [versioned Python API reference](https://tonyjurg.github.io/Doc4CF/api/) is generated from the current source and published releases with Sphinx.
 
 The current optional AI enrichment workflow, evidence safeguards, and review artifacts are described in [AI_STRATEGY.md](AI_STRATEGY.md).
 
