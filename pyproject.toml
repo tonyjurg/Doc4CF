@@ -32,3 +32,17 @@ doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json"]
 [project.urls]
 Repository = "https://github.com/tonyjurg/Doc4CF"
 Issues = "https://github.com/tonyjurg/Doc4CF/issues"
+
+[tool.ruff]
+target-version = "py313"
+# Notebooks are runnable walkthroughs (asserts, top-level imports), not library code.
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "S", "UP"]
+# S310/S311/S603/S607 are false positives here: fixed https endpoints,
+# argument lists without a shell, and non-cryptographic retry jitter.
+ignore = ["E501", "S310", "S311", "S603", "S607"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
