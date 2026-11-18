@@ -554,6 +554,7 @@ def generate(args: argparse.Namespace) -> None:
     if not {"otype", "oslots"} <= files.keys():
         raise ValueError("Expected a corpus directory containing otype.tf and oslots.tf")
     context_file = getattr(args, "dataset_context", None)
+    overview_notes_file = getattr(args, "overview_notes", None)
     context_dir = getattr(args, "context_dir", None)
     if getattr(args, "feature_model", None) and not args.model:
         raise ValueError("--feature-model requires --model")
@@ -572,6 +573,7 @@ def generate(args: argparse.Namespace) -> None:
         if unknown:
             raise ValueError(f"Unknown or empty feature names: {sorted(unknown)}. Use exact TF filenames without .tf.")
     notes = context_file.read_text(encoding="utf-8-sig") if context_file else ""
+    overview_notes = overview_notes_file.read_text(encoding="utf-8-sig") if overview_notes_file else ""
     cfg = files.get("otext", {}).get("meta", {})
     identity = {key: value for key, value in files["otype"]["meta"].items()
                 if key in ("title", "name", "acronym")}
@@ -784,6 +786,34 @@ def generate(args: argparse.Namespace) -> None:
     text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
     page("text.html","Text & encoding",text_body)
     overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(model_credits)) + "</p>" if model_credits and attribution == "overview" else ""
+    overview_description = ""
+    if overview_notes or context_data:
+        overview_description = "<section><h2>About this dataset</h2>"
+        if overview_notes:
+            overview_description += "".join(
+                f"<p>{e(paragraph)}</p>" for paragraph in overview_notes.strip().split("\n\n") if paragraph.strip()
+            )
+        if context_data:
+            dataset_context = context_data[0]
+            overview_description += (
+                f"<p><strong>Inventory analysis.</strong> {e(dataset_context['dataset_profile'])}</p>"
+            )
+            conventions = dataset_context["conventions"]
+            if conventions:
+                overview_description += "<h3>Observed conventions</h3><ul>" + "".join(
+                    f"<li><strong>{e(item['status'].replace('_', ' ').title())}:</strong> {e(item['claim'])}</li>"
+                    for item in conventions
+                ) + "</ul>"
+            ambiguities = dataset_context["ambiguities"]
+            if ambiguities:
+                overview_description += (
+                    "<h3>Questions for review</h3><ul>" + "".join(
+                        f"<li>{e(item)}</li>" for item in ambiguities
+                    ) + "</ul>"
+                )
+            if dataset_context["needs_review"]:
+                overview_description += "<p><strong>Review note:</strong> This interpretation includes items that need editorial review.</p>"
+        overview_description += "</section>"
     if context_data:
         from .context import _atomic_json, context_pages as render_context_pages
         dataset_context, families, relationships, family_analysis = context_data
@@ -812,7 +842,7 @@ def generate(args: argparse.Namespace) -> None:
         cards.extend([("dataset.html", "Dataset architecture and glossary"),
                       ("relationships.html", "Feature relationship index"),
                       ("context-review.html", "Context review")])
-    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p><div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
+    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
 
 
 def main() -> None:
@@ -829,6 +859,7 @@ def main() -> None:
     parser.add_argument("--provider", choices=PROVIDERS, default="openrouter", help="LLM provider (default: openrouter)")
     parser.add_argument("--model", help="Chat model ID on the selected provider; omit for an offline build")
     parser.add_argument("--dataset-context", type=Path, metavar="FILE", help="UTF-8 editor notes to include with each selected feature")
+    parser.add_argument("--overview-notes", type=Path, metavar="FILE", help="UTF-8 editor-supplied prose to include on the corpus overview page")
     parser.add_argument("--context-dir", type=Path, metavar="DIR",
                         help="Use matching dataset_context.json, feature_families.json, and feature_relationships.json for enrichment")
     parser.add_argument("--context-pages", action="store_true",
