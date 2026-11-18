@@ -6,7 +6,6 @@ from hashlib import sha256
 from html import escape
 import json
 import logging
-import os
 import time
 import random
 from datetime import UTC, datetime

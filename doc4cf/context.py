@@ -3,7 +3,6 @@ import hashlib
 from html import escape
 import json
 import logging
-import os
 from collections import Counter
 from pathlib import Path
 from typing import Any
