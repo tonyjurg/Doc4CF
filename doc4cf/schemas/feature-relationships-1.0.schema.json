@@ -33,7 +33,8 @@
         "provider": {"enum": ["anthropic", "openrouter", "openai", "groq", "gemini"]},
         "requested_model": {"type": "string"},
         "responding_model": {"type": ["string", "null"]},
-        "prompt_version": {"type": "string"}
+        "prompt_version": {"type": "string"},
+        "dataset_instructions_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
       },
       "additionalProperties": false
     }

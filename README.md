@@ -56,6 +56,10 @@ For richer per-feature evidence, add `--targeted-evidence`. The model can reques
 
 Context analysis uses strict JSON Schema output with OpenRouter and OpenAI when the selected model supports it. Doc4CF falls back to JSON mode for those endpoints when schema output is rejected, and validates every response locally.
 
+When a corpus is loaded from a repository layout such as `repository/tf/version`, inventory export and context analysis also detect the sibling `app/` directory. They include its YAML configuration as structured data and static summaries of Python app methods, dispatch cases, literal settings, and calls. Python files are parsed with the AST and are never imported or executed. The generated overview displays configured provenance fields directly; the dataset inference can use the rest of the app context to explain presentation and runtime behavior. App source hashes are part of the inventory fingerprint, so edits to app behavior invalidate context generated from the older app. Use `--app-dir PATH` to select an app directory explicitly or when the app is stored elsewhere.
+
+For dataset-level analysis, `--dataset-instructions FILE` adds optional UTF-8 operator guidance to the inference prompt. This option requires `--analyze-context`; it can refine the analysis focus and wording but cannot override the required output schema or evidence rules. The instruction text participates in the response-cache key, and its SHA-256 is saved in dataset-analysis provenance. The N1904 notebook exposes the same setting as `DATASET_INSTRUCTIONS`.
+
 Context artifacts also record provider, requested and responding model IDs, and prompt version alongside the inventory hash. The dataset architecture page shows this provenance when available.
 
 See the [complete runtime option reference](install-guide.html#runtime-options) and [Python and notebook example for all five providers](install-guide.html#from-python).
