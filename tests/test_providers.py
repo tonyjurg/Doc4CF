@@ -14,12 +14,14 @@ class ProviderOptions(unittest.TestCase):
         with TemporaryDirectory() as tmp, patch.dict("os.environ", OPENROUTER_API_KEY="test"):
             cache = Path(tmp)
             incomplete = {"choices": [{"finish_reason": "length", "message": {"content": "Cut off"}}]}
-            with patch("doc4cf.generator.urlopen", return_value=io.BytesIO(json.dumps(incomplete).encode())) as send:
+            with patch("doc4cf.generator.urlopen",
+                       side_effect=lambda *a, **k: io.BytesIO(json.dumps(incomplete).encode())) as send:
                 with self.assertRaisesRegex(ValueError, "incomplete"):
                     describe({}, "openrouter/free", cache)
-                payload = json.loads(send.call_args.args[0].data)
-                self.assertEqual(payload["max_tokens"], 8192)
-                self.assertEqual(payload["reasoning"], {"effort": "low", "exclude": True})
+                first = json.loads(send.call_args_list[0].args[0].data)
+                self.assertEqual(first["max_tokens"], 8192)
+                self.assertEqual(first["reasoning"], {"effort": "low", "exclude": True})
+                self.assertEqual(send.call_count, 3)  # initial request + two truncation retries
             self.assertEqual(list(cache.iterdir()), [])
             complete = {"choices": [{"finish_reason": "stop", "message": {"content": "Complete paragraph."}}]}
             with patch("doc4cf.generator.urlopen", return_value=io.BytesIO(json.dumps(complete).encode())):

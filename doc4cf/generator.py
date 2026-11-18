@@ -1,15 +1,15 @@
 """Build an offline corpus reference from Context-Fabric."""
 import argparse
-from collections import Counter, defaultdict
+from collections import Counter
 from hashlib import sha256
 from html import escape
 import json
 import os
 import time
 import random
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from numbers import Integral
 from pathlib import Path
 import shutil
@@ -36,89 +36,119 @@ def header(path):
                 encoding="UTF-8 with BOM" if raw.startswith(b"\xef\xbb\xbf") else "UTF-8")
 
 
-def request_with_retry(req, timeout=90, max_retries=6, base_delay=5, max_delay=120):
-    """Return a decoded JSON response, retrying HTTP 429 rate limits.
+RETRYABLE_STATUS = (408, 500, 502, 503, 504)
 
-    The delay follows ``Retry-After`` when present and otherwise uses bounded
-    exponential backoff. OpenRouter free-tier daily quota exhaustion is raised
-    immediately because retrying cannot succeed before the quota reset.
+
+def write_atomic(path, text, mode=0o644):
+    """Write ``text`` to ``path`` through a temporary file in the same directory.
+
+    ``NamedTemporaryFile`` creates files readable only by their owner, so ``mode``
+    is applied explicitly: site output stays readable by a web server, while
+    private caches can pass ``0o600``. The temporary file is removed on failure.
+    """
+    tmp = NamedTemporaryFile(dir=path.parent, mode="w", encoding="utf-8", delete=False)
+    tmp_path = Path(tmp.name)
+    try:
+        with tmp:
+            tmp.write(text)
+        tmp_path.chmod(mode)
+        tmp_path.replace(path)
+    except BaseException:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _raise_if_daily_quota(body):
+    """Raise RuntimeError when a 429 body reports an exhausted OpenRouter daily quota."""
+    try:
+        metadata = json.loads(body.decode("utf-8")).get("error", {}).get("metadata", {})
+        exhausted = metadata.get("limit_source") == "openrouter_free_tier_daily"
+        reset_ms = (metadata.get("headers") or {}).get("X-RateLimit-Reset")
+    except (ValueError, AttributeError):
+        return
+    if not exhausted:
+        return
+    try:
+        reset_time = datetime.fromtimestamp(int(reset_ms) / 1000, tz=UTC).astimezone()
+    except (ValueError, TypeError, OverflowError, OSError):
+        raise RuntimeError(
+            "OpenRouter daily free-model quota exhausted. "
+            "Check your account for the reset time."
+        ) from None
+    raise RuntimeError(
+        "OpenRouter daily free-model quota exhausted. "
+        f"Quota resets at {reset_time:%Y-%m-%d %H:%M %Z}. "
+        "Previously generated descriptions remain cached."
+    )
+
+
+def _retry_delay(retry_after, attempt, base_delay, max_delay):
+    """Return seconds to wait before a retry, never more than ``max_delay``.
+
+    ``Retry-After`` (seconds or an HTTP date) is honored but capped, so a server
+    cannot make the build sleep for hours. Without it, use exponential backoff.
+    """
+    delay = None
+    if retry_after:
+        try:
+            delay = max(0.0, float(retry_after))
+        except ValueError:
+            try:
+                retry_date = parsedate_to_datetime(retry_after)
+                if retry_date.tzinfo is None:
+                    retry_date = retry_date.replace(tzinfo=UTC)
+                delay = max(0.0, (retry_date - datetime.now(UTC)).total_seconds())
+            except (TypeError, ValueError, OverflowError):
+                pass
+    if delay is None:
+        delay = min(max_delay, base_delay * (2 ** attempt))
+        delay += random.uniform(0, min(2, delay * 0.1))
+    return min(max_delay, delay)
+
+
+def request_with_retry(req, timeout=90, max_retries=6, base_delay=5, max_delay=120):
+    """Return a decoded JSON response, retrying rate limits and transient failures.
+
+    HTTP 429, 408 and 5xx responses and network errors are retried. The delay
+    follows ``Retry-After`` when present, otherwise bounded exponential backoff;
+    either way it never exceeds ``max_delay``. OpenRouter free-tier daily quota
+    exhaustion is raised immediately because retrying cannot succeed before the
+    quota reset. Other HTTP errors are raised unchanged.
     """
     for attempt in range(max_retries + 1):
         try:
             with urlopen(req, timeout=timeout) as response:
                 return json.load(response)
-
         except HTTPError as error:
+            # The body can be read only once, so read it here and reuse it.
+            try:
+                body = error.read()
+            except OSError:
+                body = b""
             if error.code == 429:
-                try:
-                    details = json.loads(error.read().decode("utf-8"))
-                    metadata = details.get("error", {}).get("metadata", {})
-
-                    if metadata.get("limit_source") == "openrouter_free_tier_daily":
-                        headers = metadata.get("headers", {})
-                        reset_ms = headers.get("X-RateLimit-Reset")
-
-                        if reset_ms:
-                            from zoneinfo import ZoneInfo
-
-                            reset_time = datetime.fromtimestamp(
-                                int(reset_ms) / 1000,
-                                tz=timezone.utc
-                            ).astimezone(ZoneInfo("Europe/Amsterdam"))
-
-                            raise RuntimeError(
-                                "OpenRouter daily free-model quota exhausted. "
-                                f"Quota resets at {reset_time:%Y-%m-%d %H:%M %Z}. "
-                                "Previously generated descriptions remain cached."
-                            )
-
-                        raise RuntimeError(
-                            "OpenRouter daily free-model quota exhausted. "
-                            "Check your account for the reset time."
-                        )
-
-                except (ValueError, KeyError, TypeError):
-                    pass  
-
-            if error.code == 429 and attempt == 0:
-                print("Rate-limit response:", error.read().decode("utf-8", errors="replace"))
-                print("Rate-limit headers:")
-                for name in ("Retry-After", "X-RateLimit-Limit",
-                            "X-RateLimit-Remaining", "X-RateLimit-Reset"):
-                    print(f"  {name}: {error.headers.get(name)}")
-            if error.code != 429 or attempt == max_retries:
+                _raise_if_daily_quota(body)
+                if attempt == 0:
+                    print("Rate-limit response:", body.decode("utf-8", errors="replace"))
+                    print("Rate-limit headers:")
+                    for name in ("Retry-After", "X-RateLimit-Limit",
+                                 "X-RateLimit-Remaining", "X-RateLimit-Reset"):
+                        print(f"  {name}: {error.headers.get(name)}")
+            if (error.code != 429 and error.code not in RETRYABLE_STATUS) or attempt == max_retries:
                 raise
+            delay = _retry_delay(error.headers.get("Retry-After"), attempt, base_delay, max_delay)
+            reason = f"HTTP {error.code}"
+        except (URLError, TimeoutError) as error:
+            if attempt == max_retries:
+                raise
+            delay = _retry_delay(None, attempt, base_delay, max_delay)
+            reason = f"Network error ({getattr(error, 'reason', error)})"
 
-            retry_after = error.headers.get("Retry-After")
-            delay = None
-
-            if retry_after:
-                try:
-                    delay = max(0, float(retry_after))
-                except ValueError:
-                    try:
-                        retry_date = parsedate_to_datetime(retry_after)
-                        if retry_date.tzinfo is None:
-                            retry_date = retry_date.replace(tzinfo=timezone.utc)
-                        delay = max(
-                            0,
-                            (retry_date - datetime.now(timezone.utc)).total_seconds()
-                        )
-                    except (TypeError, ValueError, OverflowError):
-                        pass
-
-            if delay is None:
-                delay = min(max_delay, base_delay * (2 ** attempt))
-                delay += random.uniform(0, min(2, delay * 0.1))
-
-            print(
-                f"HTTP 429: Rate limit reached. "
-                f"Retrying in {delay:.1f} seconds "
-                f"(attempt {attempt + 1}/{max_retries}).",
-                flush=True
-            )
-
-            time.sleep(delay)
+        print(
+            f"{reason}: retrying in {delay:.1f} seconds "
+            f"(attempt {attempt + 1}/{max_retries}).",
+            flush=True
+        )
+        time.sleep(delay)
 
     raise RuntimeError("HTTP retry loop ended unexpectedly")
 
@@ -292,9 +322,7 @@ def description_record(evidence, model, cache, provider):
     result = {"text": content.strip(), "model": reply.get("model") or None}
     cache.mkdir(parents=True, exist_ok=True)
     # Replace the final cache entry only after serialization has completed.
-    with NamedTemporaryFile(dir=cache, mode="w", encoding="utf-8", delete=False) as tmp:
-        json.dump(result, tmp, ensure_ascii=False)
-    Path(tmp.name).replace(file)
+    write_atomic(file, json.dumps(result, ensure_ascii=False), mode=0o600)
     return result
 
 
@@ -343,7 +371,7 @@ def dataset_inventory(src, files, api):
     corpus = next((identity[k] for k in ("title", "name", "description", "acronym")
                    if identity.get(k)), src.name)
     digest = sha256()
-    for name, info in sorted(files.items()):
+    for name in sorted(files):
         path = src / f"{name}.tf"
         # Separators keep adjacent filenames and file contents unambiguous.
         digest.update(name.encode("utf-8"))

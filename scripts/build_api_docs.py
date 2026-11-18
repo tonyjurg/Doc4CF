@@ -215,6 +215,10 @@ def main() -> None:
             encoding="utf-8",
         )
         if output.exists():
+            # Never delete a directory that is not a previous API build (for example
+            # "--output ." would otherwise remove the whole checkout).
+            if any(output.iterdir()) and not (output / "versions.json").is_file():
+                raise SystemExit(f"Refusing to delete {output}: not a previous Doc4CF API build")
             shutil.rmtree(output)
         shutil.move(str(stage), str(output))
 
