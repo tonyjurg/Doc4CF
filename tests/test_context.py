@@ -63,13 +63,13 @@ class PrimitiveValidators(unittest.TestCase):
 
     def test_string_string_list_and_status_cases(self):
         cases = [
-            ("non-empty string", context._string, ("claim", "text"), True),
-            ("blank string", context._string, ("claim", "  "), False),
-            ("wrong string type", context._string, ("claim", 4), False),
-            ("empty string list", context._string_list, ("evidence", []), True),
-            ("string list", context._string_list, ("evidence", ["path/a", "path/b"]), True),
-            ("blank list item", context._string_list, ("evidence", ["path/a", " "]), False),
-            ("non-string list item", context._string_list, ("evidence", [3]), False),
+            ("non-empty string", context._string, ("text", "claim"), True),
+            ("blank string", context._string, ("  ", "claim"), False),
+            ("wrong string type", context._string, (4, "claim"), False),
+            ("empty string list", context._string_list, ([], "evidence"), True),
+            ("string list", context._string_list, (["path/a", "path/b"], "evidence"), True),
+            ("blank list item", context._string_list, (["path/a", " "], "evidence"), False),
+            ("non-string list item", context._string_list, ([3], "evidence"), False),
             ("verified status", context._status, ("verified",), True),
             ("invalid status", context._status, ("approved",), False),
         ]
