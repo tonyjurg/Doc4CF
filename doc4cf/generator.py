@@ -5,7 +5,6 @@ from collections import Counter
 from hashlib import sha256
 from html import escape
 import json
-import os
 import time
 import random
 from datetime import UTC, datetime
@@ -284,15 +283,6 @@ def write_page(
 <main><small>{e(corpus)}</small><h1>{e(title)}</h1>{body}</main>{footer}</body></html>""", encoding="utf-8")
 
 
-PROVIDERS = {
-    "anthropic": ("Anthropic", "ANTHROPIC_API_KEY", "https://api.anthropic.com/v1/messages"),
-    "openrouter": ("OpenRouter", "OPENROUTER_API_KEY", "https://openrouter.ai/api/v1/chat/completions"),
-    "openai": ("OpenAI", "OPENAI_API_KEY", "https://api.openai.com/v1/chat/completions"),
-    "groq": ("Groq", "GROQ_API_KEY", "https://api.groq.com/openai/v1/chat/completions"),
-    "gemini": ("Google Gemini", "GEMINI_API_KEY", "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"),
-}
-
-
 def describe(
     evidence: dict[str, Any], model: str, cache: Path, provider: str = "openrouter",
 ) -> str:
@@ -324,7 +314,7 @@ def description_record(
     The cache key includes the serialized provider request. New responses are
     rejected when the provider reports truncation, refusal, or empty content.
     """
-    label, key_name, endpoint = PROVIDERS[provider]
+    label = PROVIDERS[provider][0]
     messages = [
         {"role": "system", "content": FEATURE_SYSTEM},
         {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}]
@@ -350,18 +340,7 @@ def description_record(
     legacy = cache / (digest + ".txt")
     if legacy.exists():
         return {"text": legacy.read_text(encoding="utf-8"), "model": None}
-    key = os.environ.get(key_name)
-    if not key:
-        raise ValueError(f"Set {key_name} or omit --model for an offline build.")
-    headers = {"Content-Type": "application/json"}
-    if provider == "anthropic":
-        headers.update({"x-api-key": key, "anthropic-version": "2023-06-01"})
-        workspace = os.environ.get("ANTHROPIC_WORKSPACE_ID")
-        if workspace:
-            headers["anthropic-workspace-id"] = workspace
-    else:
-        headers["Authorization"] = f"Bearer {key}"
-    req = Request(endpoint, data=payload, headers=headers)
+    req = build_provider_request(provider, payload, "--model")
     reply = request_with_completion_retry(req)
     if provider == "anthropic":
         if reply.get("stop_reason") in ("max_tokens", "refusal"):
