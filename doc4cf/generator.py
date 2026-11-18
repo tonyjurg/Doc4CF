@@ -22,7 +22,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from cfabric.core import Fabric
 from .providers import PROVIDERS, build_provider_request
-from .prompts import load_prompt
+from .prompts import load_description, load_prompt
 
 
 logger = logging.getLogger(__name__)
@@ -66,6 +66,24 @@ def urlopen(req: Request, timeout: float | None = None) -> Any:
 
 RETRYABLE_STATUS = (408, 500, 502, 503, 504)
 FEATURE_SYSTEM = load_prompt("feature-description.txt")
+STRUCTURAL_FEATURES = ("otype", "otext", "oslots")
+_STRUCTURAL_DESCRIPTIONS = {
+    name: load_description(f"{name}.txt") for name in STRUCTURAL_FEATURES
+}
+_STRUCTURAL_GUIDANCE = {
+    name: load_prompt(f"feature-{name}.txt") for name in STRUCTURAL_FEATURES
+}
+
+
+def standard_feature_description(name: str, metadata_description: str = "") -> str:
+    """Return the maintained baseline for a structural feature, else metadata."""
+    return _STRUCTURAL_DESCRIPTIONS.get(name, metadata_description)
+
+
+def feature_description_prompt(name: str, base_prompt: str = FEATURE_SYSTEM) -> str:
+    """Add feature-specific inference guidance to the general description prompt."""
+    guidance = _STRUCTURAL_GUIDANCE.get(name)
+    return f"{base_prompt}\n\n{guidance}" if guidance else base_prompt
 
 
 def write_atomic(path: Path, text: str, mode: int = 0o644) -> None:
@@ -315,7 +333,7 @@ def description_record(
     """
     label = PROVIDERS[provider][0]
     messages = [
-        {"role": "system", "content": FEATURE_SYSTEM},
+        {"role": "system", "content": feature_description_prompt(evidence.get("name", ""))},
         {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}]
     if "corpus_editor_notes" in evidence:
         messages[0]["content"] += " Use corpus_editor_notes as editorial background where relevant. Base claims about this feature's observed values and coverage on its measured profile."
@@ -383,11 +401,17 @@ def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict
                 targets.update(types.v(n) for n in ends)
             if isinstance(ends, dict):
                 values.update(ends.values())
-    return dict(name=name, kind=kind, description=info["meta"].get("description", ""),
-                sources={t: counts[t] for t in order if counts[t]},
-                targets={t: targets[t] for t in order if targets[t]},
-                frequent=[(int(v) if isinstance(v, Integral) else v, count)
-                          for v, count in values.most_common(12)], distinct=len(values))
+    result: dict[str, Any] = dict(
+        name=name, kind=kind,
+        description=standard_feature_description(name, info["meta"].get("description", "")),
+        sources={t: counts[t] for t in order if counts[t]},
+        targets={t: targets[t] for t in order if targets[t]},
+        frequent=[(int(v) if isinstance(v, Integral) else v, count)
+                  for v, count in values.most_common(12)], distinct=len(values),
+    )
+    if kind == "config":
+        result["configuration"] = info["meta"]
+    return result
 
 
 def dataset_inventory(src: Path, files: dict[str, Any], api: Any) -> dict[str, Any]:
@@ -640,6 +664,8 @@ def generate(args: argparse.Namespace) -> None:
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
         if args.model and n in selected:
             evidence = dict(corpus=corpus, **p)
+            if n in STRUCTURAL_FEATURES:
+                evidence["feature_metadata"] = meta
             if notes:
                 evidence["corpus_editor_notes"] = notes
             if context_data:
