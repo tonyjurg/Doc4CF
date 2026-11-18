@@ -44,7 +44,7 @@ doc4cf = "doc4cf.generator:main"
 packages = ["doc4cf"]
 
 [tool.setuptools.package-data]
-doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json", "py.typed"]
+doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json", "prompts/*.txt", "py.typed"]
 
 [project.urls]
 Repository = "https://github.com/tonyjurg/Doc4CF"
