@@ -677,7 +677,8 @@ def generate(args: argparse.Namespace) -> None:
                     values.update(ends.values())
         observed_values[name] = values
     if context_data:
-        assert inventory is not None
+        if inventory is None:
+            raise RuntimeError("Context analysis requires a loaded inventory")
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
     order = api.F.otype.all
