@@ -41,6 +41,22 @@ def ai_indicator(provider: str, requested_model: str, responding_model: str | No
     )
 
 
+def application_source_files(application: dict[str, Any] | None) -> list[tuple[str, str]]:
+    """Return harvested app paths and hashes across supported inventory shapes."""
+    if not application:
+        return []
+    source_files = application.get("source_files", [])
+    if isinstance(source_files, dict):
+        return [(str(path), str(digest)) for path, digest in sorted(source_files.items())]
+    if isinstance(source_files, list):
+        return sorted(
+            (str(item["path"]), str(item["sha256"]))
+            for item in source_files
+            if isinstance(item, dict) and "path" in item and "sha256" in item
+        )
+    return []
+
+
 def header(path: Path) -> dict[str, Any]:
     """Read a Text-Fabric header and return its kind, metadata, and encoding."""
     # Decode the entire source strictly before claiming UTF-8.
@@ -905,7 +921,7 @@ def generate(args: argparse.Namespace) -> None:
         audit_body = (
             "<p>Technical record of the AI-assisted descriptions in this corpus site.</p>"
             + "<h2>Harvested app files</h2>" + table(["Path", "SHA-256"], [
-                (e(path), e(digest)) for path, digest in sorted((application or {}).get("source_files", {}).items())
+                (e(path), e(digest)) for path, digest in application_source_files(application)
             ])
             + table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
                     [(feature(n), e(item["provider"]), e(item["requested_model"]),

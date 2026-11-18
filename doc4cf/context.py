@@ -9,7 +9,7 @@ from typing import Any
 from urllib.error import HTTPError
 
 from .generator import (
-    ai_indicator, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
+    ai_indicator, application_source_files, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
 from .providers import PROVIDERS, build_provider_request
@@ -670,10 +670,10 @@ def context_pages(
         for name, item in sorted(feature_analysis.items())
         if item.get("evidence_requests") or item.get("additional_evidence")
     ) or "<p>No additional evidence was requested.</p>"
-    application_files = inventory.get("application", {}).get("source_files", {})
+    application_files = application_source_files(inventory.get("application"))
     application_file_rows = "".join(
         f"<tr><td>{h(path)}</td><td><code>{h(digest)}</code></td></tr>"
-        for path, digest in sorted(application_files.items())
+        for path, digest in application_files
     ) or '<tr><td colspan="2">No app configuration files were harvested.</td></tr>'
     fingerprint_details = "<pre>" + h(json.dumps(
         {name: item.get("input_fingerprints", {}) for name, item in sorted(feature_analysis.items())},
