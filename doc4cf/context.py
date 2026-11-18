@@ -9,7 +9,7 @@ from typing import Any
 from urllib.error import HTTPError
 
 from .generator import (
-    ai_indicator, application_source_files, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
+    ai_indicator, application_source_files, audit_section, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
 from .providers import PROVIDERS, build_provider_request
@@ -626,12 +626,6 @@ def context_pages(
         f"<tr><td>{feature_link(item['feature'])}</td><td>{h(flag['status'].replace('_', ' ').title())}: {h(flag['issue'])}</td><td>{evidence(flag['evidence'])}</td></tr>"
         for item in review["context_flags"] for flag in item["flags"]
     ) or '<tr><td colspan="3">No context conflicts or evidence gaps were flagged.</td></tr>'
-    review_body = (
-        f"<p>This report compares saved description inputs with the current reviewed context and evidence. Unchanged feature requests can reuse cached responses. {len(review['processed_descriptions'])} feature description(s) were selected and processed in this build.</p>"
-        + table_html(["Feature", "Changed input"], affected_rows)
-        + "<h2>Context issues surfaced by feature analysis</h2><p>Review these flags and update context artifacts explicitly before regenerating affected descriptions.</p>"
-        + table_html(["Feature", "Flag", "Evidence"], flags_rows)
-    )
     provenance_records = []
     for artifact, analysis in (("Dataset context", dataset_analysis),
                                ("Families and relationships", relationship_analysis)):
@@ -681,20 +675,86 @@ def context_pages(
     )) + "</pre>"
     audit_body = (
         "<p>Technical record of the analysis used to prepare these descriptions. The corpus pages stay concise; this report preserves evidence and review details.</p>"
-        f"<h2>Analysis provenance</h2>{table_html(['Artifact', 'Provider', 'Requested model', 'Responding model', 'Prompt version'], ''.join(provenance_records))}"
-        f"<h2>Inventory</h2><p>SHA-256: <code>{h(dataset['inventory_sha256'])}</code></p>"
-        f"<p>Editorial review required: {h(dataset.get('needs_review', False))}</p>"
-        f"<h2>Harvested app files</h2>{table_html(['Path', 'SHA-256'], application_file_rows)}"
-        f"<p>Dataset instruction SHA-256: <code>{h(dataset_analysis.get('dataset_instructions_sha256', 'Not supplied'))}</code></p>"
-        f"<h2>Convention evidence</h2>{table_html(['Claim', 'Evidence status', 'Inventory evidence'], conventions)}"
-        f"<h2>Feature family evidence</h2>{table_html(['Family', 'Purpose', 'Evidence status', 'Features', 'Evidence'], family_audit_rows)}"
-        f"<h2>Relationship evidence</h2>{table_html(['Feature', 'Relationship', 'Related feature', 'Evidence status', 'Evidence'], relationship_audit_rows)}"
-        f"<h2>Open questions</h2><ul>{''.join(f'<li>{h(item)}</li>' for item in dataset.get('ambiguities', [])) or '<li>None recorded.</li>'}</ul>"
-        f"<h2>Feature description provenance</h2>{table_html(['Feature', 'Provider', 'Requested model', 'Responding model', 'Uncertainties'], feature_audit_rows)}"
-        f"<h2>Feature input fingerprints</h2>{fingerprint_details}"
-        f"<h2>Feature review flags</h2>{table_html(['Feature', 'Flag', 'Evidence'], feature_flag_rows)}"
-        f"<h2>Targeted evidence details</h2>{feature_evidence_rows}"
-        f"<h2>Description review</h2>{review_body}"
+        + audit_section(
+            "Analysis provenance",
+            "Models and prompt versions identify the analysis stages used to prepare this documentation.",
+            table_html(["Artifact", "Provider", "Requested model", "Responding model", "Prompt version"], ''.join(provenance_records)),
+            "Show model and prompt details",
+        )
+        + audit_section(
+            "Inventory",
+            "The inventory fingerprint ties this analysis to the measured corpus features and structure.",
+            f"<p>SHA-256: <code>{h(dataset['inventory_sha256'])}</code></p><p>Editorial review required: {h(dataset.get('needs_review', False))}</p>",
+            "Show inventory status",
+        )
+        + audit_section(
+            "Harvested app files",
+            "File fingerprints identify application configuration and behavior inputs considered during analysis.",
+            f"{table_html(['Path', 'SHA-256'], application_file_rows)}<p>Dataset instruction SHA-256: <code>{h(dataset_analysis.get('dataset_instructions_sha256', 'Not supplied'))}</code></p>",
+            "Show harvested file details",
+        )
+        + audit_section(
+            "Convention evidence",
+            "Each proposed corpus convention is paired with its support status and measured evidence paths.",
+            table_html(["Claim", "Evidence status", "Inventory evidence"], conventions),
+            "Show convention evidence",
+        )
+        + audit_section(
+            "Feature family evidence",
+            "Suggested feature groupings include their purpose, evidence status, and supporting features.",
+            table_html(["Family", "Purpose", "Evidence status", "Features", "Evidence"], family_audit_rows),
+            "Show family evidence",
+        )
+        + audit_section(
+            "Relationship evidence",
+            "Proposed relationships identify connected features and the evidence supporting each link.",
+            table_html(["Feature", "Relationship", "Related feature", "Evidence status", "Evidence"], relationship_audit_rows),
+            "Show relationship evidence",
+        )
+        + audit_section(
+            "Open questions",
+            "These unresolved points may need editorial review before the descriptions are treated as settled.",
+            "<ul>" + ''.join(f"<li>{h(item)}</li>" for item in dataset.get("ambiguities", [])) + "</ul>"
+            if dataset.get("ambiguities") else "<p>No open questions were recorded.</p>",
+            "Show open questions",
+        )
+        + audit_section(
+            "Feature description provenance",
+            "Provider, model, and uncertainty notes identify the source and limits of each feature description.",
+            table_html(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"], feature_audit_rows),
+            "Show feature description provenance",
+        )
+        + audit_section(
+            "Feature input fingerprints",
+            "These hashes identify the evidence, context, prompt, provider, and model associated with each description.",
+            fingerprint_details,
+            "Show feature input fingerprints",
+        )
+        + audit_section(
+            "Feature review flags",
+            "Flags highlight conflicts or evidence gaps identified during feature-level analysis.",
+            table_html(["Feature", "Flag", "Evidence"], feature_flag_rows),
+            "Show feature review flags",
+        )
+        + audit_section(
+            "Targeted evidence details",
+            "Requests and locally retrieved examples show what additional evidence supported feature descriptions.",
+            feature_evidence_rows,
+            "Show targeted evidence",
+        )
+        + audit_section(
+            "Description review",
+            "Compare current inputs with saved inputs to see which descriptions may need regeneration.",
+            f"<p>{len(review['processed_descriptions'])} feature description(s) were selected and processed in this build.</p>"
+            + table_html(["Feature", "Changed input"], affected_rows),
+            "Show description review",
+        )
+        + audit_section(
+            "Context issues surfaced by feature analysis",
+            "Review these flags and update context artifacts explicitly before regenerating affected descriptions.",
+            table_html(["Feature", "Flag", "Evidence"], flags_rows),
+            "Show context issues",
+        )
     )
     return {"dataset.html": dataset_body, "relationships.html": relationship_body,
             "audit.html": audit_body}

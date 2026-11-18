@@ -278,6 +278,17 @@ def table(headings: Sequence[str], rows: Sequence[Sequence[str]]) -> str:
     return f"<div class=scroll><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
 
 
+def audit_section(title: str, explanation: str, details: str,
+                  disclosure: str = "Show details") -> str:
+    """Render an audit section with a fixed summary and collapsed technical detail."""
+    return (
+        '<section class="audit-section">'
+        f"<h2>{e(title)}</h2><p class=\"audit-summary\">{e(explanation)}</p>"
+        f"<details><summary>{e(disclosure)}</summary>{details}</details>"
+        "</section>"
+    )
+
+
 def link(url: str, label: str) -> str:
     """Render an HTML link, escaping its URL and visible label."""
     return f'<a href="{e(url)}">{e(label)}</a>'
@@ -920,19 +931,28 @@ def generate(args: argparse.Namespace) -> None:
         ) or "<p>No additional evidence was requested.</p>"
         audit_body = (
             "<p>Technical record of the AI-assisted descriptions in this corpus site.</p>"
-            + "<h2>Harvested app files</h2>" + table(["Path", "SHA-256"], [
+            + audit_section("Harvested app files",
+                            "File fingerprints identify the application configuration and behavior inputs available to this build.",
+                            table(["Path", "SHA-256"], [
                 (e(path), e(digest)) for path, digest in application_source_files(application)
-            ])
-            + table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
+            ]), "Show app file fingerprints")
+            + audit_section("Feature description provenance",
+                            "Provider and model details identify the source of each generated feature description.",
+                            table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
                     [(feature(n), e(item["provider"]), e(item["requested_model"]),
                       e(item["responding_model"] or "Unavailable"),
                       e("; ".join(item["uncertainties"]) or "None recorded"))
-                     for n, item in sorted(feature_audit.items())])
-            + "<h2>Input fingerprints</h2><pre>" + e(json.dumps(
+                     for n, item in sorted(feature_audit.items())]),
+                            "Show feature provenance")
+            + audit_section("Input fingerprints",
+                            "Hashes describe the feature evidence and prompt inputs associated with each generated description.",
+                            "<pre>" + e(json.dumps(
                 {name: item["input_fingerprints"] for name, item in sorted(feature_audit.items())},
                 ensure_ascii=False, indent=2, sort_keys=True,
-            )) + "</pre>"
-            + "<h2>Targeted evidence details</h2>" + evidence_audit
+            )) + "</pre>", "Show input fingerprints")
+            + audit_section("Targeted evidence details",
+                            "Requests and locally retrieved examples show what additional evidence supported the descriptions.",
+                            evidence_audit, "Show evidence details")
         )
     page("audit.html", "Audit report", audit_body)
     page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>")
