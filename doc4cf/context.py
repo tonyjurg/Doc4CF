@@ -10,6 +10,7 @@ from urllib.request import Request
 
 from .generator import (
     PROVIDERS, export_inventory, request_with_completion_retry, write_atomic,
+    feature as feature_link,
 )
 
 
@@ -520,9 +521,6 @@ def context_pages(inventory, dataset, families, relationships, review, family_an
     """
     def h(value):
         return escape(str(value), quote=True)
-
-    def feature_link(name):
-        return f'<a href="features/{h(name)}.html">{h(name)}</a>'
 
     def status(value):
         return f'<span class="context-status">{h(value.replace("_", " ").title())}</span>'

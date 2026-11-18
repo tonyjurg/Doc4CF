@@ -13,3 +13,12 @@ build/
 .notes
 .cache/
 _site/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/

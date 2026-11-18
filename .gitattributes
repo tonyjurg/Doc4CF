@@ -1,0 +1,2 @@
+# Collapse generated example sites in GitHub diffs and language statistics.
+examples/** linguist-generated=true
