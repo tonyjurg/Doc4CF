@@ -79,11 +79,12 @@ class ProviderOptions(unittest.TestCase):
                     overview = (out / "index.html").read_text(encoding="utf-8")
                     self.assertIn("Generated description", feature)
                     self.assertIn("Example prose.", feature)
-                    self.assertEqual("Groq · actual-model" in feature, mode == "feature")
-                    self.assertEqual("Groq · actual-model" in overview, mode == "overview")
-                    if mode == "none":
-                        for page in out.rglob("*.html"):
-                            self.assertNotIn("actual-model", page.read_text(encoding="utf-8"))
+                    self.assertIn("ai-indicator", feature)
+                    self.assertIn("Groq", feature)
+                    self.assertIn("actual-model", feature)
+                    self.assertNotIn("actual-model", overview)
+                    audit = (out / "audit.html").read_text(encoding="utf-8")
+                    self.assertIn("actual-model", audit)
 
     def test_editorial_review_then_full_build(self):
         with TemporaryDirectory() as tmp, patch.dict("os.environ", OPENROUTER_API_KEY="test"):
