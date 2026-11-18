@@ -5,6 +5,7 @@ import json
 import os
 from collections import Counter
 from pathlib import Path
+from typing import Any
 from urllib.error import HTTPError
 from urllib.request import Request
 
@@ -236,7 +237,7 @@ def _status(value):
         raise ValueError("Context artifact status must be verified, inferred, or needs_review")
 
 
-def validate_dataset_context(data):
+def validate_dataset_context(data: dict[str, Any]) -> None:
     """Reject dataset context that has missing fields or invalid value types."""
     _keys(data, ("dataset_profile", "conventions", "ambiguities", "needs_review"))
     _string(data["dataset_profile"], "dataset_profile")
@@ -250,7 +251,7 @@ def validate_dataset_context(data):
         _string_list(item["evidence"], "evidence")
 
 
-def validate_family_context(data, feature_names):
+def validate_family_context(data: dict[str, Any], feature_names: set[str]) -> None:
     """Validate family and relationship records against corpus feature names.
 
     Every referenced feature must exist in the inventory; an empty family or
@@ -286,13 +287,15 @@ def validate_family_context(data, feature_names):
             raise ValueError("Relationship needs_review must be boolean")
 
 
-def inventory_digest(inventory):
+def inventory_digest(inventory: dict[str, Any]) -> str:
     """Hash canonical JSON so equivalent inventories produce the same digest."""
     return hashlib.sha256(json.dumps(inventory, ensure_ascii=False, sort_keys=True,
                                      separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
-def load_context_artifacts(context_dir, inventory):
+def load_context_artifacts(
+    context_dir: Path, inventory: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any] | None]:
     """Load validated context files whose version and digest match the corpus.
 
     A stale inventory hash is rejected before context can be used for feature
@@ -328,7 +331,7 @@ def load_context_artifacts(context_dir, inventory):
     return dataset, families["families"], relationships["relationships"], families.get("analysis")
 
 
-def validate_analysis_provenance(data):
+def validate_analysis_provenance(data: dict[str, Any]) -> None:
     """Validate the provider, model identifiers, and prompt version fields."""
     _keys(data, ("provider", "requested_model", "responding_model", "prompt_version"))
     if data["provider"] not in PROVIDERS:
@@ -339,7 +342,9 @@ def validate_analysis_provenance(data):
     _string(data["prompt_version"], "analysis.prompt_version")
 
 
-def validate_feature_response(data, feature_names, observed_values):
+def validate_feature_response(
+    data: dict[str, Any], feature_names: set[str], observed_values: dict[str, set[Any]],
+) -> None:
     """Validate generated references against known features and measured values.
 
     This catches valid JSON that nevertheless invents a feature name or cites
@@ -417,7 +422,9 @@ def _node_example(api, node, feature, value):
     return item
 
 
-def retrieve_requested_evidence(api, feature, kind, request, feature_kind):
+def retrieve_requested_evidence(
+    api: Any, feature: str, kind: str, request: dict[str, Any], feature_kind: str,
+) -> dict[str, Any]:
     """Resolve a bounded evidence request using only the loaded corpus data.
 
     Rare values are ranked by frequency and examples are selected in corpus
@@ -433,7 +440,7 @@ def retrieve_requested_evidence(api, feature, kind, request, feature_kind):
         # Node features provide directly attested example values and, where
         # Text-Fabric can render them, a short passage from the source corpus.
         if feature_kind == "node":
-            values = {}
+            values: dict[Any, Any] = {}
             for node, value in api.Fs(feature).items():
                 values.setdefault(value, node)
             counts = _value_counts(api, feature, "node")
@@ -456,8 +463,11 @@ def retrieve_requested_evidence(api, feature, kind, request, feature_kind):
     return result
 
 
-def contextual_description_record(evidence, model, cache, provider, feature_names, observed_values,
-                                   api=None, feature_kind=None, targeted_evidence=False):
+def contextual_description_record(
+    evidence: dict[str, Any], model: str, cache: Path, provider: str,
+    feature_names: set[str], observed_values: dict[str, set[Any]], api: Any = None,
+    feature_kind: str | None = None, targeted_evidence: bool = False,
+) -> dict[str, Any]:
     """Return a validated feature description and its review evidence.
 
     In targeted mode, a model first requests up to two evidence samples; Doc4CF
@@ -487,7 +497,11 @@ def contextual_description_record(evidence, model, cache, provider, feature_name
             "evidence_requests": requested, "additional_evidence": supplied.get("additional_evidence", [])}
 
 
-def feature_context_hashes(inventory, dataset, families, relationships, provider, model, targeted_evidence=False):
+def feature_context_hashes(
+    inventory: dict[str, Any], dataset: dict[str, Any], families: list[dict[str, Any]],
+    relationships: list[dict[str, Any]], provider: str, model: str,
+    targeted_evidence: bool = False,
+) -> dict[str, dict[str, Any]]:
     """Fingerprint the context, evidence, prompt, and model inputs per feature.
 
     These hashes let site builds identify descriptions whose source inputs
@@ -513,7 +527,11 @@ def feature_context_hashes(inventory, dataset, families, relationships, provider
     return result
 
 
-def context_pages(inventory, dataset, families, relationships, review, family_analysis=None):
+def context_pages(
+    inventory: dict[str, Any], dataset: dict[str, Any], families: list[dict[str, Any]],
+    relationships: list[dict[str, Any]], review: dict[str, Any],
+    family_analysis: dict[str, Any] | None = None,
+) -> dict[str, str]:
     """Render HTML bodies for dataset, relationship, and context-review pages.
 
     The caller supplies already validated artifacts; values are HTML-escaped
@@ -594,7 +612,7 @@ def context_pages(inventory, dataset, families, relationships, review, family_an
             "context-review.html": review_body}
 
 
-def table_html(headings, body_rows):
+def table_html(headings: list[str], body_rows: str) -> str:
     """Wrap rendered body rows in a horizontally scrollable HTML table."""
     head = "".join(f"<th>{escape(str(title), quote=True)}</th>" for title in headings)
     return f'<div class="scroll"><table><thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table></div>'
@@ -607,7 +625,7 @@ def analyze_context(
     dataset_model: str,
     family_model: str,
     cache: Path,
-) -> dict:
+) -> dict[str, Any]:
     """Analyze corpus metadata and save validated, reusable context artifacts.
 
     Two model stages draft dataset context and feature families/relationships.

@@ -17,9 +17,11 @@ jobs:
           python-version: '3.13'
           cache: pip
           cache-dependency-path: pyproject.toml
-      - name: Install package and linter
+      - name: Install package and development tools
         run: python -m pip install -e '.[dev]'
       - name: Lint
         run: ruff check .
+      - name: Type check
+        run: mypy doc4cf
       - name: Unit tests
         run: python -m unittest discover -s tests -p 'test_*.py'
