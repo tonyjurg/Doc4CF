@@ -5,7 +5,6 @@ from collections import Counter
 from hashlib import sha256
 from html import escape
 import json
-import os
 import time
 import random
 from datetime import UTC, datetime
