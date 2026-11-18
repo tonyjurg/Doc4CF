@@ -166,7 +166,7 @@ class ArtifactValidators(unittest.TestCase):
             ("unsupported kind", lambda value: value["requests"][0].__setitem__("kind", "other")),
             ("kind must be a string", lambda value: value["requests"][0].__setitem__("kind", None), TypeError),
             ("blank rationale", lambda value: value["requests"][0].__setitem__("rationale", " ")),
-            ("boolean count", lambda value: value["requests"][0].__setitem__("count", True)),
+            ("boolean count", lambda value: value["requests"][0].__setitem__("count", True), TypeError),
             ("count must be an integer", lambda value: value["requests"][0].__setitem__("count", "2"), TypeError),
             ("out of range count", lambda value: value["requests"][0].__setitem__("count", 6)),
             ("requests must be an array", lambda value: value.__setitem__("requests", None), TypeError),
