@@ -16,7 +16,7 @@ import shutil
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 import unicodedata
 from urllib.parse import quote, urlsplit
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from cfabric.core import Fabric
 
@@ -26,6 +26,8 @@ def header(path):
     # Decode the entire source strictly before claiming UTF-8.
     raw = path.read_bytes()
     lines = raw.decode("utf-8-sig").splitlines()
+    if not lines:
+        raise ValueError(f"{path.name} is empty; expected a Text-Fabric feature file")
     meta = {}
     for line in lines[1:]:
         if not line.startswith("@"):
@@ -34,6 +36,25 @@ def header(path):
         meta[key] = value
     return dict(kind=lines[0].lstrip("@"), meta=meta,
                 encoding="UTF-8 with BOM" if raw.startswith(b"\xef\xbb\xbf") else "UTF-8")
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    """Refuse redirects: urllib would forward API-key headers to the new host."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+_OPENER = build_opener(_NoRedirect)
+
+
+def urlopen(req, timeout=None):
+    """Open ``req`` without following redirects.
+
+    The provider endpoints are fixed HTTPS URLs and answer directly, so a
+    redirect surfaces as ``HTTPError`` instead of sending credentials elsewhere.
+    """
+    return _OPENER.open(req, timeout=timeout)
 
 
 RETRYABLE_STATUS = (408, 500, 502, 503, 504)
@@ -212,6 +233,21 @@ def feature(name):
     return link(f"features/{quote(name)}.html", name)
 
 
+def check_project_home(project_home):
+    """Return ``project_home`` if it is a relative path or an http(s) URL.
+
+    Schemes such as ``javascript:`` or ``data:`` would become a clickable link
+    on every generated page, so they are rejected.
+    """
+    if project_home:
+        scheme = urlsplit(project_home).scheme.lower()
+        if scheme not in ("", "http", "https"):
+            raise ValueError(
+                f"--project-home must be a relative path or an http(s) URL, not {scheme}:"
+            )
+    return project_home
+
+
 def write_page(out, filename, title, body, corpus, project_home=None):
     """Write one complete responsive HTML page with corpus navigation.
 
@@ -219,6 +255,7 @@ def write_page(out, filename, title, body, corpus, project_home=None):
     feature pages can share root-level styles and scripts.
     """
     prefix = "../" * (len(Path(filename).parts) - 1)
+    check_project_home(project_home)
     if project_home and not (urlsplit(project_home).scheme or project_home.startswith("/")):
         project_home = prefix + project_home
     footer = f'<footer class="project-credit">Generated with <a href="{e(project_home)}"><img src="{prefix}doc4cf-logo.svg" width="26" height="26" alt="">Doc4CF</a></footer>' if project_home else ""
@@ -491,6 +528,7 @@ def generate(args: argparse.Namespace) -> None:
         OSError: If output files cannot be written.
     """
     src, out = args.corpus.resolve(), args.output.resolve()
+    check_project_home(getattr(args, "project_home", None))
     files = {p.stem: header(p) for p in sorted(src.glob("*.tf"))}
     if not {"otype", "oslots"} <= files.keys():
         raise ValueError("Expected a corpus directory containing otype.tf and oslots.tf")

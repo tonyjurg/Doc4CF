@@ -125,7 +125,13 @@ def release_source(tag: str, workspace: Path) -> Path:
         ["git", "clone", "--quiet", "--no-hardlinks", "--no-checkout", str(ROOT), str(source)],
         check=True,
     )
-    subprocess.run(["git", "checkout", "--quiet", "--detach", tag], cwd=source, check=True)
+    # Resolve the tag to a commit first, so an odd tag name cannot be read as an
+    # option and a branch with the same name cannot be checked out by mistake.
+    commit = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"refs/tags/{tag}^{{commit}}"],
+        cwd=source, check=True, capture_output=True, text=True,
+    ).stdout.strip()
+    subprocess.run(["git", "checkout", "--quiet", "--detach", commit], cwd=source, check=True)
     if not (source / "docs" / "api" / "conf.py").is_file():
         raise RuntimeError(f"Release {tag} does not contain the Sphinx API documentation setup")
     return source

@@ -7,6 +7,17 @@ name = "doc4cf"
 version = "0.1.0"
 description = "Generate an offline interactive corpus reference with Context-Fabric"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["text-fabric", "context-fabric", "corpus", "documentation", "digital-humanities"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Text Processing :: Linguistic",
+]
 requires-python = ">=3.13"
 authors = [
   { name = "Tony Jurg" },
@@ -15,6 +26,9 @@ authors = [
 dependencies = ["context-fabric==0.5.8"]
 
 [project.optional-dependencies]
+dev = [
+  "ruff>=0.9",
+]
 docs = [
   "sphinx>=8.2,<10",
   "sphinx-rtd-theme>=3,<4",
@@ -29,6 +43,7 @@ packages = ["doc4cf"]
 
 [tool.setuptools.package-data]
 doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json"]
+
 [project.urls]
 Repository = "https://github.com/tonyjurg/Doc4CF"
 Issues = "https://github.com/tonyjurg/Doc4CF/issues"
