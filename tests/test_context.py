@@ -221,9 +221,12 @@ class ContextPipeline(unittest.TestCase):
         dataset["dataset_profile"] = "<script>alert(1)</script>"
         review = {"affected_descriptions": [], "processed_descriptions": [], "context_flags": []}
         pages = context.context_pages(self.inventory, dataset, [FAMILY], [RELATIONSHIP], review)
-        self.assertEqual(set(pages), {"dataset.html", "relationships.html", "context-review.html"})
+        self.assertEqual(set(pages), {"dataset.html", "relationships.html", "audit.html"})
         self.assertIn("&lt;script&gt;", pages["dataset.html"])
         self.assertNotIn("<script>alert(1)</script>", pages["dataset.html"])
+        self.assertIn("Analysis provenance", pages["audit.html"])
+        self.assertNotIn("inventory hash", pages["dataset.html"].lower())
+        self.assertIn("ai-indicator", pages["dataset.html"])
 
     def test_feature_context_hashes_change_with_evidence(self):
         dataset = {**deepcopy(DATASET), "inventory_sha256": "ignored"}

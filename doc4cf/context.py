@@ -9,7 +9,7 @@ from typing import Any
 from urllib.error import HTTPError
 
 from .generator import (
-    export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
+    ai_indicator, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
 from .providers import PROVIDERS, build_provider_request
@@ -555,7 +555,7 @@ def context_pages(
     relationships: list[dict[str, Any]], review: dict[str, Any],
     family_analysis: dict[str, Any] | None = None,
 ) -> dict[str, str]:
-    """Render HTML bodies for dataset, relationship, and context-review pages.
+    """Render HTML bodies for dataset, relationship, and audit pages.
 
     The caller supplies already validated artifacts; values are HTML-escaped
     here before they are inserted into generated page markup.
@@ -579,43 +579,44 @@ def context_pages(
     )
     family_rows = "".join(
         f"<tr><td>{h(item['label'])}</td><td>{h(item['purpose'])}</td><td>{status(item['status'])}</td>"
-        f"<td>{' · '.join(feature_link(name) for name in item['features'])}</td><td>{evidence(item['evidence'])}</td></tr>"
+        f"<td>{' · '.join(feature_link(name) for name in item['features'])}</td></tr>"
         for item in families
-    ) or '<tr><td colspan="5">No feature families proposed.</td></tr>'
-    global_provenance = dataset.get("analysis")
-    provenance_rows = ""
-    if global_provenance:
-        provenance_rows += (f"<tr><td>Dataset context</td><td>{h(global_provenance['provider'])}</td>"
-                            f"<td>{h(global_provenance['requested_model'])}</td><td>{h(global_provenance['responding_model'] or 'Unavailable')}</td>"
-                            f"<td>{h(global_provenance['prompt_version'])}</td></tr>")
-    if family_analysis:
-        provenance_rows += (f"<tr><td>Families and relationships</td><td>{h(family_analysis['provider'])}</td>"
-                            f"<td>{h(family_analysis['requested_model'])}</td><td>{h(family_analysis['responding_model'] or 'Unavailable')}</td>"
-                            f"<td>{h(family_analysis['prompt_version'])}</td></tr>")
-    provenance_section = ("<h2>Analysis provenance</h2>" + table_html(
-        ["Artifact", "Provider", "Requested model", "Responding model", "Prompt version"], provenance_rows)
-        if provenance_rows else "")
+    ) or '<tr><td colspan="4">No feature families proposed.</td></tr>'
+    dataset_analysis = dataset.get("analysis", {})
+    relationship_analysis = (family_analysis or {}).get("analysis", {})
+    dataset_badge = ai_indicator(
+        dataset_analysis.get("provider", "Unknown"), dataset_analysis.get("requested_model", "Unknown"),
+        dataset_analysis.get("responding_model"),
+        "A summary inferred from the corpus inventory and harvested app configuration. "
+        "Conventions are labeled by evidence status; interpretation is not corpus metadata.",
+        "dataset-context",
+    )
     dataset_body = (
-        f"<p><strong>Model-generated interpretation.</strong> {h(dataset['dataset_profile'])}</p>"
-        f"<p>Context inventory hash: <code>{h(dataset['inventory_sha256'])}</code>. Review required: {h(dataset['needs_review'])}.</p>"
-        f"<h2>Proposed annotation conventions</h2><p>Each claim is labeled by evidence status; inferred claims are hypotheses, not corpus metadata.</p>"
-        + table_html(["Claim", "Evidence status", "Inventory evidence"], conventions)
+        f"<h2>About the dataset {dataset_badge}</h2><p>{h(dataset['dataset_profile'])}</p>"
+        f"<h2>Annotation conventions {ai_indicator(dataset_analysis.get('provider', 'Unknown'), dataset_analysis.get('requested_model', 'Unknown'), dataset_analysis.get('responding_model'), 'Suggested interpretations of corpus conventions. See the Audit report for evidence and review details.', 'conventions')}</h2>"
+        + table_html(["Claim", "Evidence status"], "".join(
+            f"<tr><td>{h(item['claim'])}</td><td>{status(item['status'])}</td></tr>"
+            for item in dataset["conventions"]
+        ) or '<tr><td colspan="2">No conventions proposed.</td></tr>')
         + "<h2>Observed node structure</h2><p>Node types appear in Context-Fabric corpus order. This ordering does not assert a containment relation.</p>"
         + table_html(["Node type", "Node count", "Note"], node_rows)
-        + "<h2>Feature families and terminology</h2><p>Family names and purposes are model interpretations. Use the linked source metadata and feature profiles to review them.</p>"
-        + table_html(["Family", "Proposed purpose", "Evidence status", "Features", "Evidence"], family_rows)
-        + provenance_section
-        + "<h2>Research starting points</h2><p>These proposed family groupings can help identify features to inspect for a research question. Validate each feature against its profile before using it.</p>"
-        + "<ul>" + "".join(f"<li>{h(item['purpose'])}: {' · '.join(feature_link(name) for name in item['features'])}</li>" for item in families) + "</ul>"
+        + f"<h2>Feature families and terminology {ai_indicator(relationship_analysis.get('provider', 'Unknown'), relationship_analysis.get('requested_model', 'Unknown'), relationship_analysis.get('responding_model'), 'Suggested feature groupings and purposes inferred from dataset and feature context.', 'families')}</h2>"
+        + table_html(["Family", "Purpose", "Evidence status", "Features"], family_rows)
     )
     relation_rows = "".join(
         f"<tr><td>{feature_link(item['source_feature'])}</td><td>{h(item['relationship'])}</td>"
-        f"<td>{feature_link(item['target_feature'])}</td><td>{status(item['status'])}</td><td>{evidence(item['evidence'])}</td></tr>"
+        f"<td>{feature_link(item['target_feature'])}</td><td>{status(item['status'])}</td></tr>"
         for item in relationships
-    ) or '<tr><td colspan="5">No feature relationships proposed.</td></tr>'
+    ) or '<tr><td colspan="4">No feature relationships proposed.</td></tr>'
+    relationship_badge = ai_indicator(
+        relationship_analysis.get("provider", "Unknown"), relationship_analysis.get("requested_model", "Unknown"),
+        relationship_analysis.get("responding_model"),
+        "Proposed groupings and relationships inferred from feature profiles and dataset context.",
+        "relationships",
+    )
     relationship_body = (
-        "<p>Verified entries should be directly supported by observed corpus structure. Inferred entries express model interpretations and need review.</p>"
-        + table_html(["Feature", "Proposed relationship", "Related feature", "Evidence status", "Evidence"], relation_rows)
+        f"<h2>Feature relationships {relationship_badge}</h2>"
+        + table_html(["Feature", "Relationship", "Related feature", "Evidence status"], relation_rows)
     )
     affected_rows = "".join(
         f"<tr><td>{feature_link(item['feature'])}</td><td>{h('; '.join(item['reasons']))}</td></tr>"
@@ -631,8 +632,72 @@ def context_pages(
         + "<h2>Context issues surfaced by feature analysis</h2><p>Review these flags and update context artifacts explicitly before regenerating affected descriptions.</p>"
         + table_html(["Feature", "Flag", "Evidence"], flags_rows)
     )
+    provenance_records = []
+    for artifact, analysis in (("Dataset context", dataset_analysis),
+                               ("Families and relationships", relationship_analysis)):
+        if analysis:
+            provenance_records.append(
+                f"<tr><td>{h(artifact)}</td><td>{h(analysis.get('provider', ''))}</td>"
+                f"<td>{h(analysis.get('requested_model', ''))}</td>"
+                f"<td>{h(analysis.get('responding_model') or 'Unavailable')}</td>"
+                f"<td>{h(analysis.get('prompt_version', ''))}</td></tr>"
+            )
+    feature_analysis = review.get("feature_analysis", {})
+    feature_audit_rows = "".join(
+        f"<tr><td>{feature_link(name)}</td><td>{h(item.get('provider', ''))}</td>"
+        f"<td>{h(item.get('requested_model', ''))}</td><td>{h(item.get('responding_model') or 'Unavailable')}</td>"
+        f"<td>{h('; '.join(item.get('uncertainties', [])) or 'None recorded')}</td></tr>"
+        for name, item in sorted(feature_analysis.items())
+    ) or '<tr><td colspan="5">No feature descriptions were generated in this build.</td></tr>'
+    feature_flag_rows = "".join(
+        f"<tr><td>{feature_link(name)}</td><td>{h(flag.get('status', ''))}: {h(flag.get('issue', ''))}</td>"
+        f"<td>{evidence(flag.get('evidence', []))}</td></tr>"
+        for name, item in sorted(feature_analysis.items()) for flag in item.get("context_flags", [])
+    ) or '<tr><td colspan="3">No feature-level review flags.</td></tr>'
+    family_audit_rows = "".join(
+        f"<tr><td>{h(item['label'])}</td><td>{h(item['purpose'])}</td><td>{status(item['status'])}</td>"
+        f"<td>{' · '.join(feature_link(name) for name in item['features'])}</td><td>{evidence(item['evidence'])}</td></tr>"
+        for item in families
+    ) or '<tr><td colspan="5">No feature families proposed.</td></tr>'
+    relationship_audit_rows = "".join(
+        f"<tr><td>{feature_link(item['source_feature'])}</td><td>{h(item['relationship'])}</td>"
+        f"<td>{feature_link(item['target_feature'])}</td><td>{status(item['status'])}</td><td>{evidence(item['evidence'])}</td></tr>"
+        for item in relationships
+    ) or '<tr><td colspan="5">No feature relationships proposed.</td></tr>'
+    feature_evidence_rows = "".join(
+        f"<details><summary>{feature_link(name)}: requested and retrieved evidence</summary>"
+        f"<pre>{h(json.dumps({'requests': item.get('evidence_requests', []), 'retrieved': item.get('additional_evidence', [])}, ensure_ascii=False, indent=2, sort_keys=True))}</pre></details>"
+        for name, item in sorted(feature_analysis.items())
+        if item.get("evidence_requests") or item.get("additional_evidence")
+    ) or "<p>No additional evidence was requested.</p>"
+    application_files = inventory.get("application", {}).get("source_files", {})
+    application_file_rows = "".join(
+        f"<tr><td>{h(path)}</td><td><code>{h(digest)}</code></td></tr>"
+        for path, digest in sorted(application_files.items())
+    ) or '<tr><td colspan="2">No app configuration files were harvested.</td></tr>'
+    fingerprint_details = "<pre>" + h(json.dumps(
+        {name: item.get("input_fingerprints", {}) for name, item in sorted(feature_analysis.items())},
+        ensure_ascii=False, indent=2, sort_keys=True,
+    )) + "</pre>"
+    audit_body = (
+        "<p>Technical record of the analysis used to prepare these descriptions. The corpus pages stay concise; this report preserves evidence and review details.</p>"
+        f"<h2>Analysis provenance</h2>{table_html(['Artifact', 'Provider', 'Requested model', 'Responding model', 'Prompt version'], ''.join(provenance_records))}"
+        f"<h2>Inventory</h2><p>SHA-256: <code>{h(dataset['inventory_sha256'])}</code></p>"
+        f"<p>Editorial review required: {h(dataset['needs_review'])}</p>"
+        f"<h2>Harvested app files</h2>{table_html(['Path', 'SHA-256'], application_file_rows)}"
+        f"<p>Dataset instruction SHA-256: <code>{h(dataset_analysis.get('dataset_instructions_sha256', 'Not supplied'))}</code></p>"
+        f"<h2>Convention evidence</h2>{table_html(['Claim', 'Evidence status', 'Inventory evidence'], conventions)}"
+        f"<h2>Feature family evidence</h2>{table_html(['Family', 'Purpose', 'Evidence status', 'Features', 'Evidence'], family_audit_rows)}"
+        f"<h2>Relationship evidence</h2>{table_html(['Feature', 'Relationship', 'Related feature', 'Evidence status', 'Evidence'], relationship_audit_rows)}"
+        f"<h2>Open questions</h2><ul>{''.join(f'<li>{h(item)}</li>' for item in dataset['ambiguities']) or '<li>None recorded.</li>'}</ul>"
+        f"<h2>Feature description provenance</h2>{table_html(['Feature', 'Provider', 'Requested model', 'Responding model', 'Uncertainties'], feature_audit_rows)}"
+        f"<h2>Feature input fingerprints</h2>{fingerprint_details}"
+        f"<h2>Feature review flags</h2>{table_html(['Feature', 'Flag', 'Evidence'], feature_flag_rows)}"
+        f"<h2>Targeted evidence details</h2>{feature_evidence_rows}"
+        f"<h2>Description review</h2>{review_body}"
+    )
     return {"dataset.html": dataset_body, "relationships.html": relationship_body,
-            "context-review.html": review_body}
+            "audit.html": audit_body}
 
 
 def table_html(headings: list[str], body_rows: str) -> str:

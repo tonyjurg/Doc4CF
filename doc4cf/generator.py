@@ -28,6 +28,19 @@ from .prompts import load_description, load_prompt
 logger = logging.getLogger(__name__)
 
 
+def ai_indicator(provider: str, requested_model: str, responding_model: str | None,
+                 explanation: str, identifier: str = "") -> str:
+    """Render a compact, keyboard-accessible explanation for inferred content."""
+    response = responding_model or f"{requested_model} (reported model unavailable)"
+    tooltip_id = "ai-info-" + sha256(f"{identifier}|{provider}|{requested_model}|{explanation}".encode()).hexdigest()[:12]
+    return (
+        '<span class="ai-indicator"><button type="button" aria-label="About this AI-generated content" '
+        f'aria-describedby="{tooltip_id}">✦</button><span class="ai-tooltip" role="tooltip" id="{tooltip_id}">'
+        f'<strong>AI-assisted interpretation</strong><br>{e(explanation)}<br>'
+        f'<span>Provider: {e(provider)} · Model: {e(response)}</span></span></span>'
+    )
+
+
 def header(path: Path) -> dict[str, Any]:
     """Read a Text-Fabric header and return its kind, metadata, and encoding."""
     # Decode the entire source strictly before claiming UTF-8.
@@ -292,7 +305,8 @@ def write_page(
     brand = f'<a class="header-logo" href="{prefix}index.html" aria-label="{e(corpus)} overview">{logo}</a>'
     nav = " ".join(link(prefix + url, label) for url, label in [
         ("index.html", "Overview"), ("features.html", "Features"),
-        ("structure.html", "Structure"), ("text.html", "Text & encoding")])
+        ("structure.html", "Structure"), ("text.html", "Text & encoding"),
+        ("audit.html", "Audit report")])
     (out / filename).write_text(f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(title)} · {e(corpus)}</title>
 <link rel="stylesheet" href="{prefix}style.css"><script defer src="{prefix}browse.js"></script></head>
@@ -606,6 +620,8 @@ def generate(args: argparse.Namespace) -> None:
     context_inputs = {}
     applied_inputs = {}
     context_flags = {}
+    feature_audit = {}
+    audit_body = ""
     review_candidates = []
     if context_dir is not None:
         from .context import feature_context_hashes, inventory_digest, load_context_artifacts
@@ -664,8 +680,6 @@ def generate(args: argparse.Namespace) -> None:
         assert inventory is not None
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
-    attribution = getattr(args, "model_attribution", "feature")
-    model_credits = set()
     order = api.F.otype.all
     nodes = {f"otype::{t}": dict(type="node_type", origName=t) for t in order}
     edges, rows, profiles = [], [], {}
@@ -702,25 +716,26 @@ def generate(args: argparse.Namespace) -> None:
                 applied_inputs[n] = context_inputs[n]
             else:
                 record = description_record(evidence, args.model, args.cache, provider)
-            model_name = record["model"] or f"{feature_model} (requested; response model unavailable)"
-            credit = f"{PROVIDERS[provider][0]} · {model_name}"
-            model_credits.add(credit)
-            byline = f"<small>{e(credit)}</small>" if attribution == "feature" else ""
-            body += f'<aside><h2>Generated description</h2><p>{e(record["text"])}</p>{byline}</aside>'
-            if record.get("uncertainties"):
-                body += "<h2>Generated description uncertainties</h2><ul>" + "".join(
-                    f"<li>{e(item)}</li>" for item in record["uncertainties"]
-                ) + "</ul>"
-            if record.get("context_flags"):
-                body += "<h2>Context review flags</h2><ul>" + "".join(
-                    f"<li><strong>{e(item['status'].replace('_', ' ').title())}:</strong> {e(item['issue'])} — {e(', '.join(item['evidence']))}</li>"
-                    for item in record["context_flags"]
-                ) + "</ul>"
-            if record.get("additional_evidence"):
-                body += '<details><summary>Additional evidence retrieved on request</summary><ul>' + "".join(
-                    f"<li><strong>{e(item['kind'])}:</strong> {e(item['rationale'])}<pre>{e(json.dumps(item, ensure_ascii=False, indent=2))}</pre></li>"
-                    for item in record["additional_evidence"]
-                ) + "</ul></details>"
+            explanation = (
+                "Based on measured feature data, supplied metadata, and dataset context. "
+                "Interpretations may need review against the source corpus."
+                if context_data else
+                "Based on feature metadata and measured values available for this corpus."
+            )
+            badge = ai_indicator(PROVIDERS[provider][0], feature_model, record["model"], explanation, f"feature-{n}")
+            body += f'<aside><h2>Generated description {badge}</h2><p>{e(record["text"])}</p></aside>'
+            feature_audit[n] = {
+                "provider": PROVIDERS[provider][0], "requested_model": feature_model,
+                "responding_model": record["model"], "uncertainties": record.get("uncertainties", []),
+                "context_flags": record.get("context_flags", []),
+                "evidence_requests": record.get("evidence_requests", []),
+                "additional_evidence": record.get("additional_evidence", []),
+                "input_fingerprints": context_inputs.get(n, {
+                    "feature_evidence_sha256": sha256(json.dumps(evidence, ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
+                    "prompt_sha256": sha256(feature_description_prompt(n).encode()).hexdigest(),
+                    "provider": provider, "model": feature_model,
+                }),
+            }
         for field, heading, unit in [("sources","Applies to","Populated nodes"), ("targets","Points to","Incoming edges")]:
             if p[field]:
                 body += f"<h2>{heading}</h2>" + table(["Node type",unit], [(link(f"../structure.html#type-{t}",t),f"{count:,}") for t,count in p[field].items()])
@@ -800,7 +815,6 @@ def generate(args: argparse.Namespace) -> None:
     forms = ", ".join(f for f in ("NFC","NFD") if unicodedata.is_normalized(f,sample))
     text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
     page("text.html","Text & encoding",text_body)
-    overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(model_credits)) + "</p>" if model_credits and attribution == "overview" else ""
     overview_description = ""
     if overview_notes or context_data:
         overview_description = "<section><h2>About this dataset</h2>"
@@ -810,24 +824,16 @@ def generate(args: argparse.Namespace) -> None:
             )
         if context_data:
             dataset_context = context_data[0]
-            overview_description += (
-                f"<p><strong>Inventory analysis.</strong> {e(dataset_context['dataset_profile'])}</p>"
+            dataset_analysis = dataset_context.get("analysis", {})
+            badge = ai_indicator(
+                dataset_analysis.get("provider", "Unknown"), dataset_analysis.get("requested_model", "Unknown"),
+                dataset_analysis.get("responding_model"),
+                "Inferred from the corpus inventory and harvested app configuration. See the Audit report for evidence and review details.",
+                "dataset-overview",
             )
-            conventions = dataset_context["conventions"]
-            if conventions:
-                overview_description += "<h3>Observed conventions</h3><ul>" + "".join(
-                    f"<li><strong>{e(item['status'].replace('_', ' ').title())}:</strong> {e(item['claim'])}</li>"
-                    for item in conventions
-                ) + "</ul>"
-            ambiguities = dataset_context["ambiguities"]
-            if ambiguities:
-                overview_description += (
-                    "<h3>Questions for review</h3><ul>" + "".join(
-                        f"<li>{e(item)}</li>" for item in ambiguities
-                    ) + "</ul>"
-                )
-            if dataset_context["needs_review"]:
-                overview_description += "<p><strong>Review note:</strong> This interpretation includes items that need editorial review.</p>"
+            overview_description += (
+                f"<p>{e(dataset_context['dataset_profile'])} {badge}</p>"
+            )
         overview_description += "</section>"
     provenance_description = ""
     if application:
@@ -868,27 +874,51 @@ def generate(args: argparse.Namespace) -> None:
         review = {"inventory_sha256": dataset_context["inventory_sha256"],
                   "affected_descriptions": review_candidates,
                   "processed_descriptions": sorted(n for n in selected if args.model and n in context_inputs and applied_inputs.get(n) == context_inputs[n]),
-                  "context_flags": flags}
+                  "context_flags": flags, "feature_analysis": feature_audit}
         _atomic_json(out / "context_review.json", review)
         if args.model:
             _atomic_json(out / "context_manifest.json", {"manifest_version": "1.0",
                          "applied": applied_inputs, "context_flags": context_flags})
+        if inventory is None:
+            raise RuntimeError("Context audit requires a loaded context inventory")
+        rendered_context_pages = render_context_pages(
+            inventory, dataset_context, families, relationships, review, family_analysis,
+        )
+        audit_body = rendered_context_pages.pop("audit.html", "")
         if context_pages_enabled:
             titles = {"dataset.html": "Dataset architecture and glossary",
-                      "relationships.html": "Feature relationship index",
-                      "context-review.html": "Context review"}
-            if inventory is None:
-                raise RuntimeError("Context pages require a loaded context inventory")
-            for filename, body in render_context_pages(inventory, dataset_context, families,
-                                                        relationships, review, family_analysis).items():
+                      "relationships.html": "Feature relationship index"}
+            for filename, body in rendered_context_pages.items():
                 page(filename, titles[filename], body)
     cards = [("features.html", "Explore features"), ("structure.html", "Browse corpus structure"),
              ("diagram.html", "Explore the corpus diagram"), ("text.html", "Inspect transcription and encoding")]
     if context_pages_enabled:
         cards.extend([("dataset.html", "Dataset architecture and glossary"),
-                      ("relationships.html", "Feature relationship index"),
-                      ("context-review.html", "Context review")])
-    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
+                      ("relationships.html", "Feature relationship index")])
+    if not audit_body:
+        evidence_audit = "".join(
+            f"<details><summary>{feature(n)}: additional evidence</summary><pre>{e(json.dumps({'requests': item['evidence_requests'], 'retrieved': item['additional_evidence']}, ensure_ascii=False, indent=2, sort_keys=True))}</pre></details>"
+            for n, item in sorted(feature_audit.items())
+            if item["evidence_requests"] or item["additional_evidence"]
+        ) or "<p>No additional evidence was requested.</p>"
+        audit_body = (
+            "<p>Technical record of the AI-assisted descriptions in this corpus site.</p>"
+            + "<h2>Harvested app files</h2>" + table(["Path", "SHA-256"], [
+                (e(path), e(digest)) for path, digest in sorted((application or {}).get("source_files", {}).items())
+            ])
+            + table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
+                    [(feature(n), e(item["provider"]), e(item["requested_model"]),
+                      e(item["responding_model"] or "Unavailable"),
+                      e("; ".join(item["uncertainties"]) or "None recorded"))
+                     for n, item in sorted(feature_audit.items())])
+            + "<h2>Input fingerprints</h2><pre>" + e(json.dumps(
+                {name: item["input_fingerprints"] for name, item in sorted(feature_audit.items())},
+                ensure_ascii=False, indent=2, sort_keys=True,
+            )) + "</pre>"
+            + "<h2>Targeted evidence details</h2>" + evidence_audit
+        )
+    page("audit.html", "Audit report", audit_body)
+    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>")
 
 
 def main() -> None:
@@ -919,7 +949,7 @@ def main() -> None:
                         help="Let the model request missing feature evidence, retrieve it locally, then generate the description")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
-                        help="Show the provider and responding model on each feature, once on the overview, or nowhere")
+                        help="Retained for CLI compatibility; model details now appear beside inferred content")
     parser.add_argument("--cache", type=Path, default=Path(".doc4cf-cache"))
     parser.add_argument("--export-inventory", type=Path, metavar="FILE",
                         help="Export a deterministic corpus inventory as JSON and exit (no model calls)")
