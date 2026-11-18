@@ -12,6 +12,7 @@ from .generator import (
     feature as feature_link,
 )
 from .providers import PROVIDERS, build_provider_request
+from .prompts import load_prompt
 
 
 PROMPT_VERSION = "context-analysis-1"

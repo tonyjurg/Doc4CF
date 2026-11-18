@@ -20,6 +20,7 @@ from urllib.parse import quote, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from cfabric.core import Fabric
+from .providers import PROVIDERS, build_provider_request
 from .prompts import load_prompt
 
 
