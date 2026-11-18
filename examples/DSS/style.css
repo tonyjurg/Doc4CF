@@ -14,6 +14,8 @@
 
 .project-credit a{display:inline-flex;align-items:center;gap:.25rem;vertical-align:middle}.project-credit img{display:block}
 
+.ai-indicator{position:relative;display:inline-flex;vertical-align:middle;margin-inline-start:.2em;font:normal .7rem "Segoe UI",sans-serif}.ai-indicator button{border:1px solid #b6c3b8;border-radius:50%;width:1.35rem;height:1.35rem;padding:0;background:#eef3ec;color:#45665c;font:600 .62rem "Segoe UI",sans-serif;cursor:help}.ai-indicator button:focus-visible{outline:2px solid #c26922;outline-offset:2px}.ai-tooltip{display:none;position:absolute;z-index:20;left:50%;top:calc(100% + .45rem);transform:translateX(-50%);width:min(20rem,80vw);padding:.75rem .9rem;border:1px solid #bdcbbf;border-radius:.4rem;background:#fff;color:#173331;box-shadow:0 4px 16px #17333126;font-size:.85rem;font-weight:400;line-height:1.45}.ai-tooltip span{display:inline-block;margin-top:.4rem;color:#526860;font-size:.78rem}.ai-indicator:hover .ai-tooltip,.ai-indicator:focus-within .ai-tooltip{display:block}
+
 .header-logo{display:inline-flex;flex:none;align-items:center;justify-content:center;width:44px;height:44px;border-radius:.35rem}.header-logo img{display:block}header nav{flex:1 1 14rem}
 
 @media (min-width:76rem){

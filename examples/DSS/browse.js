@@ -6,7 +6,13 @@ filter?.addEventListener("input", () => {
   }
 });
 function revealType() {
-  const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  let id;
+  try {
+    id = decodeURIComponent(location.hash.slice(1));
+  } catch {
+    return; // A malformed escape such as "#%" must not stop the rest of the script.
+  }
+  const target = document.getElementById(id);
   if (target instanceof HTMLDetailsElement) target.open = true;
 }
 window.addEventListener("hashchange", revealType);
