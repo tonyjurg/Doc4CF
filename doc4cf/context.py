@@ -440,7 +440,7 @@ def retrieve_requested_evidence(
         # Node features provide directly attested example values and, where
         # Text-Fabric can render them, a short passage from the source corpus.
         if feature_kind == "node":
-            values = {}
+            values: dict[Any, Any] = {}
             for node, value in api.Fs(feature).items():
                 values.setdefault(value, node)
             counts = _value_counts(api, feature, "node")

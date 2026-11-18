@@ -1,5 +1,6 @@
 """Build an offline corpus reference from Context-Fabric."""
 import argparse
+from collections.abc import Sequence
 from collections import Counter
 from hashlib import sha256
 from html import escape
@@ -216,13 +217,14 @@ def request_with_completion_retry(
             f"retrying with max_tokens={token_budget:,}.",
             flush=True,
         )
+    raise RuntimeError("Completion retry loop ended unexpectedly")
 
 def e(value: object) -> str:
     """Escape a value for safe insertion into an HTML text or attribute."""
     return escape(str(value), quote=True)
 
 
-def table(headings: list[str], rows: list[tuple[str, ...]]) -> str:
+def table(headings: Sequence[str], rows: Sequence[Sequence[str]]) -> str:
     """Render a table from headings and pre-rendered cell contents."""
     head = "".join(f"<th>{e(h)}</th>" for h in headings)
     body = "".join("<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>" for row in rows)
@@ -326,7 +328,7 @@ def description_record(
         {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}]
     if "corpus_editor_notes" in evidence:
         messages[0]["content"] += " Use corpus_editor_notes as editorial background where relevant. Base claims about this feature's observed values and coverage on its measured profile."
-    request_data = dict(model=model, messages=messages)
+    request_data: dict[str, Any] = dict(model=model, messages=messages)
     if provider == "openrouter":
         # Keep the compact completion budget for ordinary OpenRouter models.
         request_data.update(temperature=0.2, max_tokens=220)
@@ -383,7 +385,9 @@ def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict
     populations. Edge value counts are included only for valued edges.
     """
     kind = info["kind"]
-    counts, targets, values = Counter(), Counter(), Counter()
+    counts: Counter[str] = Counter()
+    targets: Counter[str] = Counter()
+    values: Counter[Any] = Counter()
     types = api.F.otype
     if kind == "node":
         for node, value in api.Fs(name).items():
@@ -523,7 +527,7 @@ def load_corpus(src: Path, files: dict[str, Any], out: Path) -> Any:
     # Supply it in a separate location without adding a feature to the corpus.
     with TemporaryDirectory(dir=out) as temp:
         (Path(temp) / "otext.tf").write_text("@config\n\n", encoding="utf-8")
-        return Fabric(locations=[temp, src]).load(features)
+        return Fabric(locations=[temp, str(src)]).load(features)
 
 
 def generate(args: argparse.Namespace) -> None:
@@ -583,7 +587,7 @@ def generate(args: argparse.Namespace) -> None:
     feature_model = getattr(args, "feature_model", None) or args.model
     context_data = None
     inventory = None
-    observed_values = {}
+    observed_values: dict[str, set[Any]] = {}
     context_inputs = {}
     applied_inputs = {}
     context_flags = {}
@@ -629,7 +633,7 @@ def generate(args: argparse.Namespace) -> None:
         # remain compact and include only the current feature's measured profile.
         for name, info in files.items():
             kind = info["kind"]
-            values = set()
+            values: set[Any] = set()
             if kind == "node":
                 values.update(value for _, value in api.Fs(name).items())
             elif kind == "edge":
@@ -791,6 +795,7 @@ def generate(args: argparse.Namespace) -> None:
             titles = {"dataset.html": "Dataset architecture and glossary",
                       "relationships.html": "Feature relationship index",
                       "context-review.html": "Context review"}
+            assert inventory is not None
             for filename, body in render_context_pages(inventory, dataset_context, families,
                                                         relationships, review, family_analysis).items():
                 page(filename, titles[filename], body)
