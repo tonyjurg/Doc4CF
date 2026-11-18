@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff lint
+        entry: ruff check .
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: mypy
+        name: Mypy type check
+        entry: mypy doc4cf
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -14,6 +14,7 @@ from numbers import Integral
 from pathlib import Path
 import shutil
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+from typing import Any, cast
 import unicodedata
 from urllib.parse import quote, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
@@ -21,7 +22,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from cfabric.core import Fabric
 
 
-def header(path):
+def header(path: Path) -> dict[str, Any]:
     """Read a Text-Fabric header and return its kind, metadata, and encoding."""
     # Decode the entire source strictly before claiming UTF-8.
     raw = path.read_bytes()
@@ -48,7 +49,7 @@ class _NoRedirect(HTTPRedirectHandler):
 _OPENER = build_opener(_NoRedirect)
 
 
-def urlopen(req, timeout=None):
+def urlopen(req: Request, timeout: float | None = None) -> Any:
     """Open ``req`` without following redirects.
 
     The provider endpoints are fixed HTTPS URLs and answer directly, so a
@@ -60,7 +61,7 @@ def urlopen(req, timeout=None):
 RETRYABLE_STATUS = (408, 500, 502, 503, 504)
 
 
-def write_atomic(path, text, mode=0o644):
+def write_atomic(path: Path, text: str, mode: int = 0o644) -> None:
     """Write ``text`` to ``path`` through a temporary file in the same directory.
 
     ``NamedTemporaryFile`` creates files readable only by their owner, so ``mode``
@@ -127,7 +128,10 @@ def _retry_delay(retry_after, attempt, base_delay, max_delay):
     return min(max_delay, delay)
 
 
-def request_with_retry(req, timeout=90, max_retries=6, base_delay=5, max_delay=120):
+def request_with_retry(
+    req: Request, timeout: float = 90, max_retries: int = 6,
+    base_delay: float = 5, max_delay: float = 120,
+) -> dict[str, Any]:
     """Return a decoded JSON response, retrying rate limits and transient failures.
 
     HTTP 429, 408 and 5xx responses and network errors are retried. The delay
@@ -174,13 +178,15 @@ def request_with_retry(req, timeout=90, max_retries=6, base_delay=5, max_delay=1
     raise RuntimeError("HTTP retry loop ended unexpectedly")
 
 
-def request_with_completion_retry(req, timeout=90, max_token_retries=2):
+def request_with_completion_retry(
+    req: Request, timeout: float = 90, max_token_retries: int = 2,
+) -> dict[str, Any]:
     """Retry a completion only when the provider truncates it at its token limit.
 
     Each retry doubles the request's ``max_tokens`` budget. Other failures,
     including content-filter responses, are returned to the caller unchanged.
     """
-    request_data = json.loads(req.data.decode("utf-8"))
+    request_data = json.loads(cast(bytes, req.data).decode("utf-8"))
     token_budget = request_data.get("max_tokens")
     if not isinstance(token_budget, int) or token_budget < 1:
         return request_with_retry(req, timeout=timeout)
@@ -211,29 +217,29 @@ def request_with_completion_retry(req, timeout=90, max_token_retries=2):
             flush=True,
         )
 
-def e(value):
+def e(value: object) -> str:
     """Escape a value for safe insertion into an HTML text or attribute."""
     return escape(str(value), quote=True)
 
 
-def table(headings, rows):
+def table(headings: list[str], rows: list[tuple[str, ...]]) -> str:
     """Render a table from headings and pre-rendered cell contents."""
     head = "".join(f"<th>{e(h)}</th>" for h in headings)
     body = "".join("<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>" for row in rows)
     return f"<div class=scroll><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
 
 
-def link(url, label):
+def link(url: str, label: str) -> str:
     """Render an HTML link, escaping its URL and visible label."""
     return f'<a href="{e(url)}">{e(label)}</a>'
 
 
-def feature(name):
+def feature(name: str) -> str:
     """Link to the generated reference page for a feature name."""
     return link(f"features/{quote(name)}.html", name)
 
 
-def check_project_home(project_home):
+def check_project_home(project_home: str | None) -> str | None:
     """Return ``project_home`` if it is a relative path or an http(s) URL.
 
     Schemes such as ``javascript:`` or ``data:`` would become a clickable link
@@ -248,7 +254,10 @@ def check_project_home(project_home):
     return project_home
 
 
-def write_page(out, filename, title, body, corpus, project_home=None):
+def write_page(
+    out: Path, filename: str, title: str, body: str, corpus: str,
+    project_home: str | None = None,
+) -> None:
     """Write one complete responsive HTML page with corpus navigation.
 
     Relative asset paths are calculated from the page location so nested
@@ -280,7 +289,9 @@ PROVIDERS = {
 }
 
 
-def describe(evidence: dict, model: str, cache: Path, provider: str = "openrouter") -> str:
+def describe(
+    evidence: dict[str, Any], model: str, cache: Path, provider: str = "openrouter",
+) -> str:
     """Return a generated description for one feature profile.
 
     Args:
@@ -301,7 +312,9 @@ def describe(evidence: dict, model: str, cache: Path, provider: str = "openroute
     return description_record(evidence, model, cache, provider)["text"]
 
 
-def description_record(evidence, model, cache, provider):
+def description_record(
+    evidence: dict[str, Any], model: str, cache: Path, provider: str,
+) -> dict[str, Any]:
     """Return the generated text and responding model, reusing a request cache.
 
     The cache key includes the serialized provider request. New responses are
@@ -363,7 +376,7 @@ def description_record(evidence, model, cache, provider):
     return result
 
 
-def profile(api, name, info, order):
+def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict[str, Any]:
     """Measure feature coverage, targets, and frequent values from Text-Fabric.
 
     Counts describe populated feature entries; they are not total node
@@ -393,7 +406,7 @@ def profile(api, name, info, order):
                           for v, count in values.most_common(12)], distinct=len(values))
 
 
-def dataset_inventory(src, files, api):
+def dataset_inventory(src: Path, files: dict[str, Any], api: Any) -> dict[str, Any]:
     """Create a compact inventory and content fingerprint from corpus data.
 
     Measured counts and examples come from Text-Fabric; metadata is copied from
@@ -464,7 +477,7 @@ def dataset_inventory(src, files, api):
     }
 
 
-def export_inventory(corpus_path: Path, output_path: Path) -> dict:
+def export_inventory(corpus_path: Path, output_path: Path) -> dict[str, Any]:
     """Export a deterministic inventory without generating a site or using a model.
 
     Args:
@@ -497,7 +510,7 @@ def export_inventory(corpus_path: Path, output_path: Path) -> dict:
     return inventory
 
 
-def load_corpus(src, files, out):
+def load_corpus(src: Path, files: dict[str, Any], out: Path) -> Any:
     """Load corpus features, supplying a temporary text config when absent.
 
     The compatibility config is placed in a temporary search location so it
@@ -627,7 +640,7 @@ def generate(args: argparse.Namespace) -> None:
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
     attribution = getattr(args, "model_attribution", "feature")
-    credits = set()
+    model_credits = set()
     order = api.F.otype.all
     nodes = {f"otype::{t}": dict(type="node_type", origName=t) for t in order}
     edges, rows, profiles = [], [], {}
@@ -664,7 +677,7 @@ def generate(args: argparse.Namespace) -> None:
                 record = description_record(evidence, args.model, args.cache, provider)
             model_name = record["model"] or f"{feature_model} (requested; response model unavailable)"
             credit = f"{PROVIDERS[provider][0]} · {model_name}"
-            credits.add(credit)
+            model_credits.add(credit)
             byline = f"<small>{e(credit)}</small>" if attribution == "feature" else ""
             body += f'<aside><h2>Generated description</h2><p>{e(record["text"])}</p>{byline}</aside>'
             if record.get("uncertainties"):
@@ -760,7 +773,7 @@ def generate(args: argparse.Namespace) -> None:
     forms = ", ".join(f for f in ("NFC","NFD") if unicodedata.is_normalized(f,sample))
     text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
     page("text.html","Text & encoding",text_body)
-    overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(credits)) + "</p>" if credits and attribution == "overview" else ""
+    overview_credit = "<p>Generated descriptions: " + ", ".join(e(c) for c in sorted(model_credits)) + "</p>" if model_credits and attribution == "overview" else ""
     if context_data:
         from .context import _atomic_json, context_pages as render_context_pages
         dataset_context, families, relationships, family_analysis = context_data

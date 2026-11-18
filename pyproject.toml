@@ -27,6 +27,8 @@ dependencies = ["context-fabric==0.5.8"]
 
 [project.optional-dependencies]
 dev = [
+  "mypy>=1.15",
+  "pre-commit>=4.0",
   "ruff>=0.9",
 ]
 docs = [
@@ -42,7 +44,7 @@ doc4cf = "doc4cf.generator:main"
 packages = ["doc4cf"]
 
 [tool.setuptools.package-data]
-doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json"]
+doc4cf = ["assets/*.js", "assets/*.css", "assets/*.svg", "schemas/*.json", "py.typed"]
 
 [project.urls]
 Repository = "https://github.com/tonyjurg/Doc4CF"
@@ -61,3 +63,10 @@ ignore = ["E501", "S310", "S311", "S603", "S607"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["doc4cf"]
+ignore_missing_imports = true
+follow_imports = "silent"
+warn_unused_ignores = true
