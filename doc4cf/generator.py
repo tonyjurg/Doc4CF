@@ -795,7 +795,8 @@ def generate(args: argparse.Namespace) -> None:
             titles = {"dataset.html": "Dataset architecture and glossary",
                       "relationships.html": "Feature relationship index",
                       "context-review.html": "Context review"}
-            assert inventory is not None
+            if inventory is None:
+                raise RuntimeError("Context pages require a loaded context inventory")
             for filename, body in render_context_pages(inventory, dataset_context, families,
                                                         relationships, review, family_analysis).items():
                 page(filename, titles[filename], body)
