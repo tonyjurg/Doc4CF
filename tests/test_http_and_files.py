@@ -42,14 +42,17 @@ class RequestRetry(unittest.TestCase):
         self.assertEqual(result, {"ok": True})
         self.assertEqual(sleeps, [120])
 
-    def test_rate_limit_body_is_printed_once(self):
-        _, _, output, _ = self.run_retry([http_error(429, b'{"error": "slow down"}', "0"), ok()])
-        self.assertIn("slow down", output)
+    def test_rate_limit_body_is_logged_once(self):
+        with self.assertLogs("doc4cf.generator", level="WARNING") as logs:
+            self.run_retry([http_error(429, b'{"error": "slow down"}', "0"), ok()])
+        self.assertIn("slow down", "\n".join(logs.output))
 
     def test_server_errors_are_retried(self):
-        result, sleeps, _, send = self.run_retry([http_error(503, retry_after="1"), ok()])
+        with self.assertLogs("doc4cf.generator", level="INFO") as logs:
+            result, sleeps, _, send = self.run_retry([http_error(503, retry_after="1"), ok()])
         self.assertEqual(result, {"ok": True})
         self.assertEqual((send.call_count, sleeps), (2, [1.0]))
+        self.assertIn("HTTP 503: retrying in 1.0 seconds", "\n".join(logs.output))
 
     def test_network_errors_are_retried(self):
         result, sleeps, _, send = self.run_retry([URLError("down"), ok()])

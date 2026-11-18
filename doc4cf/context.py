@@ -2,6 +2,7 @@
 import hashlib
 from html import escape
 import json
+import logging
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -13,6 +14,9 @@ from .generator import (
 )
 from .providers import PROVIDERS, build_provider_request
 from .prompts import load_prompt
+
+
+logger = logging.getLogger(__name__)
 
 
 PROMPT_VERSION = "context-analysis-1"
@@ -100,7 +104,7 @@ def _object_response(provider, reply):
     except json.JSONDecodeError as error:
         raise ValueError(f"{label} returned invalid JSON for context analysis: {error}") from error
     if not isinstance(result, dict):
-        raise ValueError(f"{label} context analysis must be a JSON object")
+        raise TypeError(f"{label} context analysis must be a JSON object")
     return result, reply.get("model") or None
 
 
@@ -155,18 +159,15 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         try:
             validator(data)
             break
-        except ValueError as validation_error:
+        except (TypeError, ValueError) as validation_error:
             if correction_attempt == 2:
                 raise
             # Models can produce well-formed JSON that still cites unknown
             # features or values. Ask for a minimal repair without changing
             # the original request/cache key, so valid cached responses remain
             # reusable across retries.
-            print(
-                f"{label} {stage} response failed local validation; "
-                f"requesting correction {correction_attempt + 1}/2.",
-                flush=True,
-            )
+            logger.info("%s %s response failed local validation; requesting correction %d/2.",
+                        label, stage, correction_attempt + 1)
             correction = {
                 "validation_feedback": str(validation_error),
                 "previous_response": data,
@@ -207,21 +208,29 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
 
 
 def _keys(value, required, optional=()):
-    if not isinstance(value, dict) or not set(required) <= value.keys() or value.keys() - set(required) - set(optional):
+    if not isinstance(value, dict):
+        raise TypeError("Context artifact must be an object")
+    if not set(required) <= value.keys() or value.keys() - set(required) - set(optional):
         raise ValueError(f"Invalid context artifact object; expected keys {sorted(required)}")
 
 
 def _string(value, label):
-    if not isinstance(value, str) or not value.strip():
+    if not isinstance(value, str):
+        raise TypeError(f"Context artifact field {label} must be a string")
+    if not value.strip():
         raise ValueError(f"Context artifact field {label} must be a non-empty string")
 
 
 def _string_list(value, label):
-    if not isinstance(value, list) or any(not isinstance(item, str) or not item.strip() for item in value):
+    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        raise TypeError(f"Context artifact field {label} must be an array of strings")
+    if any(not item.strip() for item in value):
         raise ValueError(f"Context artifact field {label} must be an array of non-empty strings")
 
 
 def _status(value):
+    if not isinstance(value, str):
+        raise TypeError("Context artifact status must be a string")
     if value not in ("verified", "inferred", "needs_review"):
         raise ValueError("Context artifact status must be verified, inferred, or needs_review")
 
@@ -231,8 +240,10 @@ def validate_dataset_context(data: dict[str, Any]) -> None:
     _keys(data, ("dataset_profile", "conventions", "ambiguities", "needs_review"))
     _string(data["dataset_profile"], "dataset_profile")
     _string_list(data["ambiguities"], "ambiguities")
-    if not isinstance(data["needs_review"], bool) or not isinstance(data["conventions"], list):
-        raise ValueError("Invalid dataset context review state or conventions")
+    if not isinstance(data["needs_review"], bool):
+        raise TypeError("Dataset context needs_review must be boolean")
+    if not isinstance(data["conventions"], list):
+        raise TypeError("Dataset context conventions must be an array")
     for item in data["conventions"]:
         _keys(item, ("claim", "status", "evidence"))
         _string(item["claim"], "claim")
@@ -248,7 +259,7 @@ def validate_family_context(data: dict[str, Any], feature_names: set[str]) -> No
     """
     _keys(data, ("families", "relationships"))
     if not isinstance(data["families"], list) or not isinstance(data["relationships"], list):
-        raise ValueError("Context families and relationships must be arrays")
+        raise TypeError("Context families and relationships must be arrays")
     for family in data["families"]:
         _keys(family, ("id", "label", "purpose", "features", "status", "evidence", "needs_review"))
         for field in ("id", "label", "purpose"):
@@ -262,7 +273,7 @@ def validate_family_context(data: dict[str, Any], feature_names: set[str]) -> No
         _status(family["status"])
         _string_list(family["evidence"], "evidence")
         if not isinstance(family["needs_review"], bool):
-            raise ValueError("Feature family needs_review must be boolean")
+            raise TypeError("Feature family needs_review must be boolean")
     for relationship in data["relationships"]:
         _keys(relationship, ("source_feature", "target_feature", "relationship", "status", "evidence", "needs_review"))
         for field in ("source_feature", "target_feature", "relationship"):
@@ -273,7 +284,7 @@ def validate_family_context(data: dict[str, Any], feature_names: set[str]) -> No
         _status(relationship["status"])
         _string_list(relationship["evidence"], "evidence")
         if not isinstance(relationship["needs_review"], bool):
-            raise ValueError("Relationship needs_review must be boolean")
+            raise TypeError("Relationship needs_review must be boolean")
 
 
 def inventory_digest(inventory: dict[str, Any]) -> str:
@@ -323,6 +334,8 @@ def load_context_artifacts(
 def validate_analysis_provenance(data: dict[str, Any]) -> None:
     """Validate the provider, model identifiers, and prompt version fields."""
     _keys(data, ("provider", "requested_model", "responding_model", "prompt_version"))
+    if not isinstance(data["provider"], str):
+        raise TypeError("Context artifact analysis provider must be a string")
     if data["provider"] not in PROVIDERS:
         raise ValueError("Context artifact analysis provider is unsupported")
     _string(data["requested_model"], "analysis.requested_model")
@@ -344,10 +357,12 @@ def validate_feature_response(
     _string_list(data["feature_references"], "feature_references")
     _string_list(data["uncertainties"], "uncertainties")
     if not isinstance(data["context_flags"], list):
-        raise ValueError("Generated description context_flags must be an array")
+        raise TypeError("Generated description context_flags must be an array")
     for flag in data["context_flags"]:
         _keys(flag, ("issue", "status", "evidence"))
         _string(flag["issue"], "context flag issue")
+        if not isinstance(flag["status"], str):
+            raise TypeError("Context flag status must be a string")
         if flag["status"] not in ("contradiction", "inconsistency", "missing_evidence"):
             raise ValueError("Context flag status must be contradiction, inconsistency, or missing_evidence")
         _string_list(flag["evidence"], "context flag evidence")
@@ -355,13 +370,17 @@ def validate_feature_response(
     if unknown:
         raise ValueError(f"Generated description references unknown features: {sorted(unknown)}")
     if not isinstance(data["value_references"], list):
-        raise ValueError("Generated description value_references must be an array")
+        raise TypeError("Generated description value_references must be an array")
     for reference in data["value_references"]:
         _keys(reference, ("feature", "value"))
         feature_name = reference["feature"]
-        if not isinstance(feature_name, str) or feature_name not in feature_names:
+        if not isinstance(feature_name, str):
+            raise TypeError("Generated description value feature must be a string")
+        if feature_name not in feature_names:
             raise ValueError(f"Generated description references unknown value feature: {feature_name!r}")
         value = reference["value"]
+        if isinstance(value, bool) or not isinstance(value, (str, int)):
+            raise TypeError("Generated description value must be a string or integer")
         try:
             allowed = observed_values[feature_name]
             attested = value in allowed
@@ -374,18 +393,24 @@ def validate_feature_response(
 def _validate_evidence_plan(data):
     _keys(data, ("requests",))
     requests = data["requests"]
-    if not isinstance(requests, list) or len(requests) > 2:
-        raise ValueError("Evidence plan requests must be an array with at most two entries")
+    if not isinstance(requests, list):
+        raise TypeError("Evidence plan requests must be an array")
+    if len(requests) > 2:
+        raise ValueError("Evidence plan requests must have at most two entries")
     seen = set()
     for request in requests:
         _keys(request, ("kind", "rationale", "count"))
+        if not isinstance(request["kind"], str):
+            raise TypeError("Evidence request kind must be a string")
         if request["kind"] not in ("rare_values", "representative_examples"):
             raise ValueError(f"Unsupported evidence request kind: {request['kind']!r}")
         if request["kind"] in seen:
             raise ValueError("Evidence plan cannot repeat a request kind")
         seen.add(request["kind"])
         _string(request["rationale"], "evidence request rationale")
-        if isinstance(request["count"], bool) or not isinstance(request["count"], int) or not 1 <= request["count"] <= 5:
+        if isinstance(request["count"], bool) or not isinstance(request["count"], int):
+            raise TypeError("Evidence request count must be an integer")
+        if not 1 <= request["count"] <= 5:
             raise ValueError("Evidence request count must be an integer from 1 through 5")
 
 
@@ -466,7 +491,7 @@ def contextual_description_record(
     supplied = evidence
     if targeted_evidence:
         if api is None or feature_kind is None:
-            raise ValueError("Targeted evidence needs the loaded corpus API and feature kind")
+            raise TypeError("Targeted evidence needs the loaded corpus API and feature kind")
         plan_record = _analysis_record(EVIDENCE_SYSTEM, evidence, provider, model, cache,
                                       "evidence-plans", _validate_evidence_plan)
         requested = plan_record["data"]["requests"]

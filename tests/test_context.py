@@ -40,45 +40,49 @@ PROVENANCE = {
 
 def invalid_cases(valid, mutations):
     """Yield labeled invalid copies for concise table-driven assertions."""
-    for label, mutate in mutations:
+    for case in mutations:
+        label, mutate = case[:2]
+        error_type = case[2] if len(case) == 3 else ValueError
         value = deepcopy(valid)
         mutate(value)
-        yield label, value
+        yield label, value, error_type
 
 
 class PrimitiveValidators(unittest.TestCase):
     def test_keys_cases(self):
-        cases = [("complete", {"a": 1, "b": 2}, True),
-                 ("optional", {"a": 1, "b": 2, "c": 3}, True),
-                 ("missing", {"a": 1}, False),
-                 ("unexpected", {"a": 1, "b": 2, "x": 4}, False),
-                 ("non-object", [], False)]
-        for label, value, accepted in cases:
+        cases = [("complete", {"a": 1, "b": 2}, None),
+                 ("optional", {"a": 1, "b": 2, "c": 3}, None),
+                 ("missing", {"a": 1}, ValueError),
+                 ("unexpected", {"a": 1, "b": 2, "x": 4}, ValueError),
+                 ("non-object", [], TypeError)]
+        for label, value, error_type in cases:
             with self.subTest(label=label):
-                if accepted:
+                if error_type is None:
                     context._keys(value, ("a", "b"), ("c",))
                 else:
-                    with self.assertRaises(ValueError):
+                    with self.assertRaises(error_type):
                         context._keys(value, ("a", "b"), ("c",))
 
     def test_string_string_list_and_status_cases(self):
         cases = [
-            ("non-empty string", context._string, ("text", "claim"), True),
-            ("blank string", context._string, ("  ", "claim"), False),
-            ("wrong string type", context._string, (4, "claim"), False),
-            ("empty string list", context._string_list, ([], "evidence"), True),
-            ("string list", context._string_list, (["path/a", "path/b"], "evidence"), True),
-            ("blank list item", context._string_list, (["path/a", " "], "evidence"), False),
-            ("non-string list item", context._string_list, ([3], "evidence"), False),
-            ("verified status", context._status, ("verified",), True),
-            ("invalid status", context._status, ("approved",), False),
+            ("non-empty string", context._string, ("text", "claim"), None),
+            ("blank string", context._string, ("  ", "claim"), ValueError),
+            ("wrong string type", context._string, (4, "claim"), TypeError),
+            ("empty string list", context._string_list, ([], "evidence"), None),
+            ("string list", context._string_list, (["path/a", "path/b"], "evidence"), None),
+            ("wrong string-list type", context._string_list, ("path/a", "evidence"), TypeError),
+            ("blank list item", context._string_list, (["path/a", " "], "evidence"), ValueError),
+            ("non-string list item", context._string_list, ([3], "evidence"), TypeError),
+            ("verified status", context._status, ("verified",), None),
+            ("invalid status", context._status, ("approved",), ValueError),
+            ("non-string status", context._status, (None,), TypeError),
         ]
         for label, validator, args, accepted in cases:
             with self.subTest(label=label):
-                if accepted:
+                if accepted is None:
                     validator(*args)
                 else:
-                    with self.assertRaises(ValueError):
+                    with self.assertRaises(accepted):
                         validator(*args)
 
 
@@ -87,15 +91,15 @@ class ArtifactValidators(unittest.TestCase):
         invalid = [
             ("missing profile", lambda value: value.pop("dataset_profile")),
             ("blank profile", lambda value: value.__setitem__("dataset_profile", " ")),
-            ("bad ambiguity list", lambda value: value.__setitem__("ambiguities", [None])),
-            ("review must be boolean", lambda value: value.__setitem__("needs_review", 1)),
-            ("conventions must be an array", lambda value: value.__setitem__("conventions", {})),
+            ("bad ambiguity list", lambda value: value.__setitem__("ambiguities", [None]), TypeError),
+            ("review must be boolean", lambda value: value.__setitem__("needs_review", 1), TypeError),
+            ("conventions must be an array", lambda value: value.__setitem__("conventions", {}), TypeError),
             ("bad convention status", lambda value: value["conventions"][0].__setitem__("status", "approved")),
             ("extra convention key", lambda value: value["conventions"][0].__setitem__("extra", True)),
         ]
         context.validate_dataset_context(DATASET)
-        for label, value in invalid_cases(DATASET, invalid):
-            with self.subTest(label=label), self.assertRaises(ValueError):
+        for label, value, error_type in invalid_cases(DATASET, invalid):
+            with self.subTest(label=label), self.assertRaises(error_type):
                 context.validate_dataset_context(value)
 
     def test_family_and_relationship_context_table(self):
@@ -105,19 +109,20 @@ class ArtifactValidators(unittest.TestCase):
         invalid = [
             ("bad family id", lambda value: value["families"][0].__setitem__("id", "Bad-ID")),
             ("unknown family feature", lambda value: value["families"][0].__setitem__("features", ["ghost"])),
-            ("bad family review flag", lambda value: value["families"][0].__setitem__("needs_review", "no")),
+            ("bad family review flag", lambda value: value["families"][0].__setitem__("needs_review", "no"), TypeError),
             ("bad family evidence", lambda value: value["families"][0].__setitem__("evidence", [""])),
             ("bad relationship status", lambda value: value["relationships"][0].__setitem__("status", "unknown")),
             ("unknown relationship endpoint", lambda value: value["relationships"][0].__setitem__("target_feature", "ghost")),
-            ("relationship not an array", lambda value: value.__setitem__("relationships", None)),
+            ("relationship not an array", lambda value: value.__setitem__("relationships", None), TypeError),
         ]
-        for label, value in invalid_cases(valid, invalid):
-            with self.subTest(label=label), self.assertRaises(ValueError):
+        for label, value, error_type in invalid_cases(valid, invalid):
+            with self.subTest(label=label), self.assertRaises(error_type):
                 context.validate_family_context(value, {"word", "lemma"})
 
     def test_analysis_provenance_table(self):
         invalid = [
             ("unsupported provider", lambda value: value.__setitem__("provider", "unknown")),
+            ("provider must be a string", lambda value: value.__setitem__("provider", []), TypeError),
             ("empty model", lambda value: value.__setitem__("requested_model", "")),
             ("empty responding model", lambda value: value.__setitem__("responding_model", " ")),
             ("missing prompt", lambda value: value.pop("prompt_version")),
@@ -126,8 +131,8 @@ class ArtifactValidators(unittest.TestCase):
         value = deepcopy(PROVENANCE)
         value["responding_model"] = None
         context.validate_analysis_provenance(value)
-        for label, value in invalid_cases(PROVENANCE, invalid):
-            with self.subTest(label=label), self.assertRaises(ValueError):
+        for label, value, error_type in invalid_cases(PROVENANCE, invalid):
+            with self.subTest(label=label), self.assertRaises(error_type):
                 context.validate_analysis_provenance(value)
 
     def test_feature_response_table(self):
@@ -137,13 +142,15 @@ class ArtifactValidators(unittest.TestCase):
         invalid = [
             ("unknown feature reference", lambda value: value.__setitem__("feature_references", ["ghost"])),
             ("unattested value", lambda value: value["value_references"][0].__setitem__("value", "unknown")),
+            ("value has wrong type", lambda value: value["value_references"][0].__setitem__("value", []), TypeError),
             ("unknown value feature", lambda value: value["value_references"][0].__setitem__("feature", "ghost")),
             ("bad context flag", lambda value: value["context_flags"][0].__setitem__("status", "maybe")),
             ("bad uncertainty list", lambda value: value.__setitem__("uncertainties", [""])),
             ("extra value reference key", lambda value: value["value_references"][0].__setitem__("source", "guess")),
+            ("context flags must be array", lambda value: value.__setitem__("context_flags", {}), TypeError),
         ]
-        for label, value in invalid_cases(FEATURE_RESPONSE, invalid):
-            with self.subTest(label=label), self.assertRaises(ValueError):
+        for label, value, error_type in invalid_cases(FEATURE_RESPONSE, invalid):
+            with self.subTest(label=label), self.assertRaises(error_type):
                 context.validate_feature_response(value, feature_names, values)
 
     def test_evidence_plan_table(self):
@@ -157,12 +164,15 @@ class ArtifactValidators(unittest.TestCase):
             ])),
             ("duplicate kind", lambda value: value["requests"].append(deepcopy(value["requests"][0]))),
             ("unsupported kind", lambda value: value["requests"][0].__setitem__("kind", "other")),
+            ("kind must be a string", lambda value: value["requests"][0].__setitem__("kind", None), TypeError),
             ("blank rationale", lambda value: value["requests"][0].__setitem__("rationale", " ")),
             ("boolean count", lambda value: value["requests"][0].__setitem__("count", True)),
+            ("count must be an integer", lambda value: value["requests"][0].__setitem__("count", "2"), TypeError),
             ("out of range count", lambda value: value["requests"][0].__setitem__("count", 6)),
+            ("requests must be an array", lambda value: value.__setitem__("requests", None), TypeError),
         ]
-        for label, value in invalid_cases(valid, invalid):
-            with self.subTest(label=label), self.assertRaises(ValueError):
+        for label, value, error_type in invalid_cases(valid, invalid):
+            with self.subTest(label=label), self.assertRaises(error_type):
                 context._validate_evidence_plan(value)
 
 
@@ -257,7 +267,7 @@ class ContextPipeline(unittest.TestCase):
             )
         self.assertEqual(result["text"], FEATURE_RESPONSE["description"])
         self.assertEqual(result["evidence_requests"], [])
-        with self.assertRaisesRegex(ValueError, "needs the loaded corpus API"):
+        with self.assertRaisesRegex(TypeError, "needs the loaded corpus API"):
             context.contextual_description_record(
                 {"name": "word"}, "m", Path("cache"), "openai", {"word"}, {}, targeted_evidence=True,
             )
@@ -324,11 +334,13 @@ class ContextProviderPaths(unittest.TestCase):
         invalid = [
             ("invalid JSON", "openai", invalid_json, "invalid JSON"),
             ("empty response", "openai", empty, "empty context analysis"),
-            ("non-object JSON", "openai", self.reply([1]), "JSON object"),
+            ("non-object JSON", "openai", self.reply([1]), "JSON object", TypeError),
             ("incomplete Anthropic", "anthropic", {"content": [], "stop_reason": "max_tokens"}, "incomplete"),
         ]
-        for label, provider, reply, message in invalid:
-            with self.subTest(label=label), self.assertRaisesRegex(ValueError, message):
+        for case in invalid:
+            label, provider, reply, message = case[:4]
+            error_type = case[4] if len(case) == 5 else ValueError
+            with self.subTest(label=label), self.assertRaisesRegex(error_type, message):
                 context._object_response(provider, reply)
 
     def test_analysis_record_cache_hit_avoids_a_second_request(self):
@@ -348,7 +360,8 @@ class ContextProviderPaths(unittest.TestCase):
             self.assertEqual(cached, result)
 
     def test_analysis_record_corrects_invalid_but_parseable_response(self):
-        invalid = {"dataset_profile": "missing required fields"}
+        invalid = deepcopy(DATASET)
+        invalid["dataset_profile"] = None
         with TemporaryDirectory() as directory, patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}), \
                 patch.object(context, "request_with_completion_retry",
                              side_effect=[self.reply(invalid), self.reply(DATASET)]) as request:
