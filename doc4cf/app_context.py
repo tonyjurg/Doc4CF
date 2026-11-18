@@ -146,7 +146,7 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
         for value in item.args:
             is_literal, literal = _json_literal(value) if capture_arguments else (False, None)
             args.append(literal if is_literal else "<dynamic>")
-        keywords = {}
+        keywords: dict[str, Any] = {}
         for keyword in item.keywords:
             if keyword.arg is None:
                 keywords["**"] = _call_name(keyword.value)
@@ -258,7 +258,7 @@ def extract_app_context(corpus: Path, app_dir: Path | None = None) -> dict[str, 
             python_files.append(_python_summary(path, relative_path))
         except (OSError, UnicodeError, SyntaxError) as error:
             python_files.append({"path": relative_path, "parse_status": f"Python AST unavailable: {type(error).__name__}"})
-    result = {"configuration": configuration,
+    result: dict[str, Any] = {"configuration": configuration,
               "additional_configuration": additional_configuration,
               "python_behavior": python_files, "source_files": file_hashes}
     if len(all_files) > len(files):

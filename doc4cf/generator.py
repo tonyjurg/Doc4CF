@@ -661,6 +661,7 @@ def generate(args: argparse.Namespace) -> None:
                     values.update(ends.values())
         observed_values[name] = values
     if context_data:
+        assert inventory is not None
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
     attribution = getattr(args, "model_attribution", "feature")
@@ -833,7 +834,7 @@ def generate(args: argparse.Namespace) -> None:
         app_config = application.get("configuration", {})
         provenance = app_config.get("provenanceSpec", {}) if isinstance(app_config, dict) else {}
         if isinstance(provenance, dict):
-            rows = []
+            provenance_rows: list[tuple[str, str]] = []
             for field_name, value in provenance.items():
                 if value is None or value == "" or value == [] or value == {}:
                     continue
@@ -849,14 +850,14 @@ def generate(args: argparse.Namespace) -> None:
                     rendered_value = e(value if isinstance(value, str) else json.dumps(
                         value, ensure_ascii=False, sort_keys=True,
                     ))
-                rows.append((e(label), rendered_value))
+                provenance_rows.append((e(label), rendered_value))
             writing = app_config.get("writing") if isinstance(app_config, dict) else None
             if writing:
-                rows.append(("Writing", e(writing)))
-            if rows:
+                provenance_rows.append(("Writing", e(writing)))
+            if provenance_rows:
                 provenance_description = (
                     "<section><h2>Source and provenance</h2>"
-                    + table(["Field", "Configured value"], rows)
+                    + table(["Field", "Configured value"], provenance_rows)
                     + "</section>"
                 )
     if context_data:
