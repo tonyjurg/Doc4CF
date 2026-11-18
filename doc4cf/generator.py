@@ -5,6 +5,7 @@ from collections import Counter
 from hashlib import sha256
 from html import escape
 import json
+import logging
 import os
 import time
 import random
@@ -21,6 +22,9 @@ from urllib.parse import quote, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from cfabric.core import Fabric
+
+
+logger = logging.getLogger(__name__)
 
 
 def header(path: Path) -> dict[str, Any]:
@@ -154,11 +158,11 @@ def request_with_retry(
             if error.code == 429:
                 _raise_if_daily_quota(body)
                 if attempt == 0:
-                    print("Rate-limit response:", body.decode("utf-8", errors="replace"))
-                    print("Rate-limit headers:")
+                    logger.warning("Rate-limit response: %s", body.decode("utf-8", errors="replace"))
+                    logger.warning("Rate-limit headers:")
                     for name in ("Retry-After", "X-RateLimit-Limit",
                                  "X-RateLimit-Remaining", "X-RateLimit-Reset"):
-                        print(f"  {name}: {error.headers.get(name)}")
+                        logger.warning("  %s: %s", name, error.headers.get(name))
             if (error.code != 429 and error.code not in RETRYABLE_STATUS) or attempt == max_retries:
                 raise
             delay = _retry_delay(error.headers.get("Retry-After"), attempt, base_delay, max_delay)
@@ -169,11 +173,8 @@ def request_with_retry(
             delay = _retry_delay(None, attempt, base_delay, max_delay)
             reason = f"Network error ({getattr(error, 'reason', error)})"
 
-        print(
-            f"{reason}: retrying in {delay:.1f} seconds "
-            f"(attempt {attempt + 1}/{max_retries}).",
-            flush=True
-        )
+        logger.info("%s: retrying in %.1f seconds (attempt %d/%d).",
+                    reason, delay, attempt + 1, max_retries)
         time.sleep(delay)
 
     raise RuntimeError("HTTP retry loop ended unexpectedly")
@@ -212,11 +213,8 @@ def request_with_completion_retry(
         if not truncated or attempt == max_token_retries:
             return reply
         token_budget *= 2
-        print(
-            "Completion was truncated at the output-token limit; "
-            f"retrying with max_tokens={token_budget:,}.",
-            flush=True,
-        )
+        logger.info("Completion was truncated at the output-token limit; retrying with max_tokens=%s.",
+                    f"{token_budget:,}")
     raise RuntimeError("Completion retry loop ended unexpectedly")
 
 def e(value: object) -> str:
@@ -815,6 +813,7 @@ def main() -> None:
     The command dispatches to one operation and reports invalid option
     combinations through argparse before starting corpus generation.
     """
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("corpus", type=Path)
     parser.add_argument("output", type=Path, nargs="?")
@@ -860,5 +859,5 @@ def main() -> None:
         if args.output is None:
             parser.error("output is required unless --export-inventory is used")
         generate(args)
-    except (ValueError, OSError, RuntimeError) as error:
+    except (TypeError, ValueError, OSError, RuntimeError) as error:
         parser.exit(1, f"doc4cf: {error}\n")

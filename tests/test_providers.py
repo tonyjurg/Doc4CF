@@ -1,4 +1,5 @@
 """Provider selection and model-credit behavior using simulated API responses."""
+import contextlib
 import io
 import json
 from pathlib import Path
@@ -10,18 +11,31 @@ from doc4cf.generator import describe, main
 
 
 class ProviderOptions(unittest.TestCase):
+    def test_cli_reports_type_error_without_traceback(self):
+        stderr = io.StringIO()
+        with patch("sys.argv", ["doc4cf", "corpus", "output"]):
+            with patch("doc4cf.generator.generate", side_effect=TypeError("invalid API value")):
+                with contextlib.redirect_stderr(stderr):
+                    with self.assertRaises(SystemExit) as caught:
+                        main()
+        self.assertEqual(caught.exception.code, 1)
+        self.assertIn("doc4cf: invalid API value", stderr.getvalue())
+        self.assertNotIn("Traceback", stderr.getvalue())
+
     def test_free_router_budget_and_incomplete_response_not_cached(self):
         with TemporaryDirectory() as tmp, patch.dict("os.environ", OPENROUTER_API_KEY="test"):
             cache = Path(tmp)
             incomplete = {"choices": [{"finish_reason": "length", "message": {"content": "Cut off"}}]}
-            with patch("doc4cf.generator.urlopen",
-                       side_effect=lambda *a, **k: io.BytesIO(json.dumps(incomplete).encode())) as send:
-                with self.assertRaisesRegex(ValueError, "incomplete"):
-                    describe({}, "openrouter/free", cache)
-                first = json.loads(send.call_args_list[0].args[0].data)
-                self.assertEqual(first["max_tokens"], 8192)
-                self.assertEqual(first["reasoning"], {"effort": "low", "exclude": True})
-                self.assertEqual(send.call_count, 3)  # initial request + two truncation retries
+            with self.assertLogs("doc4cf.generator", level="INFO") as logs:
+                with patch("doc4cf.generator.urlopen",
+                           side_effect=lambda *a, **k: io.BytesIO(json.dumps(incomplete).encode())) as send:
+                    with self.assertRaisesRegex(ValueError, "incomplete"):
+                        describe({}, "openrouter/free", cache)
+            first = json.loads(send.call_args_list[0].args[0].data)
+            self.assertEqual(first["max_tokens"], 8192)
+            self.assertEqual(first["reasoning"], {"effort": "low", "exclude": True})
+            self.assertEqual(send.call_count, 3)  # initial request + two truncation retries
+            self.assertIn("Completion was truncated", "\n".join(logs.output))
             self.assertEqual(list(cache.iterdir()), [])
             complete = {"choices": [{"finish_reason": "stop", "message": {"content": "Complete paragraph."}}]}
             with patch("doc4cf.generator.urlopen", return_value=io.BytesIO(json.dumps(complete).encode())):
