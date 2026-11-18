@@ -9,7 +9,7 @@ from typing import Any
 from urllib.error import HTTPError
 
 from .generator import (
-    export_inventory, request_with_completion_retry, write_atomic,
+    export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
 from .providers import PROVIDERS, build_provider_request
@@ -503,7 +503,8 @@ def contextual_description_record(
     def validator(data):
         validate_feature_response(data, feature_names, observed_values)
 
-    record = _analysis_record(FEATURE_SYSTEM, supplied, provider, model, cache,
+    prompt = feature_description_prompt(evidence["name"], FEATURE_SYSTEM)
+    record = _analysis_record(prompt, supplied, provider, model, cache,
                              "feature-descriptions", validator)
     data = record["data"]
     return {"text": data["description"], "model": record.get("model"),
@@ -523,10 +524,12 @@ def feature_context_hashes(
     """
     dataset_part = {key: value for key, value in dataset.items() if key not in ("inventory_sha256", "analysis")}
     dataset_hash = inventory_digest(dataset_part)
-    prompt = FEATURE_SYSTEM + (EVIDENCE_SYSTEM if targeted_evidence else "")
-    prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
     result = {}
     for name, evidence in inventory["features"].items():
+        prompt = feature_description_prompt(name, FEATURE_SYSTEM)
+        if targeted_evidence:
+            prompt += EVIDENCE_SYSTEM
+        prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
         family = next((item for item in families if name in item["features"]), None)
         related = [item for item in relationships if name in (item["source_feature"], item["target_feature"])]
         result[name] = {

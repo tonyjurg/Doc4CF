@@ -1,0 +1,1 @@
+Maps each non-slot node to the slot nodes that make up its textual span. This core edge feature links structural units to the slots they cover and supports retrieving a node's text and relating it to the corpus's smallest units. Its edges express slot membership; they do not by themselves identify semantic, syntactic, or parent-child relationships between non-slot units.
