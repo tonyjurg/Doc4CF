@@ -2,17 +2,16 @@
 import hashlib
 from html import escape
 import json
-import os
 from collections import Counter
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError
-from urllib.request import Request
 
 from .generator import (
-    PROVIDERS, export_inventory, request_with_completion_retry, write_atomic,
+    export_inventory, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
+from .providers import PROVIDERS, build_provider_request
 
 
 PROMPT_VERSION = "context-analysis-1"
@@ -111,7 +110,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
     validated locally even when the provider accepts the JSON Schema; invalid
     but parseable responses receive at most two correction requests.
     """
-    label, key_name, endpoint = PROVIDERS[provider]
+    label = PROVIDERS[provider][0]
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": json.dumps(user_data, ensure_ascii=False, sort_keys=True)},
@@ -137,18 +136,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         if isinstance(cached, dict) and isinstance(cached.get("data"), dict):
             validator(cached["data"])
             return cached
-    api_key = os.environ.get(key_name)
-    if not api_key:
-        raise ValueError(f"Set {key_name} or omit --analyze-context for an offline build.")
-    headers = {"Content-Type": "application/json"}
-    if provider == "anthropic":
-        headers.update({"x-api-key": api_key, "anthropic-version": "2023-06-01"})
-        workspace = os.environ.get("ANTHROPIC_WORKSPACE_ID")
-        if workspace:
-            headers["anthropic-workspace-id"] = workspace
-    else:
-        headers["Authorization"] = f"Bearer {api_key}"
-    request = Request(endpoint, data=payload, headers=headers)
+    request = build_provider_request(provider, payload, "--analyze-context")
     try:
         reply = request_with_completion_retry(request)
     except HTTPError as error:
@@ -158,7 +146,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         # JSON mode, then retain the same strict local artifact validation.
         request_data["response_format"] = {"type": "json_object"}
         payload = json.dumps(request_data, ensure_ascii=False).encode("utf-8")
-        request = Request(endpoint, data=payload, headers=headers)
+        request = build_provider_request(provider, payload, "--analyze-context")
         reply = request_with_completion_retry(request)
         format_mode = "json_object_fallback"
     data, actual_model = _object_response(provider, reply)
@@ -208,7 +196,7 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
             correction_payload = json.dumps(
                 correction_request_data, ensure_ascii=False
             ).encode("utf-8")
-            correction_request = Request(endpoint, data=correction_payload, headers=headers)
+            correction_request = build_provider_request(provider, correction_payload, "--analyze-context")
             reply = request_with_completion_retry(correction_request)
             data, corrected_model = _object_response(provider, reply)
             actual_model = corrected_model or actual_model
