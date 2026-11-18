@@ -298,7 +298,7 @@ class ContextPipeline(unittest.TestCase):
         dataset_record = {"data": deepcopy(DATASET), "model": "dataset-model"}
         family_record = {"data": {"families": [FAMILY], "relationships": [RELATIONSHIP]}, "model": "family-model"}
 
-        def export_stub(_corpus, output_path):
+        def export_stub(_corpus, output_path, _app_dir=None):
             output_path.write_text(json.dumps(self.inventory), encoding="utf-8")
             return deepcopy(self.inventory)
 
