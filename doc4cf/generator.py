@@ -414,7 +414,9 @@ def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict
     return result
 
 
-def dataset_inventory(src: Path, files: dict[str, Any], api: Any) -> dict[str, Any]:
+def dataset_inventory(
+    src: Path, files: dict[str, Any], api: Any, app_dir: Path | None = None,
+) -> dict[str, Any]:
     """Create a compact inventory and content fingerprint from corpus data.
 
     Measured counts and examples come from Text-Fabric; metadata is copied from
@@ -472,7 +474,7 @@ def dataset_inventory(src: Path, files: dict[str, Any], api: Any) -> dict[str, A
     slot_type = api.F.otype.slotType
     node_types = [{"name": name, "node_count": len(api.F.otype.s(name)),
                    "is_slot_type": name == slot_type} for name in order]
-    return {
+    inventory = {
         "inventory_version": "1.0",
         "dataset": identity,
         "corpus_label": corpus,
@@ -483,9 +485,16 @@ def dataset_inventory(src: Path, files: dict[str, Any], api: Any) -> dict[str, A
                       "reference_sections": [part for part in cfg.get("sectionTypes", "").split(",") if part]},
         "features": features,
     }
+    from .app_context import extract_app_context
+    application = extract_app_context(src, app_dir)
+    if application is not None:
+        inventory["application"] = application
+    return inventory
 
 
-def export_inventory(corpus_path: Path, output_path: Path) -> dict[str, Any]:
+def export_inventory(
+    corpus_path: Path, output_path: Path, app_dir: Path | None = None,
+) -> dict[str, Any]:
     """Export a deterministic inventory without generating a site or using a model.
 
     Args:
@@ -513,7 +522,7 @@ def export_inventory(corpus_path: Path, output_path: Path) -> dict[str, Any]:
     api = load_corpus(src, files, output_path.parent)
     if not api:
         raise RuntimeError("Context-Fabric could not load the corpus")
-    inventory = dataset_inventory(src, files, api)
+    inventory = dataset_inventory(src, files, api, app_dir)
     output_path.write_text(json.dumps(inventory, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return inventory
 
@@ -600,7 +609,8 @@ def generate(args: argparse.Namespace) -> None:
     review_candidates = []
     if context_dir is not None:
         from .context import feature_context_hashes, inventory_digest, load_context_artifacts
-        inventory = dataset_inventory(src, files, api)
+        inventory = dataset_inventory(src, files, api, getattr(args, "app_dir", None))
+        application = inventory.get("application")
         dataset_context, families, relationships, family_analysis = load_context_artifacts(context_dir, inventory)
         context_data = (dataset_context, families, relationships, family_analysis)
         context_inputs = feature_context_hashes(inventory, dataset_context, families,
@@ -635,18 +645,22 @@ def generate(args: argparse.Namespace) -> None:
                 reasons = [label for key, label in labels.items() if previous.get(key) != current.get(key)]
             if reasons:
                 review_candidates.append({"feature": name, "reasons": reasons})
-        # Validation uses the complete set of observed values, while prompts
-        # remain compact and include only the current feature's measured profile.
-        for name, info in files.items():
-            kind = info["kind"]
-            values: set[Any] = set()
-            if kind == "node":
-                values.update(value for _, value in api.Fs(name).items())
-            elif kind == "edge":
-                for _, ends in api.Es(name).items():
-                    if isinstance(ends, dict):
-                        values.update(ends.values())
-            observed_values[name] = values
+    else:
+        from .app_context import extract_app_context
+        application = extract_app_context(src, getattr(args, "app_dir", None))
+    # Validation uses the complete set of observed values, while prompts
+    # remain compact and include only the current feature's measured profile.
+    for name, info in files.items():
+        kind = info["kind"]
+        values: set[Any] = set()
+        if kind == "node":
+            values.update(value for _, value in api.Fs(name).items())
+        elif kind == "edge":
+            for _, ends in api.Es(name).items():
+                if isinstance(ends, dict):
+                    values.update(ends.values())
+        observed_values[name] = values
+    if context_data:
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
     attribution = getattr(args, "model_attribution", "feature")
@@ -814,6 +828,37 @@ def generate(args: argparse.Namespace) -> None:
             if dataset_context["needs_review"]:
                 overview_description += "<p><strong>Review note:</strong> This interpretation includes items that need editorial review.</p>"
         overview_description += "</section>"
+    provenance_description = ""
+    if application:
+        app_config = application.get("configuration", {})
+        provenance = app_config.get("provenanceSpec", {}) if isinstance(app_config, dict) else {}
+        if isinstance(provenance, dict):
+            rows = []
+            for field_name, value in provenance.items():
+                if value is None or value == "" or value == [] or value == {}:
+                    continue
+                label = "".join((" " + char if char.isupper() else char) for char in str(field_name))
+                label = label.replace("_", " ").strip().title()
+                if isinstance(value, str) and ("<" in value or "{" in value or "}" in value):
+                    continue  # App URL templates are useful to inference, but not as overview links.
+                if isinstance(value, str) and str(field_name).lower() == "doi":
+                    rendered_value = link("https://doi.org/" + quote(value, safe="/"), value)
+                elif isinstance(value, str) and urlsplit(value).scheme in ("http", "https"):
+                    rendered_value = link(value, value)
+                else:
+                    rendered_value = e(value if isinstance(value, str) else json.dumps(
+                        value, ensure_ascii=False, sort_keys=True,
+                    ))
+                rows.append((e(label), rendered_value))
+            writing = app_config.get("writing") if isinstance(app_config, dict) else None
+            if writing:
+                rows.append(("Writing", e(writing)))
+            if rows:
+                provenance_description = (
+                    "<section><h2>Source and provenance</h2>"
+                    + table(["Field", "Configured value"], rows)
+                    + "</section>"
+                )
     if context_data:
         from .context import _atomic_json, context_pages as render_context_pages
         dataset_context, families, relationships, family_analysis = context_data
@@ -842,7 +887,7 @@ def generate(args: argparse.Namespace) -> None:
         cards.extend([("dataset.html", "Dataset architecture and glossary"),
                       ("relationships.html", "Feature relationship index"),
                       ("context-review.html", "Context review")])
-    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
+    page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>" + overview_credit)
 
 
 def main() -> None:
@@ -856,6 +901,10 @@ def main() -> None:
     parser.add_argument("corpus", type=Path)
     parser.add_argument("output", type=Path, nargs="?")
     parser.add_argument("--project-home", help="Link every page to the parent project homepage")
+    parser.add_argument("--app-dir", type=Path, metavar="DIR",
+                        help="Text-Fabric app directory to include in dataset inference (defaults to the corpus repository's app directory)")
+    parser.add_argument("--dataset-instructions", type=Path, metavar="FILE",
+                        help="Optional UTF-8 instruction file for dataset-level context inference")
     parser.add_argument("--provider", choices=PROVIDERS, default="openrouter", help="LLM provider (default: openrouter)")
     parser.add_argument("--model", help="Chat model ID on the selected provider; omit for an offline build")
     parser.add_argument("--dataset-context", type=Path, metavar="FILE", help="UTF-8 editor notes to include with each selected feature")
@@ -881,6 +930,8 @@ def main() -> None:
     try:
         if args.analyze_context and args.export_inventory:
             parser.error("--analyze-context and --export-inventory are separate commands")
+        if args.dataset_instructions and not args.analyze_context:
+            parser.error("--dataset-instructions requires --analyze-context")
         if args.analyze_context:
             dataset_model = args.context_model or args.model
             family_model = args.family_model or dataset_model
@@ -888,12 +939,13 @@ def main() -> None:
                 parser.error("--analyze-context requires --context-model or --model")
             from .context import analyze_context
             result = analyze_context(args.corpus, args.analyze_context, args.provider,
-                                     dataset_model, family_model, args.cache)
+                                     dataset_model, family_model, args.cache, args.app_dir,
+                                     args.dataset_instructions)
             print(f"Context artifacts written to {args.analyze_context}")
             print(f"Inventory SHA-256: {result['inventory_sha256']}")
             return
         if args.export_inventory:
-            export_inventory(args.corpus, args.export_inventory)
+            export_inventory(args.corpus, args.export_inventory, args.app_dir)
             return
         if args.output is None:
             parser.error("output is required unless --export-inventory is used")
