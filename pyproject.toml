@@ -27,6 +27,7 @@ dependencies = ["context-fabric==0.5.8"]
 
 [project.optional-dependencies]
 dev = [
+  "jsonschema>=4.23",
   "mypy>=1.15",
   "pre-commit>=4.0",
   "ruff>=0.9",
