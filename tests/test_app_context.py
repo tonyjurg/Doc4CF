@@ -107,6 +107,19 @@ class AppContextHardening(unittest.TestCase):
             self.assertEqual(constants["SAFE"], "plain text")
             self.assertEqual(constants["KEYWORD"], "kept")
 
+    def test_credentials_in_docstrings_and_dispatch_values_are_masked(self):
+        with TemporaryDirectory() as tmp:
+            corpus, app = make_corpus(tmp)
+            (app / "app.py").write_text(
+                '"""Use postgres://admin:pw2@db/x with ghp_abcdefghijklmnopqrstuvwxyz0123456789 ok."""\n'
+                'def f(mode):\n    """Call https://user:pw3@host/p."""\n'
+                '    if mode == "AKIAABCDEFGHIJKLMNOP":\n        pass\n',
+                encoding="utf-8")
+            text = json.dumps(app_context.extract_app_context(corpus))
+            for needle in ("pw2", "pw3", "ghp_abc", "AKIAABCD"):
+                self.assertNotIn(needle, text)
+            self.assertIn("Use postgres://<redacted>@db/x", text)
+
     def test_missing_explicit_app_dir_is_an_error(self):
         with TemporaryDirectory() as tmp:
             corpus, _ = make_corpus(tmp)

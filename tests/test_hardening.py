@@ -15,6 +15,21 @@ from doc4cf import context, generator
 REPO = Path(__file__).resolve().parents[1]
 
 
+class PageSecurity(unittest.TestCase):
+    def test_pages_carry_a_content_security_policy(self):
+        with TemporaryDirectory() as tmp:
+            generator.write_page(Path(tmp), "x.html", "T", "<p>b</p>", "C")
+            html = (Path(tmp) / "x.html").read_text(encoding="utf-8")
+        self.assertIn("Content-Security-Policy", html)
+        self.assertIn("script-src 'self'", html)
+
+    def test_malformed_urls_do_not_raise_and_external_links_get_rel(self):
+        self.assertFalse(generator.is_http_url("http://[::1"))
+        self.assertTrue(generator.is_http_url("https://example.org/x"))
+        self.assertIn('rel="noopener noreferrer"', generator.link("https://example.org", "x"))
+        self.assertNotIn("rel=", generator.link("features/a.html", "a"))
+
+
 class NoRedirects(unittest.TestCase):
     def test_credentials_are_not_forwarded_to_a_redirect_target(self):
         received = []

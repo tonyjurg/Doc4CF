@@ -22,8 +22,14 @@ _SENSITIVE_NAME_PARTS = ("password", "passwd", "secret", "token", "credential", 
 # Whole-word name parts: matching these as substrings would hit e.g. "keyword".
 _SENSITIVE_NAME_WORDS = frozenset({"key", "keys", "auth", "authorization", "cookie", "cookies",
                                    "bearer", "session", "private", "pwd", "pass"})
-_URL_CREDENTIALS = re.compile(r"://[^/\s:@]+:[^/\s@]+@")
 _OPAQUE_SECRET = re.compile(r"[A-Za-z0-9+/=_-]{32,}")
+_URL_USERINFO = re.compile(r"(://)[^/\s:@]+:[^/\s@]+@")
+_TOKEN_PATTERNS = re.compile(
+    r"-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    r"|\bgh[pousr]_[A-Za-z0-9]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}"
+    r"|\bxox[abprs]-[A-Za-z0-9-]{10,}|\bsk-[A-Za-z0-9_-]{20,}"
+    r"|\b(?:AKIA|ASIA)[A-Z0-9]{16}\b|\bAIza[A-Za-z0-9_-]{30,}"
+)
 _REDACTED = "<redacted>"
 
 
@@ -42,8 +48,8 @@ def _is_sensitive_name(name: str) -> bool:
 
 
 def _is_sensitive_value(value: str) -> bool:
-    """Return True for URLs with embedded credentials and long opaque tokens."""
-    return bool(_URL_CREDENTIALS.search(value) or _OPAQUE_SECRET.fullmatch(value.strip()))
+    """Return True when the whole value is one long opaque token."""
+    return bool(_OPAQUE_SECRET.fullmatch(value.strip()))
 
 
 def _clip(value: str, limit: int = _MAX_DOCSTRING) -> str:
@@ -51,8 +57,16 @@ def _clip(value: str, limit: int = _MAX_DOCSTRING) -> str:
     return value if len(value) <= limit else value[:limit].rsplit(" ", 1)[0] + " …"
 
 
+def _scrub(value: str) -> str:
+    """Mask credentials embedded in free text such as docstrings."""
+    value = _URL_USERINFO.sub(r"\1" + _REDACTED + "@", value)
+    return _TOKEN_PATTERNS.sub(_REDACTED, value)
+
+
 def _clean_text(value: str, limit: int) -> str:
-    return _REDACTED if _is_sensitive_value(value) else _clip(value, limit)
+    if _is_sensitive_value(value):
+        return _REDACTED
+    return _clip(_scrub(value), limit)
 
 
 def _normalize_yaml(value: Any, depth: int = 0, budget: list[int] | None = None) -> Any:
@@ -211,14 +225,14 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
     dispatch = []
     for item in ast.walk(node):
         if isinstance(item, ast.Compare) and isinstance(item.left, ast.Name):
-            values = [value.value for value in item.comparators if isinstance(value, ast.Constant)
-                      and isinstance(value.value, str)]
+            values = [_clean_text(value.value, 200) for value in item.comparators
+                      if isinstance(value, ast.Constant) and isinstance(value.value, str)]
             if values:
                 dispatch.append({"parameter": item.left.id, "values": values})
     return {
         "name": node.name,
         "parameters": params,
-        "docstring": _clip(ast.get_docstring(node) or ""),
+        "docstring": _clean_text(ast.get_docstring(node) or "", _MAX_DOCSTRING),
         "calls": calls[:60],
         "dispatch": dispatch[:20],
         "static_assignments": _literal_settings(node.body),
@@ -256,7 +270,7 @@ def _python_summary(path: Path, relative_path: str) -> dict[str, Any]:
                         constants[target.id] = literal
     return {
         "path": relative_path,
-        "module_docstring": _clip(ast.get_docstring(tree) or ""),
+        "module_docstring": _clean_text(ast.get_docstring(tree) or "", _MAX_DOCSTRING),
         "classes": classes,
         "functions": functions,
         "constants": constants,

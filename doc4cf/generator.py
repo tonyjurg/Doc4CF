@@ -289,9 +289,21 @@ def audit_section(title: str, explanation: str, details: str,
     )
 
 
+def is_http_url(value: str) -> bool:
+    """Return True for well-formed absolute http(s) URLs; never raises."""
+    try:
+        return urlsplit(value).scheme in ("http", "https")
+    except ValueError:
+        return False
+
+
 def link(url: str, label: str) -> str:
-    """Render an HTML link, escaping its URL and visible label."""
-    return f'<a href="{e(url)}">{e(label)}</a>'
+    """Render an HTML link, escaping its URL and visible label.
+
+    External links get ``rel="noopener noreferrer"``.
+    """
+    rel = ' rel="noopener noreferrer"' if is_http_url(url) else ""
+    return f'<a href="{e(url)}"{rel}>{e(label)}</a>'
 
 
 def feature(name: str) -> str:
@@ -312,6 +324,11 @@ def check_project_home(project_home: str | None) -> str | None:
                 f"--project-home must be a relative path or an http(s) URL, not {scheme}:"
             )
     return project_home
+
+
+# The site is static: its own CSS, JS and images only, no inline code or forms.
+CONTENT_SECURITY_POLICY = ("default-src 'none'; img-src 'self'; style-src 'self'; "
+                           "script-src 'self'; base-uri 'none'; form-action 'none'")
 
 
 def write_page(
@@ -335,7 +352,8 @@ def write_page(
         ("structure.html", "Structure"), ("text.html", "Text & encoding"),
         ("audit.html", "Audit report")])
     (out / filename).write_text(f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(title)} · {e(corpus)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{CONTENT_SECURITY_POLICY}"><title>{e(title)} · {e(corpus)}</title>
 <link rel="stylesheet" href="{prefix}style.css"><script defer src="{prefix}browse.js"></script></head>
 <body><header>{brand}<nav aria-label="Corpus navigation">{nav}</nav></header>
 <main><small>{e(corpus)}</small><h1>{e(title)}</h1>{body}</main>{footer}</body></html>""", encoding="utf-8")
@@ -878,7 +896,7 @@ def generate(args: argparse.Namespace) -> None:
                     continue  # App URL templates are useful to inference, but not as overview links.
                 if isinstance(value, str) and str(field_name).lower() == "doi":
                     rendered_value = link("https://doi.org/" + quote(value, safe="/"), value)
-                elif isinstance(value, str) and urlsplit(value).scheme in ("http", "https"):
+                elif isinstance(value, str) and is_http_url(value):
                     rendered_value = link(value, value)
                 else:
                     rendered_value = e(value if isinstance(value, str) else json.dumps(
