@@ -509,7 +509,8 @@ def contextual_description_record(
     def validator(data):
         validate_feature_response(data, feature_names, observed_values)
 
-    prompt = feature_description_prompt(evidence["name"], FEATURE_SYSTEM)
+    prompt = feature_description_prompt(
+        evidence["name"], FEATURE_SYSTEM, evidence.get("kind"))
     record = _analysis_record(prompt, supplied, provider, model, cache,
                              "feature-descriptions", validator)
     data = record["data"]
@@ -532,7 +533,7 @@ def feature_context_hashes(
     dataset_hash = inventory_digest(dataset_part)
     result = {}
     for name, evidence in inventory["features"].items():
-        prompt = feature_description_prompt(name, FEATURE_SYSTEM)
+        prompt = feature_description_prompt(name, FEATURE_SYSTEM, evidence.get("kind"))
         if targeted_evidence:
             prompt += EVIDENCE_SYSTEM
         prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()

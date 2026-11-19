@@ -97,6 +97,10 @@ def urlopen(req: Request, timeout: float | None = None) -> Any:
 RETRYABLE_STATUS = (408, 500, 502, 503, 504)
 FEATURE_SYSTEM = load_prompt("feature-description.txt")
 STRUCTURAL_FEATURES = ("otype", "otext", "oslots")
+_FEATURE_KIND_GUIDANCE = {
+    "node": load_prompt("feature-node.txt"),
+    "edge": load_prompt("feature-edge.txt"),
+}
 _STRUCTURAL_DESCRIPTIONS = {
     name: load_description(f"{name}.txt") for name in STRUCTURAL_FEATURES
 }
@@ -110,9 +114,11 @@ def standard_feature_description(name: str, metadata_description: str = "") -> s
     return _STRUCTURAL_DESCRIPTIONS.get(name, metadata_description)
 
 
-def feature_description_prompt(name: str, base_prompt: str = FEATURE_SYSTEM) -> str:
-    """Add feature-specific inference guidance to the general description prompt."""
-    guidance = _STRUCTURAL_GUIDANCE.get(name)
+def feature_description_prompt(
+    name: str, base_prompt: str = FEATURE_SYSTEM, kind: str | None = None,
+) -> str:
+    """Select kind guidance or a more specific structural-feature prompt."""
+    guidance = _STRUCTURAL_GUIDANCE.get(name) or _FEATURE_KIND_GUIDANCE.get(kind)
     return f"{base_prompt}\n\n{guidance}" if guidance else base_prompt
 
 
@@ -393,7 +399,8 @@ def description_record(
     """
     label = PROVIDERS[provider][0]
     messages = [
-        {"role": "system", "content": feature_description_prompt(evidence.get("name", ""))},
+        {"role": "system", "content": feature_description_prompt(
+            evidence.get("name", ""), kind=evidence.get("kind"))},
         {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}]
     if "corpus_editor_notes" in evidence:
         messages[0]["content"] += " Use corpus_editor_notes as editorial background where relevant. Base claims about this feature's observed values and coverage on its measured profile."
@@ -1182,9 +1189,12 @@ def generate(args: argparse.Namespace) -> None:
             edges.append({"from":fid, "to":t, "relation":"valid on"})
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
         if args.model and n in selected:
+            omitted_evidence = {"coverage", "value_count"}
+            if kind != "edge":
+                omitted_evidence.update(("endpoint_pairs", "degree_summary"))
             evidence = dict(corpus=corpus, **{
                 key: value for key, value in p.items()
-                if key not in {"coverage", "endpoint_pairs", "degree_summary", "value_count"}
+                if key not in omitted_evidence
             })
             # Raw headers are direct corpus evidence for every feature. Keep
             # shared app context compact by attaching only matching settings
@@ -1234,7 +1244,7 @@ def generate(args: argparse.Namespace) -> None:
                 "additional_evidence": record.get("additional_evidence", []),
                 "input_fingerprints": context_inputs.get(n, {
                     "feature_evidence_sha256": sha256(json.dumps(evidence, ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
-                    "prompt_sha256": sha256(feature_description_prompt(n).encode()).hexdigest(),
+                    "prompt_sha256": sha256(feature_description_prompt(n, kind=kind).encode()).hexdigest(),
                     "provider": provider, "model": feature_model,
                 }),
             }

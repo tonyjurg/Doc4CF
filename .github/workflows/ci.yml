@@ -17,6 +17,8 @@ jobs:
           python-version: '3.13'
           cache: pip
           cache-dependency-path: pyproject.toml
+      - name: Check notebook outputs are cleared
+        run: python scripts/clear_notebook_outputs.py --check
       - name: Install package and development tools
         run: python -m pip install -e '.[dev]'
       - name: Lint

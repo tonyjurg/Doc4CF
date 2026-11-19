@@ -1,1 +1,0 @@
-CenterBLC/N1904 is a linguistically annotated Greek New Testament supporting morphological and syntactic analysis.
