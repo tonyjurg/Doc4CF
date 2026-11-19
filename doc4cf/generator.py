@@ -545,7 +545,8 @@ def dataset_inventory(
         "features": features,
     }
     from .app_context import extract_app_context
-    application = extract_app_context(src, app_dir)
+    application = extract_app_context(
+        src, app_dir, sorted(features), {name: info["meta"] for name, info in files.items()})
     if application is not None:
         inventory["application"] = application
     return inventory
@@ -921,7 +922,9 @@ def generate(args: argparse.Namespace) -> None:
         review_candidates = _review_candidates(context_inputs, applied_inputs, bool(args.model))
     else:
         from .app_context import extract_app_context
-        application = extract_app_context(src, getattr(args, "app_dir", None))
+        application = extract_app_context(
+            src, getattr(args, "app_dir", None), sorted(files),
+            {name: info["meta"] for name, info in files.items()})
     # Validation uses the complete set of observed values, while prompts
     # remain compact and include only the current feature's measured profile.
     observed_values = _observed_values(api, files)
@@ -945,8 +948,18 @@ def generate(args: argparse.Namespace) -> None:
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
         if args.model and n in selected:
             evidence = dict(corpus=corpus, **p)
-            if n in STRUCTURAL_FEATURES:
-                evidence["feature_metadata"] = meta
+            # Raw headers are direct corpus evidence for every feature. Keep
+            # shared app context compact by attaching only matching settings
+            # and explicitly linked local docs to each feature request.
+            evidence["feature_metadata"] = meta
+            if application:
+                feature_links = application.get("feature_application_links", {}).get(n)
+                linked_docs = application.get("linked_documentation", {}).get("features", {}).get(n)
+                if feature_links or linked_docs:
+                    evidence["application_evidence"] = {
+                        "feature_links": feature_links or {},
+                        "linked_documentation": linked_docs or [],
+                    }
             if notes:
                 evidence["corpus_editor_notes"] = notes
             if context_data:

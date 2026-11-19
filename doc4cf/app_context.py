@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import re
 from typing import Any
+from urllib.parse import urlparse
 
 import yaml
 
@@ -16,6 +17,9 @@ _MAX_DOCSTRING = 1800
 _MAX_APP_FILES = 100
 _MAX_APP_CONTEXT_CHARS = 32000
 _MAX_FILE_BYTES = 256 * 1024
+_MAX_LINKED_DOC_FILES = 80
+_MAX_LINKED_DOC_BYTES = 64 * 1024
+_MAX_LINKED_DOC_FILE_BYTES = 12 * 1024
 _MAX_YAML_NODES = 5000
 _SENSITIVE_NAME_PARTS = ("password", "passwd", "secret", "token", "credential", "api_key", "apikey",
                          "private_key", "privatekey")
@@ -69,6 +73,21 @@ def _clean_text(value: str, limit: int) -> str:
     return _clip(_scrub(value), limit)
 
 
+def _clean_config_text(value: str, limit: int = 1000) -> str:
+    """Bound and redact config strings without changing meaningful whitespace."""
+    if _is_sensitive_value(value):
+        return _REDACTED
+    value = _scrub(value)
+    return value if len(value) <= limit else value[:limit] + " …"
+
+
+def _clean_document_text(value: str, limit: int) -> str:
+    if _is_sensitive_value(value):
+        return _REDACTED
+    value = _scrub(value.replace("\r\n", "\n").replace("\r", "\n"))
+    return value if len(value) <= limit else value[:limit] + "\n…"
+
+
 def _normalize_yaml(value: Any, depth: int = 0, budget: list[int] | None = None) -> Any:
     """Copy a YAML tree into plain, bounded, redacted JSON-safe values.
 
@@ -88,7 +107,7 @@ def _normalize_yaml(value: Any, depth: int = 0, budget: list[int] | None = None)
     if isinstance(value, (date, datetime)):
         return value.isoformat()
     if isinstance(value, str):
-        return _clean_text(value, 1000)
+        return _clean_config_text(value)
     if isinstance(value, list):
         return [_normalize_yaml(item, depth + 1, budget) for item in value[:200]]
     if isinstance(value, dict):
@@ -221,6 +240,18 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
                 keywords[keyword.arg] = literal if is_literal else "<dynamic>"
         calls.append({"call": name, "arguments": args, "keywords": keywords})
     calls.sort(key=lambda item: (item["call"], str(item["arguments"]), str(item["keywords"])))
+    control_flow = []
+    for branch in (item for item in ast.walk(node) if isinstance(item, ast.If)):
+        branch_calls = []
+        for item in ast.walk(ast.Module(body=branch.body, type_ignores=[])):
+            if isinstance(item, ast.Call):
+                branch_calls.append(_call_name(item.func))
+        control_flow.append({
+            "line": branch.lineno,
+            "condition": _clean_text(ast.unparse(branch.test), 500),
+            "calls": sorted(set(branch_calls))[:30],
+            "static_assignments": _literal_settings(branch.body)[:30],
+        })
     # Include only statically recoverable settings and direct dispatch values.
     dispatch = []
     for item in ast.walk(node):
@@ -234,6 +265,7 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
         "parameters": params,
         "docstring": _clean_text(ast.get_docstring(node) or "", _MAX_DOCSTRING),
         "calls": calls[:60],
+        "control_flow": control_flow[:30],
         "dispatch": dispatch[:20],
         "static_assignments": _literal_settings(node.body),
     }
@@ -277,7 +309,156 @@ def _python_summary(path: Path, relative_path: str) -> dict[str, Any]:
     }
 
 
-def extract_app_context(corpus: Path, app_dir: Path | None = None) -> dict[str, Any] | None:
+def _walk_config(value: Any, path: str = "configuration"):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            yield from _walk_config(item, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            yield from _walk_config(item, f"{path}[{index}]")
+    else:
+        yield path, value
+
+
+def _local_doc_path(value: str, repo_root: Path, key_path: str, feature: str | None = None) -> Path | None:
+    """Resolve only explicitly configured documentation pointers inside the checkout."""
+    candidate = value
+    for marker in ("<feature>", "{feature}", "${feature}"):
+        candidate = candidate.replace(marker, feature or "__feature__")
+    candidate = candidate.strip()
+    parsed = urlparse(candidate)
+    if parsed.scheme in {"http", "https"}:
+        if parsed.netloc.lower() not in {"github.com", "www.github.com"}:
+            return None
+        parts = [part for part in parsed.path.split("/") if part]
+        if len(parts) < 5 or parts[2] not in {"blob", "tree"}:
+            return None
+        relative_parts = parts[4:]
+        if parts[2] == "tree":
+            return None
+        relative = Path(*relative_parts)
+    else:
+        relative = Path(candidate)
+        if relative.is_absolute() or ".." in relative.parts:
+            return None
+    if "__feature__" in str(relative):
+        return None
+    # Page names in app configs commonly omit the Markdown suffix.
+    if not relative.suffix and "featurepage" in key_path.lower():
+        relative = Path("docs/features") / relative.with_suffix(".md")
+    elif not relative.suffix and "docpage" in key_path.lower():
+        relative = Path("docs") / relative.with_suffix(".md")
+    path = (repo_root / relative).resolve()
+    if not path.is_relative_to(repo_root) or path.suffix.lower() not in {".md", ".rst", ".txt"}:
+        return None
+    return path
+
+
+def _linked_documentation(
+    repo_root: Path, config: dict[str, Any], feature_names: list[str],
+) -> tuple[dict[str, Any], list[dict[str, str]], list[str]]:
+    """Harvest bounded, local docs explicitly referenced by app config."""
+    refs = list(_walk_config(config))
+    paths: dict[str, set[str]] = {name: set() for name in feature_names}
+    dataset_paths: set[str] = set()
+    for key_path, value in refs:
+        if not isinstance(value, str) or not any(part in key_path.lower() for part in ("doc", "feature")):
+            continue
+        if any(marker in value for marker in ("<feature>", "{feature}", "${feature}")):
+            for feature in feature_names:
+                path = _local_doc_path(value, repo_root, key_path, feature)
+                if path and path.is_file():
+                    paths[feature].add(path.relative_to(repo_root).as_posix())
+        else:
+            path = _local_doc_path(value, repo_root, key_path)
+            if path and path.is_file():
+                dataset_paths.add(path.relative_to(repo_root).as_posix())
+    documents: dict[str, Any] = {"dataset": [], "features": {}}
+    hashes: list[dict[str, str]] = []
+    skipped: list[str] = []
+    loaded_docs: dict[str, dict[str, str]] = {}
+    remaining = _MAX_LINKED_DOC_BYTES
+    seen: set[str] = set()
+
+    def read_doc(relative: str) -> dict[str, str] | None:
+        nonlocal remaining
+        if relative in loaded_docs:
+            return loaded_docs[relative]
+        if relative in seen:
+            return None
+        seen.add(relative)
+        path = repo_root / relative
+        try:
+            size = path.stat().st_size
+        except OSError:
+            skipped.append(relative)
+            return None
+        if (len(seen) > _MAX_LINKED_DOC_FILES or size > _MAX_LINKED_DOC_FILE_BYTES
+                or size > remaining or path.is_symlink()):
+            skipped.append(relative)
+            return None
+        try:
+            raw = path.read_text(encoding="utf-8-sig")
+        except (OSError, UnicodeError):
+            skipped.append(relative)
+            return None
+        remaining -= len(raw.encode("utf-8"))
+        digest = _source_hash(path)
+        hashes.append({"path": relative, "sha256": digest})
+        doc = {"path": relative, "sha256": digest,
+               "text": _clean_document_text(raw, _MAX_LINKED_DOC_FILE_BYTES)}
+        loaded_docs[relative] = doc
+        return doc
+
+    for relative in sorted(dataset_paths):
+        doc = read_doc(relative)
+        if doc:
+            documents["dataset"].append(doc)
+    for feature in feature_names:
+        selected = []
+        for relative in sorted(paths[feature]):
+            doc = read_doc(relative)
+            if doc:
+                selected.append(doc)
+        if selected:
+            documents["features"][feature] = selected
+    if skipped:
+        skipped = sorted(set(skipped))
+    return documents, hashes, skipped
+
+
+def _feature_application_links(
+    config: dict[str, Any], feature_names: list[str], feature_metadata: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Connect configured feature references and text-format placeholders to features."""
+    leaves = list(_walk_config(config))
+    result = {}
+    for feature in feature_names:
+        refs = []
+        for path, value in leaves:
+            values = value if isinstance(value, list) else [value]
+            if any(item == feature or (isinstance(item, str) and re.search(
+                rf"(?<![A-Za-z0-9_]){re.escape(feature)}(?![A-Za-z0-9_])", item)) for item in values):
+                refs.append({"path": path, "value": value})
+        formats = []
+        for metadata_feature, metadata in feature_metadata.items():
+            for key, value in metadata.items():
+                if not key.startswith("fmt:") or not isinstance(value, str):
+                    continue
+                placeholders = re.findall(r"\{([^{}]+)\}", value)
+                if feature in placeholders:
+                    formats.append({"metadata_path": f"features.{metadata_feature}.metadata.{key}",
+                                    "template": value, "placeholders": placeholders,
+                                    "uses_this_feature": True})
+        if refs or formats:
+            result[feature] = {"configuration_references": refs, "text_formats": formats}
+    return result
+
+
+def extract_app_context(
+    corpus: Path, app_dir: Path | None = None, feature_names: list[str] | None = None,
+    feature_metadata: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any] | None:
     """Summarize nearby app configuration and Python behavior as untrusted evidence.
 
     ``corpus`` is normally ``<repository>/tf/<version>``. Its sibling app
@@ -329,6 +510,19 @@ def extract_app_context(corpus: Path, app_dir: Path | None = None) -> dict[str, 
     result: dict[str, Any] = {"configuration": configuration,
               "additional_configuration": additional_configuration,
               "python_behavior": python_files, "source_files": file_hashes}
+    names = sorted(feature_names or [])
+    all_configuration = dict(configuration)
+    if additional_configuration:
+        all_configuration["additional_configuration"] = additional_configuration
+    docs, doc_hashes, skipped_docs = _linked_documentation(repo_root, all_configuration, names)
+    if docs["dataset"] or docs["features"]:
+        result["linked_documentation"] = docs
+    result["feature_application_links"] = _feature_application_links(
+        all_configuration, names, feature_metadata or {})
+    known_hashes = {item["path"] for item in file_hashes}
+    file_hashes.extend(item for item in doc_hashes if item["path"] not in known_hashes)
+    if skipped_docs:
+        result["skipped_documentation"] = skipped_docs
     if omitted_count:
         result["omitted_file_count"] = omitted_count
     if skipped:
@@ -367,9 +561,31 @@ def _size(result: dict[str, Any]) -> int:
 def _enforce_size_cap(result: dict[str, Any]) -> None:
     """Shrink ``result`` in place until it fits the prompt-size allowance.
 
-    Python summaries go first, then additional configuration files, then the
-    primary configuration, so the output stays bounded whatever the app holds.
+    Linked-document text and derived links are reduced first, followed by
+    Python summaries and additional configuration, preserving the primary
+    configuration wherever possible.
     """
+    linked = result.get("linked_documentation", {})
+    for collection in (linked.get("features", {}).values(), [linked.get("dataset", [])]):
+        for documents in collection:
+            for document in documents:
+                if _size(result) <= _MAX_APP_CONTEXT_CHARS:
+                    break
+                text = document.get("text", "")
+                overflow = _size(result) - _MAX_APP_CONTEXT_CHARS
+                document["text"] = text[:max(0, len(text) - overflow - 32)] + " …"
+    while _size(result) > _MAX_APP_CONTEXT_CHARS and linked.get("features"):
+        name = next(reversed(linked["features"]))
+        linked["features"].pop(name)
+        result.setdefault("omitted_feature_documentation", []).append(name)
+    while _size(result) > _MAX_APP_CONTEXT_CHARS and linked.get("dataset"):
+        linked["dataset"].pop()
+        result.setdefault("omitted_dataset_documentation", 0)
+        result["omitted_dataset_documentation"] += 1
+    feature_links = result.get("feature_application_links", {})
+    while _size(result) > _MAX_APP_CONTEXT_CHARS and feature_links:
+        feature_links.pop(next(reversed(feature_links)))
+        result["omitted_feature_application_links"] = True
     omitted_python = []
     python_files = result["python_behavior"]
     while _size(result) > _MAX_APP_CONTEXT_CHARS and python_files:

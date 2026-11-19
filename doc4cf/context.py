@@ -541,7 +541,15 @@ def feature_context_hashes(
         result[name] = {
             "dataset_context_sha256": dataset_hash,
             "feature_context_sha256": inventory_digest({"family": family, "relationships": related}),
-            "feature_evidence_sha256": inventory_digest(evidence),
+            "feature_evidence_sha256": inventory_digest({
+                "feature": evidence,
+                "application_evidence": {
+                    "feature_links": inventory.get("application", {}).get(
+                        "feature_application_links", {}).get(name),
+                    "linked_documentation": inventory.get("application", {}).get(
+                        "linked_documentation", {}).get("features", {}).get(name),
+                },
+            }),
             "provider": provider,
             "model": model,
             "evidence_mode": "targeted" if targeted_evidence else "compact",
