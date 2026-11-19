@@ -28,3 +28,4 @@
   header{padding-inline:calc((100% - 76rem) / 2 + 5vw)}
   .header-logo{justify-content:flex-start}
 }
+.feature-cooccurrence{padding:.45rem .7rem;background:transparent;border-color:#e3e8e1;color:#526860;font-size:.92rem}.feature-cooccurrence summary{font-size:.92rem}.feature-cooccurrence p{margin:.4rem 0}.feature-cooccurrence ul{margin:.3rem 0}

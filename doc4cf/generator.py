@@ -13,6 +13,7 @@ from email.utils import parsedate_to_datetime
 from urllib.error import HTTPError, URLError
 from numbers import Integral
 from pathlib import Path
+from statistics import median
 import shutil
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import Any, cast
@@ -435,7 +436,11 @@ def description_record(
     return result
 
 
-def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict[str, Any]:
+def profile(
+    api: Any, name: str, info: dict[str, Any], order: list[str],
+    node_counts: dict[str, int] | None = None,
+    node_assignments: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     """Measure feature coverage, targets, and frequent values from Text-Fabric.
 
     Counts describe populated feature entries; they are not total node
@@ -444,33 +449,104 @@ def profile(api: Any, name: str, info: dict[str, Any], order: list[str]) -> dict
     kind = info["kind"]
     counts: Counter[str] = Counter()
     targets: Counter[str] = Counter()
+    endpoint_pairs: Counter[tuple[str, str]] = Counter()
+    degrees: dict[str, list[int]] = {}
     values: Counter[Any] = Counter()
     types = api.F.otype
     if kind == "node":
+        from array import array
+
+        assigned_nodes: dict[str, array] = {}
         for node, value in api.Fs(name).items():
-            counts[types.v(node)] += 1
+            node_type = types.v(node)
+            counts[node_type] += 1
             values[value] += 1
+            if node_assignments is not None and name != "otype":
+                assigned_nodes.setdefault(node_type, array("Q")).append(node)
+        if node_assignments is not None and name != "otype":
+            node_assignments[name] = assigned_nodes
     elif kind == "edge":
         for node, ends in api.Es(name).items():
-            counts[types.v(node)] += 1
+            source_type = types.v(node)
+            counts[source_type] += 1
+            degrees.setdefault(source_type, []).append(len(ends))
             # Every oslots destination is a slot by definition.
             if name == "oslots":
                 targets[types.slotType] += len(ends)
+                endpoint_pairs[(source_type, types.slotType)] += len(ends)
             else:
                 targets.update(types.v(n) for n in ends)
+                endpoint_pairs.update((source_type, types.v(target)) for target in ends)
             if isinstance(ends, dict):
                 values.update(ends.values())
     result: dict[str, Any] = dict(
         name=name, kind=kind,
         description=standard_feature_description(name, info["meta"].get("description", "")),
         sources={t: counts[t] for t in order if counts[t]},
+        coverage={t: counts[t] / node_counts[t] for t in order
+                  if counts[t] and node_counts and node_counts.get(t)},
         targets={t: targets[t] for t in order if targets[t]},
+        endpoint_pairs=[{"source_type": source, "target_type": target, "edge_count": count}
+                        for (source, target), count in sorted(endpoint_pairs.items())],
+        degree_summary={t: {"source_nodes": len(values), "min": min(values),
+                            "median": median(values), "max": max(values)}
+                        for t, values in degrees.items() if values},
         frequent=[(int(v) if isinstance(v, Integral) else v, count)
                   for v, count in values.most_common(12)], distinct=len(values),
+        value_count=sum(values.values()),
     )
     if kind == "config":
         result["configuration"] = info["meta"]
     return result
+
+
+def _feature_cooccurrence(
+    node_assignments: dict[str, dict[str, Any]], order: list[str],
+) -> dict[str, list[dict[str, Any]]]:
+    """Measure same-node co-population for node features using compact ID arrays."""
+    from array import array
+    from heapq import merge
+    from itertools import combinations
+
+    def events(feature_name: str, node_ids: array):
+        for node in node_ids:
+            yield node, feature_name
+
+    by_type: dict[str, dict[str, Any]] = {node_type: {} for node_type in order}
+    for name, per_type in node_assignments.items():
+        for node_type, ids in per_type.items():
+            if any(ids[index] > ids[index + 1] for index in range(len(ids) - 1)):
+                ids = array("Q", sorted(ids))
+            by_type[node_type][name] = ids
+
+    overlaps: dict[str, list[dict[str, Any]]] = {name: [] for name in node_assignments}
+    for node_type, feature_ids in by_type.items():
+        streams = [events(name, feature_ids[name]) for name in sorted(feature_ids)]
+        overlap_counts: Counter[tuple[str, str]] = Counter()
+        previous_node = None
+        node_features = []
+        for node, name in merge(*streams):
+            if previous_node is not None and node != previous_node:
+                overlap_counts.update(combinations(node_features, 2))
+                node_features = []
+            node_features.append(name)
+            previous_node = node
+        if node_features:
+            overlap_counts.update(combinations(node_features, 2))
+        for (left, right), common in overlap_counts.items():
+            left_count = len(feature_ids[left])
+            right_count = len(feature_ids[right])
+            overlaps[left].append({"feature": right, "node_type": node_type,
+                                   "count": common, "share": common / left_count})
+            overlaps[right].append({"feature": left, "node_type": node_type,
+                                    "count": common, "share": common / right_count})
+
+    # Keep this secondary evidence compact and only surface repeated, substantial overlap.
+    return {
+        name: sorted((item for item in items if item["count"] >= 10 and item["share"] >= 0.25),
+                     key=lambda item: (-item["share"], -item["count"], item["feature"], item["node_type"]))[:3]
+        for name, items in overlaps.items()
+    }
 
 
 def dataset_inventory(
@@ -499,9 +575,10 @@ def dataset_inventory(
         digest.update(b"\0")
 
     order = api.F.otype.all
+    node_counts = {node_type: len(api.F.otype.s(node_type)) for node_type in order}
     features = {}
     for name, info in sorted(files.items()):
-        measured = profile(api, name, info, order)
+        measured = profile(api, name, info, order, node_counts)
         kind = info["kind"]
         examples = []
         if kind == "node":
@@ -1008,10 +1085,15 @@ def generate(args: argparse.Namespace) -> None:
         if inventory_digest(inventory) != dataset_context["inventory_sha256"]:
             raise ValueError("Context inventory does not match the current corpus")
     order = api.F.otype.all
+    node_counts = {node_type: len(api.F.otype.s(node_type)) for node_type in order}
     nodes = {f"otype::{t}": dict(type="node_type", origName=t) for t in order}
     edges, rows, profiles = [], [], {}
+    node_assignments: dict[str, dict[str, Any]] = {}
     for n, info in files.items():
-        p = profiles[n] = profile(api, n, info, order)
+        p = profiles[n] = profile(api, n, info, order, node_counts, node_assignments)
+    cooccurrence = _feature_cooccurrence(node_assignments, order)
+    for n, info in files.items():
+        p = profiles[n]
         kind, meta = info["kind"], info["meta"]
         valid = [f"otype::{t}" for t in p["sources"]]
         fid = f"feature::{n}"
@@ -1021,7 +1103,10 @@ def generate(args: argparse.Namespace) -> None:
             edges.append({"from":fid, "to":t, "relation":"valid on"})
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
         if args.model and n in selected:
-            evidence = dict(corpus=corpus, **p)
+            evidence = dict(corpus=corpus, **{
+                key: value for key, value in p.items()
+                if key not in {"coverage", "endpoint_pairs", "degree_summary", "value_count"}
+            })
             # Raw headers are direct corpus evidence for every feature. Keep
             # shared app context compact by attaching only matching settings
             # and explicitly linked local docs to each feature request.
@@ -1075,9 +1160,47 @@ def generate(args: argparse.Namespace) -> None:
             }
         for field, heading, unit in [("sources","Applies to","Populated nodes"), ("targets","Points to","Incoming edges")]:
             if p[field]:
-                body += f"<h2>{heading}</h2>" + table(["Node type",unit], [(link(f"../structure.html#type-{t}",t),f"{count:,}") for t,count in p[field].items()])
+                value_heading = f"{unit} (% of node type)" if field == "sources" else unit
+                values = [(link(f"../structure.html#type-{t}", t),
+                           f"{count:,} ({p['coverage'].get(t, 0):.1%})" if field == "sources"
+                           else f"{count:,}") for t, count in p[field].items()]
+                body += f"<h2>{heading}</h2>" + table(["Node type", value_heading], values)
+        if kind == "edge" and p["endpoint_pairs"]:
+            body += "<h2>Observed edge connections</h2><p>Counts show recorded edges for each source and target node-type pair.</p>"
+            body += table(["Source node type", "Target node type", "Edges"], [
+                (link(f"../structure.html#type-{item['source_type']}", item["source_type"]),
+                 link(f"../structure.html#type-{item['target_type']}", item["target_type"]),
+                 f"{item['edge_count']:,}") for item in p["endpoint_pairs"]
+            ])
+            if p["degree_summary"]:
+                body += "<h2>Targets per connected source node</h2><p>Summary for source nodes with at least one recorded edge.</p>"
+                body += table(["Source node type", "Source nodes", "Minimum", "Median", "Maximum"], [
+                    (link(f"../structure.html#type-{node_type}", node_type),
+                     f"{summary['source_nodes']:,}", f"{summary['min']:,}",
+                     f"{summary['median']:g}", f"{summary['max']:,}")
+                    for node_type, summary in p["degree_summary"].items()
+                ])
         if p["frequent"]:
-            body += f'<h2>Frequent values</h2><p>{p["distinct"]:,} distinct values. Whitespace is shown in quotes.</p>' + table(["Value","Occurrences"],[(e(json.dumps(v,ensure_ascii=False)),f"{count:,}") for v,count in p["frequent"]])
+            body += f'<h2>Frequent values</h2><p>{p["distinct"]:,} distinct values. Whitespace is shown in quotes.</p>' + table(
+                ["Value", "Occurrences", "% of populated values"],
+                [(e(json.dumps(v, ensure_ascii=False)), f"{count:,}",
+                  f"{count / p['value_count']:.1%}" if p["value_count"] else "—")
+                 for v, count in p["frequent"]])
+        related = cooccurrence.get(n, [])
+        if related:
+            related_rows = []
+            for item in related:
+                related_link = link(item["feature"] + ".html", item["feature"])
+                related_rows.append(
+                    f'<li>{related_link} — {item["count"]:,} shared {e(item["node_type"])} nodes '
+                    f'({item["share"]:.1%} of this feature’s populated {e(item["node_type"])} nodes)</li>'
+                )
+            related_items = "".join(related_rows)
+            body += ('<details class="feature-cooccurrence"><summary>Often co-populated with '
+                     f'{len(related)} feature(s)</summary><p>Up to three features with at least 25% overlap '
+                     '(and at least 10 shared nodes) are shown. Co-occurrence indicates overlap only, '
+                     'not a semantic relationship.</p>'
+                     f'<ul>{related_items}</ul></details>')
         body += _feature_application_section(page_application, n, set(files))
         body += "<details><summary>Source metadata</summary>" + table(["Field","Value"],[(e(k),e(v)) for k,v in meta.items()]) + "</details>"
         page(f"features/{n}.html", n + ".tf", body)
