@@ -7,8 +7,8 @@
       "feature_evidence_sha256": "672ea0d3bfbb54bd0e4daef38205083f75c712cf28d892784b24e9d0055910c8",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "appositioncontainer": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -16,8 +16,8 @@
       "feature_evidence_sha256": "9214427dad5a307d0d68519d4955416019c805213cb307f1ce274842e5f6b8d8",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "articular": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -25,8 +25,8 @@
       "feature_evidence_sha256": "275e3d04a7d4e0342c2dda66f313bfc79a96f37ec4170c0f13511cdba018e3ce",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "before": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -34,8 +34,8 @@
       "feature_evidence_sha256": "7e6d15e0d16f608b77cce991e51f637074aa412c48595007c9604e9b37702207",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "book": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -43,8 +43,8 @@
       "feature_evidence_sha256": "8d5c39178be4772a531084fee551eb63c8ad589fbfea95328a02ee860f837f93",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "bookshort": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -52,8 +52,8 @@
       "feature_evidence_sha256": "8943c030a84a6dd2c3470bd4de66f2d7eaf5a8ccec6418b27c95cdc082db12d2",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "case": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -61,8 +61,8 @@
       "feature_evidence_sha256": "53ee56679fecbfb6717f2e6031a90729825bd90bcc87cb492505f7991a16f4b9",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "chapter": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -70,8 +70,8 @@
       "feature_evidence_sha256": "8c736cefb3aabcbb6f785d4d8c64e6466d62ae358163a6a9c18b05977331f182",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "clausetype": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -79,8 +79,8 @@
       "feature_evidence_sha256": "a213a5edcb79e6b396667f604799355b5735710d7f6ac894223f4570932d575a",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "cls": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -88,8 +88,8 @@
       "feature_evidence_sha256": "50ee8df4bd3d5f209700ddd355fb39a0da717e235076af2df6a1d4ae373c0395",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "cltype": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -97,8 +97,8 @@
       "feature_evidence_sha256": "aecff34e3a2a945f856a736a4b8d1f116a413d9d147adf50f48b6b642b07e67e",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "criticalsign": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -106,8 +106,8 @@
       "feature_evidence_sha256": "cdddbf8cc2c0256f1e464bb78de2009c4ed4be4a4cd7356e311046f1b4a673da",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "crule": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -115,8 +115,8 @@
       "feature_evidence_sha256": "6b04facb1573b93761fa2cbf75b71db60484a051ee1d37b11cae83a92c29f491",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "degree": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -124,8 +124,8 @@
       "feature_evidence_sha256": "35691f771a7f9baca9e111ccc49fb04ff02825fe17fa5958340905bcfdf8a5b9",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "discontinuous": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -133,8 +133,8 @@
       "feature_evidence_sha256": "c117c81b649ac5174123a061c06899dc3124306362dc8d964d6692a35e02e889",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "domain": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -142,8 +142,8 @@
       "feature_evidence_sha256": "12a3d78f811c5ae28e7103cc2a01c91b57e34e0250d59cfa96e10ab5245fd125",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "frame": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -151,8 +151,8 @@
       "feature_evidence_sha256": "4a056983ce38947f34915a258c53c589e23a6db6541fef53568c2dcc1d35ae56",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "framespec": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -160,8 +160,8 @@
       "feature_evidence_sha256": "5b639c96f8b657093a650ae8b6a83019db32facde7eea9e500b4b66c1cc39897",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "function": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -169,8 +169,8 @@
       "feature_evidence_sha256": "8aadee6d09d65df3ad48d89c81445712fbb9f1e84785ca2225830780109bb98d",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "gender": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -178,8 +178,8 @@
       "feature_evidence_sha256": "fc06fcfe0da34daa0d108f4f9a6c06438ae65ed694ea9a3f8cdf054a13ed42b9",
       "provider": "openrouter",
       "model": "nvidia/nemotron-3.5-super-vl:free",
-      "evidence_mode": "compact",
-      "prompt_sha256": "fe50727f0d35f1dd485fde0d9803aaf9bf2d008d1b0df75667c5b6c0d44cdae3"
+      "evidence_mode": "targeted",
+      "prompt_sha256": "0ae28cca8447e4d322ec679fa964eafdc5f01816b833d9704bb2e986f2a1c37d"
     },
     "gloss": {
       "dataset_context_sha256": "ceaa58cc99d31283b2142915f038cfb0eba6506835ef576e6101aaf06c5550e8",
@@ -266,8 +266,8 @@
   "context_flags": {
     "after": [
       {
-        "issue": "after and trailer both describe post-word material, but trailer excludes critical signs and the distinction is not fully clarified.",
-        "status": "inconsistency",
+        "issue": "The distinction between `after` and `trailer` is not fully clarified; context states trailer excludes critical signs but does not define `after`'s scope.",
+        "status": "missing_evidence",
         "evidence": [
           "dataset_context.ambiguities",
           "features.after.metadata.description",
@@ -276,150 +276,203 @@
         ]
       },
       {
-        "issue": "Multiple word surface representations coexist without a stated authoritative form for citation.",
+        "issue": "Only 12 of 19 distinct `after` values are supplied; rare values are unavailable.",
         "status": "missing_evidence",
         "evidence": [
-          "dataset_context.ambiguities",
-          "feature_family.evidence"
-        ]
-      },
-      {
-        "issue": "Configured writing is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; the intended language tag for the corpus text is unclear.",
-        "status": "contradiction",
-        "evidence": [
-          "dataset_context.ambiguities",
-          "application.configuration.writing"
+          "additional_evidence.rare_values.rationale",
+          "features.after.distinct",
+          "features.after.frequent"
         ]
       }
     ],
     "appositioncontainer": [
       {
-        "issue": "Semantic definition of appositioncontainer and criteria for its node-type distribution are absent.",
+        "issue": "Feature description implies a binary 1/0 distinction, but only value 1 is attested; evidence for value 0 is missing.",
         "status": "missing_evidence",
         "evidence": [
-          "features.appositioncontainer.description",
-          "features.appositioncontainer.frequent",
-          "features.appositioncontainer.sources"
+          "features.appositioncontainer.metadata.description",
+          "features.appositioncontainer.distinct",
+          "features.appositioncontainer.frequent"
+        ]
+      },
+      {
+        "issue": "Representative example provides a Greek surface string without identifying which of the corpus's multiple coexisting word surface representations is authoritative for citation.",
+        "status": "missing_evidence",
+        "evidence": [
+          "additional_evidence.items[0].text",
+          "dataset.ambiguities: multiple word surface representations coexist without a stated authoritative form for citation"
         ]
       }
     ],
     "articular": [
       {
-        "issue": "Description lists sentence, group, clause, phrase, and wg but omits subphrase despite a non-zero source count.",
+        "issue": "Source description omits subphrase as a constituent type",
         "status": "inconsistency",
         "evidence": [
-          "features.articular.description",
-          "features.articular.sources.subphrase"
+          "sources.subphrase: 11897"
         ]
       },
       {
-        "issue": "Description implies a binary presence/absence condition, but distinct value count is 1, so the semantics of 0 are unattested.",
-        "status": "inconsistency",
+        "issue": "Feature described as binary but only value 1 is attested",
+        "status": "missing_evidence",
         "evidence": [
-          "features.articular.description",
-          "features.articular.distinct"
+          "additional_evidence.rare_values: distinct=1, only value 1 observed; frequent [[1, 57544]]"
         ]
       }
     ],
     "before": [
       {
-        "issue": "Multiple word surface representations coexist without a stated authoritative form for citation.",
+        "issue": "Multiple word surface representations (text, normalized, unaccent, translit, unicode, before, after, trailer) lack a stated authoritative form for citation.",
         "status": "missing_evidence",
         "evidence": [
           "dataset_context.ambiguities"
         ]
       },
       {
-        "issue": "features.after and features.trailer both describe post-word material; their distinction is not fully clarified.",
+        "issue": "features.after and features.trailer both describe post-word material, but the distinction (trailer excludes critical signs) is not fully clarified.",
         "status": "inconsistency",
         "evidence": [
           "dataset_context.ambiguities"
-        ]
-      },
-      {
-        "issue": "The feature description is minimal and lacks semantic detail beyond 'this is XML attribute before'.",
-        "status": "missing_evidence",
-        "evidence": [
-          "features.before.metadata.description"
         ]
       }
     ],
     "book": [
       {
-        "issue": "Language tag discrepancy for book nodes",
+        "issue": "Fifteen of the 27 distinct book names are missing from the supplied value inventory; only 12 frequent and 5 rare values are documented.",
+        "status": "missing_evidence",
+        "evidence": [
+          "additional_evidence[0].rationale",
+          "feature.distinct",
+          "feature.frequent",
+          "additional_evidence[0].items"
+        ]
+      },
+      {
+        "issue": "The semantic unit of the frequency counts cited for book values (e.g., Luke 70,494) is unspecified; they may denote word slots, total nodes, or another aggregation.",
+        "status": "missing_evidence",
+        "evidence": [
+          "feature.frequent",
+          "structure.node_types_in_corpus_order",
+          "feature.sources"
+        ]
+      },
+      {
+        "issue": "Context claims configured writing is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; the intended language tag for book nodes is unclear.",
         "status": "inconsistency",
         "evidence": [
-          "context.ambiguities[0]"
+          "context.dataset.ambiguities[0]",
+          "application.configuration.writing"
         ]
       }
     ],
     "bookshort": [
       {
-        "issue": "Full book-name mapping for bookshort abbreviations absent",
+        "issue": "bookshort distinct count is 27, but supplied frequent and rare evidence covers only 17 abbreviations; 10 book abbreviations are missing from the inventory.",
         "status": "missing_evidence",
         "evidence": [
-          "features.bookshort.description",
-          "features.bookshort.frequent"
-        ]
-      }
-    ],
-    "case": [],
-    "chapter": [
-      {
-        "issue": "Source description states chapter is from ref attribute in XML, while num metadata describes num as generated and absent from XML; derivation status of chapter is not explicitly clarified.",
-        "status": "missing_evidence",
-        "evidence": [
-          "features.chapter.description",
-          "features.num.metadata.description"
+          "features.bookshort.distinct",
+          "features.bookshort.frequent",
+          "additional_evidence.rare_values",
+          "additional_evidence.representative_examples"
         ]
       },
       {
-        "issue": "Chapter numbers restart within each book, but the feature does not include book context; reference resolution and uniqueness semantics are undocumented.",
+        "issue": "application.configuration.writing is 'grc', but feature lang reportedly has one distinct value 'el' observed only on book nodes; the intended language tag for corpus text is unclear.",
+        "status": "inconsistency",
+        "evidence": [
+          "context.dataset.ambiguities: application.configuration.writing is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; the intended language tag for the corpus text is unclear.",
+          "application.configuration.writing"
+        ]
+      },
+      {
+        "issue": "Multiple word surface representations (text, normalized, unaccent, translit, unicode, before, after, trailer) lack a stated authoritative citation form.",
+        "status": "inconsistency",
+        "evidence": [
+          "context.dataset.ambiguities: Multiple word surface representations coexist (text, normalized, unaccent, translit, unicode, plus before/after/trailer) without a stated authoritative form for citation."
+        ]
+      }
+    ],
+    "case": [
+      {
+        "issue": "case is sourced on phrase and subphrase nodes in addition to word nodes, but the scope and rationale for non-word case annotation are undocumented",
         "status": "missing_evidence",
         "evidence": [
-          "features.chapter.sources",
-          "structure.reference_sections"
+          "features.case.sources"
+        ]
+      },
+      {
+        "issue": "the sum of frequent value frequencies equals the total of case sources across phrase, subphrase, and word nodes, but the aggregation basis is not documented",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.case.frequent",
+          "features.case.sources"
+        ]
+      }
+    ],
+    "chapter": [
+      {
+        "issue": "Chapter node count is 260 while distinct chapter values are 28, but per-book restart of chapter numbering is not explicitly documented.",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.chapter.distinct",
+          "features.chapter.sources.chapter",
+          "structure.node_types_in_corpus_order"
+        ]
+      },
+      {
+        "issue": "Frequent values cover chapters 1-12 and rare values cover 24-28, leaving chapters 13-23 without observed frequencies.",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.chapter.frequent",
+          "additional_evidence.rare_values"
+        ]
+      },
+      {
+        "issue": "The relationship between ref and chapter is inferred rather than explicitly documented in feature metadata.",
+        "status": "missing_evidence",
+        "evidence": [
+          "feature_relationships"
         ]
       }
     ],
     "clausetype": [
       {
-        "issue": "clausetype and cltype are both described as 'clause type' but have different value sets and an undocumented relationship",
+        "issue": "clausetype and cltype are both described as 'clause type' but have different value sets, and their relationship is undocumented",
         "status": "inconsistency",
         "evidence": [
-          "dataset_context.ambiguities",
           "features.clausetype.metadata.description",
-          "features.cltype.metadata.description"
+          "features.cltype.metadata.description",
+          "dataset_context.ambiguities"
         ]
       },
       {
-        "issue": "clausetype source coverage is sparse and extends beyond clause nodes to sentence and wg",
+        "issue": "clausetype occurs on sentence and wg nodes as well as clause nodes, but the feature is described as clause type and no scope rule explains non-clause occurrences",
         "status": "missing_evidence",
         "evidence": [
-          "features.clausetype.sources",
-          "structure.node_types_in_corpus_order"
+          "features.clausetype.sources"
         ]
       }
     ],
     "cls": [
       {
-        "issue": "Feature description provides no semantic definition beyond 'this is XML attribute cls'.",
+        "issue": "cls reports 18 distinct values, but only the 12 most frequent are visible; six missing values are undocumented.",
         "status": "missing_evidence",
         "evidence": [
-          "features.cls.description"
+          "additional_evidence rare_values rationale"
         ]
       },
       {
-        "issue": "Distinct value count is 18 but the frequent-values list covers only 12 values; six values are unreported.",
-        "status": "missing_evidence",
+        "issue": "application.configuration.writing is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; the intended language tag for the corpus text is unclear.",
+        "status": "inconsistency",
         "evidence": [
-          "features.cls.distinct",
-          "features.cls.frequent"
+          "dataset.ambiguities"
         ]
-      },
+      }
+    ],
+    "cltype": [
       {
-        "issue": "cls is grouped with clausetype and cltype in syntax_annotations, but the context notes clausetype and cltype have different value sets and an undocumented relationship; cls's relationship to either is unspecified.",
-        "status": "missing_evidence",
+        "issue": "clausetype and cltype are both described as clause type but have different value sets and undocumented relationship",
+        "status": "inconsistency",
         "evidence": [
           "dataset_context.ambiguities",
           "features.clausetype.metadata.description",
@@ -427,92 +480,92 @@
         ]
       }
     ],
-    "cltype": [
-      {
-        "issue": "clausetype and cltype are both described as 'clause type' but have different value sets and their relationship is undocumented",
-        "status": "inconsistency",
-        "evidence": [
-          "features.clausetype.metadata.description",
-          "features.cltype.metadata.description",
-          "dataset_context.ambiguities",
-          "feature_relationships.ambiguous_clause_type"
-        ]
-      }
-    ],
     "criticalsign": [
       {
-        "issue": "trailer reportedly excludes critical signs but the distinction from criticalsign is not clarified",
-        "status": "inconsistency",
+        "issue": "Feature description provides no semantic definition beyond XML attribute origin",
+        "status": "missing_evidence",
         "evidence": [
-          "dataset.ambiguities: features.after and features.trailer both describe post-word material (trailer excludes critical signs); the distinction is not fully clarified."
+          "features.criticalsign.metadata.description: 'this is XML attribute criticalsign'"
         ]
       },
       {
-        "issue": "No authoritative surface citation form is defined among text, normalized, unaccent, translit, unicode, before, after, and trailer",
+        "issue": "Relationship between criticalsign and after/trailer is unclear; context notes trailer excludes critical signs but does not fully clarify distinction",
         "status": "missing_evidence",
         "evidence": [
-          "dataset.ambiguities: Multiple word surface representations coexist (text, normalized, unaccent, translit, unicode, plus before/after/trailer) without a stated authoritative form for citation."
+          "dataset.ambiguities: features.after and features.trailer both describe post-word material (trailer excludes critical signs); the distinction is not fully clarified",
+          "additional_evidence rationale for criticalsign"
         ]
       },
       {
-        "issue": "criticalsign is documented only as an XML attribute with no semantic or functional definition",
+        "issue": "Attachment of criticalsign to node types and targets is undocumented",
         "status": "missing_evidence",
         "evidence": [
-          "features.criticalsign.description: this is XML attribute criticalsign"
+          "features.criticalsign.sources: {\"phrase\": 30, \"subphrase\": 33, \"word\": 63}",
+          "features.criticalsign.targets: {}"
         ]
       }
     ],
     "crule": [
       {
-        "issue": "Feature named crule ('clause rule') has sources on sentence and wg nodes, not only clause nodes.",
+        "issue": "Feature family syntax_annotations is marked needs_review",
         "status": "inconsistency",
         "evidence": [
-          "features.crule.sources",
-          "features.crule.description"
+          "feature_family.status"
         ]
       },
       {
-        "issue": "Semantics of crule values ClCl and ClCl2 are not defined.",
-        "status": "missing_evidence",
+        "issue": "clausetype and cltype are both described as 'clause type' but have different value sets; relationship to crule undocumented",
+        "status": "inconsistency",
         "evidence": [
-          "features.crule.distinct",
-          "features.crule.frequent"
+          "dataset.ambiguities: features.clausetype and features.cltype are both described as 'clause type' but have different value sets (clausetype: only 'nominalized'; cltype: VerbElided/Verbless/Minor); their relationship is undocumented."
         ]
       },
       {
-        "issue": "Relationship between crule and clausetype/cltype is undocumented.",
+        "issue": "crule is sourced from clause, sentence, and wg nodes, but the syntactic distinction encoded by ClCl vs ClCl2 across these node types is unspecified",
         "status": "missing_evidence",
         "evidence": [
-          "dataset.ambiguities",
-          "features.crule.description"
+          "additional_evidence.rationale: crule has exactly two values (ClCl, ClCl2) but is sourced from clause, sentence, and wg nodes; examples are needed to show how each value is used across these node types and what syntactic distinction they encode."
         ]
       }
     ],
     "degree": [
       {
-        "issue": "Corpus dataset is flagged for review",
+        "issue": "Multiple word surface representations coexist (text, normalized, unaccent, translit, unicode, before, after, trailer) without a stated authoritative form for citation; the cited forms ἐλαχίστη and ἰσχυρότερός rely on an unspecified surface convention.",
         "status": "missing_evidence",
         "evidence": [
-          "dataset.needs_review",
-          "dataset_profile.needs_review"
+          "context.dataset.ambiguities[3]"
+        ]
+      },
+      {
+        "issue": "application.configuration.writing is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; the intended language tag for the corpus text is unclear.",
+        "status": "inconsistency",
+        "evidence": [
+          "context.dataset.ambiguities[0]"
         ]
       }
     ],
     "discontinuous": [
       {
-        "issue": "Description says 'the word' but sources list phrase, subphrase, and word nodes.",
+        "issue": "Description describes a word-level binary flag, but sources include phrase and subphrase nodes",
         "status": "inconsistency",
         "evidence": [
-          "description",
-          "sources"
+          "features.discontinuous.description: '1 if the word is out of sequence in the xml'",
+          "features.discontinuous.sources: {phrase: 645, subphrase: 5389, word: 6034}"
         ]
       },
       {
-        "issue": "Only value 1 is attested; value 0 or non-discontinuous cases are missing from the summary.",
+        "issue": "Only value 1 is attested; value 0 is not reported",
         "status": "missing_evidence",
         "evidence": [
-          "distinct: 1",
-          "frequent: [[1, 12068]]"
+          "features.discontinuous.distinct: 1",
+          "features.discontinuous.frequent: [[1, 12068]]"
+        ]
+      },
+      {
+        "issue": "Semantics of 'out of sequence in the xml' are unspecified",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.discontinuous.description: '1 if the word is out of sequence in the xml'"
         ]
       }
     ],
@@ -521,66 +574,69 @@
         "issue": "domain and ln cover similar node sets with numeric-looking values but no documented relationship",
         "status": "missing_evidence",
         "evidence": [
-          "dataset_context.ambiguities",
-          "feature_relationships"
-        ]
-      }
-    ],
-    "frame": [
-      {
-        "issue": "The graph_edges feature family containing frame is marked needs_review.",
-        "status": "missing_evidence",
-        "evidence": [
-          "feature_family.status",
-          "feature_family.id"
-        ]
-      }
-    ],
-    "framespec": [
-      {
-        "issue": "framespec kind is 'node' but sources list phrase/subphrase/word counts and targets is empty, resembling an edge feature with missing targets",
-        "status": "inconsistency",
-        "evidence": [
-          "features.framespec.kind",
-          "features.framespec.sources",
-          "features.framespec.targets"
+          "context.ambiguities",
+          "feature_relationships.undocumented_numeric_overlap"
         ]
       },
       {
-        "issue": "Provenance metadata (MACULA XML conversion) is attested for book and lemma features but not explicitly for framespec",
+        "issue": "domain has 1647 distinct numeric-looking values on phrase, subphrase, and word nodes but no documented semantics or examples",
         "status": "missing_evidence",
         "evidence": [
-          "features.book.metadata",
-          "features.lemma.metadata",
-          "features.framespec"
+          "additional_evidence.representative_examples.rationale"
+        ]
+      }
+    ],
+    "frame": [],
+    "framespec": [
+      {
+        "issue": "framespec value semantics are missing from feature metadata",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.framespec.metadata.description",
+          "additional_evidence representative_examples rationale"
+        ]
+      },
+      {
+        "issue": "frequent framespec values appear as single tokens while representative examples show space-separated multi-part values; value segmentation is undocumented",
+        "status": "inconsistency",
+        "evidence": [
+          "frequent values list",
+          "additional_evidence representative_examples items"
         ]
       }
     ],
     "function": [
       {
-        "issue": "clausetype and cltype are both described as clause type but have different value sets and undocumented relationship",
-        "status": "inconsistency",
+        "issue": "Feature description is underspecified and provides no value inventory or annotation guidelines",
+        "status": "missing_evidence",
         "evidence": [
-          "dataset.ambiguities[1]",
-          "features.clausetype.metadata.description",
-          "features.cltype.metadata.description"
+          "features.function.metadata.description: 'this is XML attribute function'"
+        ]
+      },
+      {
+        "issue": "Relationship between function and other syntax features is marked inferred, not explicitly evidenced",
+        "status": "missing_evidence",
+        "evidence": [
+          "feature_relationships: source_feature function, target_feature role, status inferred",
+          "feature_family.purpose: 'Annotates syntactic function, role, rule, type, junction, and clause classification'"
         ]
       }
     ],
     "gender": [
       {
-        "issue": "Configured writing system is 'grc', but feature lang has one distinct value 'el' observed only on book nodes; intended language tag for corpus text is unclear.",
+        "issue": "additional_evidence rationale states no annotated word instances are supplied, but the same block provides three word-node gender examples",
         "status": "inconsistency",
         "evidence": [
-          "application.configuration.writing",
-          "context.ambiguities[0]"
+          "additional_evidence.rationale",
+          "additional_evidence.items"
         ]
       },
       {
-        "issue": "Gender feature sources include phrase (17,658) and subphrase (56,317) nodes in addition to word nodes (73,975); annotation rationale for gender on non-word nodes is not documented.",
+        "issue": "Greek forms are cited using the 'text' surface representation, but corpus context lists multiple coexisting word surface forms without an authoritative citation form",
         "status": "missing_evidence",
         "evidence": [
-          "features.gender.sources"
+          "context.dataset.ambiguities: multiple word surface representations coexist without a stated authoritative form",
+          "additional_evidence.items[].text"
         ]
       }
     ],
