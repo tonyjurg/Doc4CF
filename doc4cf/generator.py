@@ -575,19 +575,21 @@ def _feature_associations(
             phi = (both_present * neither - left_only * right_only) / denominator
 
             def record(target_present, target_absent, other_present, other_absent,
-                       target_only, other_only, correlation):
+                       target_only, other_only, correlation,
+                       node_type_name=node_type, both_present_count=both_present,
+                       neither_count=neither):
                 if min(target_present, target_absent, other_present, other_absent) < 10:
                     return None
                 if abs(correlation) < 0.10:
                     return None
                 return {
-                    "node_type": node_type,
+                    "node_type": node_type_name,
                     "phi": correlation,
-                    "both_present": both_present,
+                    "both_present": both_present_count,
                     "other_only": other_only,
                     "target_only": target_only,
-                    "both_absent": neither,
-                    "target_when_other_present": both_present / other_present,
+                    "both_absent": neither_count,
+                    "target_when_other_present": both_present_count / other_present,
                     "target_when_other_absent": target_only / other_absent,
                     "other_present": other_present,
                     "other_absent": other_absent,
@@ -1289,7 +1291,7 @@ def generate(args: argparse.Namespace) -> None:
             sections = []
             for group in related:
                 rows_for_type = []
-                for relation, items in (("Positive", group["positive"]), ("Inverse", group["inverse"])):
+                for _relation, items in (("Positive", group["positive"]), ("Inverse", group["inverse"])):
                     for item in items:
                         names = ", ".join(link(other + ".html", other) for other in item["features"])
                         present = (f'{item["both_present"]:,} / {item["other_present"]:,} '
