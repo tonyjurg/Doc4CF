@@ -575,19 +575,21 @@ def _feature_associations(
             phi = (both_present * neither - left_only * right_only) / denominator
 
             def record(target_present, target_absent, other_present, other_absent,
-                       target_only, other_only, correlation):
+                       target_only, other_only, correlation,
+                       node_type_name=node_type, both_present_count=both_present,
+                       neither_count=neither):
                 if min(target_present, target_absent, other_present, other_absent) < 10:
                     return None
                 if abs(correlation) < 0.10:
                     return None
                 return {
-                    "node_type": node_type,
+                    "node_type": node_type_name,
                     "phi": correlation,
-                    "both_present": both_present,
+                    "both_present": both_present_count,
                     "other_only": other_only,
                     "target_only": target_only,
-                    "both_absent": neither,
-                    "target_when_other_present": both_present / other_present,
+                    "both_absent": neither_count,
+                    "target_when_other_present": both_present_count / other_present,
                     "target_when_other_absent": target_only / other_absent,
                     "other_present": other_present,
                     "other_absent": other_absent,
@@ -1266,10 +1268,30 @@ def generate(args: argparse.Namespace) -> None:
                  for v, count in p["frequent"]])
         related = associations.get(n, [])
         if related:
+            correlated: dict[str, dict[str, Any]] = {}
+            for group in related:
+                for item in group["positive"]:
+                    if item["phi"] < 0.50:
+                        continue
+                    for other in item["features"]:
+                        previous = correlated.get(other)
+                        if previous is None or item["phi"] > previous["phi"]:
+                            correlated[other] = {"phi": item["phi"], "node_type": group["node_type"]}
+            summary = sorted(correlated.items(), key=lambda entry: (-entry[1]["phi"], entry[0]))[:3]
+            if summary:
+                body += (
+                    '<section class="correlated-features"><h2>Correlated features</h2><ul>'
+                    + "".join(
+                        f'<li>{link(other + ".html", other)} '
+                        f'<small>{e(item["node_type"])} · φ {item["phi"]:+.2f}</small></li>'
+                        for other, item in summary
+                    )
+                    + "</ul></section>"
+                )
             sections = []
             for group in related:
                 rows_for_type = []
-                for relation, items in (("Positive", group["positive"]), ("Inverse", group["inverse"])):
+                for _relation, items in (("Positive", group["positive"]), ("Inverse", group["inverse"])):
                     for item in items:
                         names = ", ".join(link(other + ".html", other) for other in item["features"])
                         present = (f'{item["both_present"]:,} / {item["other_present"]:,} '

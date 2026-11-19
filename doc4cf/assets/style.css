@@ -29,3 +29,4 @@
   .header-logo{justify-content:flex-start}
 }
 .feature-associations{padding:.45rem .7rem;background:transparent;border-color:#e3e8e1;color:#526860;font-size:.92rem}.feature-associations summary{font-size:.92rem}.feature-associations p{margin:.4rem 0}.feature-associations h3{margin:.9rem 0 .3rem;font-size:1rem}.feature-associations table{font-size:.88rem}.inferred-description{margin:1.2rem 0}.inferred-description h2{display:flex;align-items:center;gap:.3rem;margin:.25rem 0 .4rem;font-size:1.4rem}
+.correlated-features{margin:.9rem 0}.correlated-features h2{margin:.9rem 0 .25rem;font-size:1.1rem}.correlated-features ul{margin:.2rem 0;padding-left:1.2rem}.correlated-features li{margin:.1rem 0}

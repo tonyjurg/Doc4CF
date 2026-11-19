@@ -96,6 +96,11 @@ matching presence masks are grouped into one row, avoiding duplicate entries
 for identical coverage patterns. The results describe this corpus snapshot;
 they do not imply causation or define a linguistic relationship.
 
+Above the expandable matrix, each feature page also lists up to three of its
+strongest positive associations with ``phi >= +0.50`` as a quick summary. The
+full matrix remains available for weaker positive associations and inverse
+patterns.
+
 In the N1904 snapshot, ``mood`` and ``tense`` have identical presence masks:
 they are both assigned on 28,357 word nodes and both absent on the remaining
 109,422 word nodes, giving ``phi = +1.00``. On word nodes, ``mood`` and
