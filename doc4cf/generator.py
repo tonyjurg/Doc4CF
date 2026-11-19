@@ -1288,6 +1288,12 @@ def generate(args: argparse.Namespace) -> None:
                     )
                     + "</ul></section>"
                 )
+            else:
+                body += (
+                    '<section class="correlated-features"><h2>Correlated features</h2>'
+                    '<p>No features meet the strong positive association threshold (φ ≥ +0.50).</p>'
+                    '</section>'
+                )
             sections = []
             for group in related:
                 rows_for_type = []
