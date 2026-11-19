@@ -107,6 +107,8 @@ The [guide to using corpus documentation](query-guide.html) shows how to use obs
 
 ## Example corpora
 
+See the [example methods comparison](example-methods.html) for the inference levels, generated-description coverage, and current notebook defaults for all three examples.
+
 The [three generation notebooks](notebooks/README.md) explain how to rebuild each example, from a pinned corpus revision to the complete static site. They include offline and free OpenRouter options, safe key entry, validation, and an optional publication step. The N1904 notebook uses the [N1904 editorial context](notebooks/contexts/N1904.txt) for enriched descriptions.
 
 ### N1904 validation
