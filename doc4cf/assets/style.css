@@ -11,6 +11,7 @@
 .structure-choices svg{width:5rem;height:2.5rem;stroke:currentColor;fill:currentColor;stroke-width:1.5}.structure-choices svg path{fill:none}
 .structure-choices strong{display:flex;justify-content:space-between;gap:.5rem;font:600 1.35rem Georgia,serif}.structure-choices a>span{color:#435951}
 .graph-download{margin:2rem 0 0;padding-top:1rem;border-top:1px solid #cbd7cb}
+.feature-app-details{margin:1.5rem 0;padding:0 1rem 1rem;border-left:3px solid #8ba99a;background:#f2f5ef}.feature-app-details>p{color:#52645c}.feature-app-document pre{max-height:28rem;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f7f3;padding:.8rem}
 
 .audit-section{margin:1.25rem 0;padding:1rem 1.25rem;border:1px solid #d5ddd4;border-radius:.5rem;background:#fff}
 .audit-section h2{margin:.15rem 0 .4rem}.audit-summary{margin:.35rem 0 .75rem;color:#52645c}

@@ -737,7 +737,8 @@ def _render_text_page(api: Any, page: Callable[[str, str, str], None], cfg: dict
             sample = api.T.text(sample_nodes, fmt=key[4:])
             placeholders = api.CF.cformats[key[4:]][2]
             fields = dict.fromkeys(n for alternatives, _ in placeholders for n in alternatives if n in files)
-            formats.append((e(key[4:]), e(unit), e(template), ", ".join(map(feature, fields)),
+            anchor = "format-" + sha256(key[4:].encode("utf-8")).hexdigest()[:12]
+            formats.append((f'<span id="{anchor}">{e(key[4:])}</span>', e(unit), e(template), ", ".join(map(feature, fields)),
                             f'<bdi dir="auto">{e(sample)}</bdi>'))
     sample_unit = "slots"
     if formats and any(unit != api.F.otype.slotType for unit in api.T.formats.values()):
@@ -762,6 +763,64 @@ def _render_text_page(api: Any, page: Callable[[str, str, str], None], cfg: dict
     forms = ", ".join(f for f in ("NFC","NFD") if unicodedata.is_normalized(f,sample))
     text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
     page("text.html","Text & encoding",text_body)
+
+
+def _feature_application_section(
+    application: dict[str, Any] | None, name: str, feature_names: set[str],
+) -> str:
+    """Render configured app uses and linked local documentation for one feature."""
+    if not application:
+        return ""
+    app_links = application.get("feature_application_links", {}).get(name, {})
+    config_refs = app_links.get("configuration_references", [])
+    text_formats = app_links.get("text_formats", [])
+    documentation_links = app_links.get("documentation_links", [])
+    linked_docs = application.get("linked_documentation", {}).get("features", {}).get(name, [])
+    if not (config_refs or text_formats or documentation_links or linked_docs):
+        return ""
+
+    rows = []
+    for item in config_refs[:12]:
+        value = item.get("value")
+        rendered = value if isinstance(value, str) else json.dumps(
+            value, ensure_ascii=False, sort_keys=True,
+        )
+        rows.append((f'<code>{e(item.get("path", "configuration"))}</code>', e(rendered)))
+    if len(config_refs) > 12:
+        rows.append(("More settings", e(f"{len(config_refs) - 12} additional matching settings omitted")))
+    if text_formats:
+        for item in text_formats:
+            metadata_path = str(item.get("metadata_path", ""))
+            format_name = metadata_path.split("metadata.", 1)[-1].removeprefix("fmt:")
+            anchor = "format-" + sha256(format_name.encode("utf-8")).hexdigest()[:12]
+            label = link(f"../text.html#{anchor}", f"{format_name} rendering format")
+            contributing = []
+            for placeholder in item.get("placeholders", []):
+                contributing.append(link(f"{quote(placeholder)}.html", placeholder)
+                                    if placeholder in feature_names else f"<code>{e(placeholder)}</code>")
+            rows.append((label, f'<code>{e(item.get("template", ""))}</code>'
+                         + (" <span>Uses: " + ", ".join(contributing) + "</span>" if contributing else "")))
+    for item in documentation_links[:3]:
+        rows.append(("Feature documentation", link(item["url"], "Open source documentation")
+                     + " <small>Source: <code>" + e(item.get("source_path", "local app docs"))
+                     + "</code>; configured at <code>" + e(item.get("configuration_path", "app config"))
+                     + "</code></small>"))
+
+    section = (
+        '<section class="feature-app-details"><h2>How the app uses this feature</h2>'
+        '<p>These settings describe configured app presentation and documented guidance; '
+        'they are separate from the measured corpus data above.</p>'
+    )
+    if rows:
+        section += table(["App setting or format", "Configured value"], rows)
+    for document in linked_docs[:3]:
+        path = str(document.get("path", "linked app documentation"))
+        excerpt = str(document.get("text", ""))[:2400]
+        section += (f'<details class="feature-app-document"><summary>Related documentation: '
+                    f'{e(path)}</summary><pre>{e(excerpt)}</pre></details>')
+    if len(linked_docs) > 3:
+        section += f'<p>{len(linked_docs) - 3} additional linked documents are listed in the audit report.</p>'
+    return section + "</section>"
 
 
 def _overview_section(overview_notes: str, context_data: Any) -> str:
@@ -925,6 +984,21 @@ def generate(args: argparse.Namespace) -> None:
         application = extract_app_context(
             src, getattr(args, "app_dir", None), sorted(files),
             {name: info["meta"] for name, info in files.items()})
+    page_application = application
+    if application:
+        # The dataset inference inventory is deliberately kept within its
+        # prompt budget. Recompute compact per-feature presentation links
+        # from the bounded config for HTML rendering.
+        from .app_context import _feature_application_links
+        page_config = dict(application.get("configuration", {}))
+        if application.get("additional_configuration"):
+            page_config["additional_configuration"] = application["additional_configuration"]
+        configured_app_dir = getattr(args, "app_dir", None)
+        repo_root = (Path(configured_app_dir).resolve().parent if configured_app_dir
+                     else src.parent.parent)
+        feature_links = _feature_application_links(
+            page_config, sorted(files), {name: info["meta"] for name, info in files.items()}, repo_root)
+        page_application = {**application, "feature_application_links": feature_links}
     # Validation uses the complete set of observed values, while prompts
     # remain compact and include only the current feature's measured profile.
     observed_values = _observed_values(api, files)
@@ -946,6 +1020,7 @@ def generate(args: argparse.Namespace) -> None:
         for t in valid:
             edges.append({"from":fid, "to":t, "relation":"valid on"})
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
+        body += _feature_application_section(page_application, n, set(files))
         if args.model and n in selected:
             evidence = dict(corpus=corpus, **p)
             # Raw headers are direct corpus evidence for every feature. Keep

@@ -429,16 +429,43 @@ def _linked_documentation(
 
 def _feature_application_links(
     config: dict[str, Any], feature_names: list[str], feature_metadata: dict[str, dict[str, Any]],
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Connect configured feature references and text-format placeholders to features."""
     leaves = list(_walk_config(config))
     result = {}
     for feature in feature_names:
         refs = []
+        documentation_links = []
         for path, value in leaves:
+            if (isinstance(value, str) and "featurebase" in path.lower()
+                    and any(marker in value for marker in ("<feature>", "{feature}", "${feature}"))):
+                template = value
+                for marker in ("<feature>", "{feature}", "${feature}"):
+                    template = template.replace(marker, feature)
+                parsed = urlparse(template)
+                local_doc = _local_doc_path(value, repo_root, path, feature) if repo_root else None
+                if (parsed.scheme in {"http", "https"} and parsed.netloc and not parsed.username
+                        and local_doc is not None and local_doc.is_file()):
+                    documentation_links.append({
+                        "configuration_path": path,
+                        "source_path": local_doc.relative_to(repo_root).as_posix(),
+                        "url": template,
+                    })
             values = value if isinstance(value, list) else [value]
-            if any(item == feature or (isinstance(item, str) and re.search(
-                rf"(?<![A-Za-z0-9_]){re.escape(feature)}(?![A-Za-z0-9_])", item)) for item in values):
+
+            def refers_to_feature(item: Any) -> bool:
+                if item == feature:
+                    return True
+                if not isinstance(item, str):
+                    return False
+                parsed = urlparse(item)
+                if parsed.scheme in {"http", "https"}:
+                    return False
+                tokens = re.findall(r"[A-Za-z0-9_@.-]+", item)
+                return feature in tokens or "{" + feature + "}" in item
+
+            if any(refers_to_feature(item) for item in values):
                 refs.append({"path": path, "value": value})
         formats = []
         for metadata_feature, metadata in feature_metadata.items():
@@ -450,8 +477,9 @@ def _feature_application_links(
                     formats.append({"metadata_path": f"features.{metadata_feature}.metadata.{key}",
                                     "template": value, "placeholders": placeholders,
                                     "uses_this_feature": True})
-        if refs or formats:
-            result[feature] = {"configuration_references": refs, "text_formats": formats}
+        if refs or formats or documentation_links:
+            result[feature] = {"configuration_references": refs, "text_formats": formats,
+                               "documentation_links": documentation_links}
     return result
 
 
@@ -518,7 +546,7 @@ def extract_app_context(
     if docs["dataset"] or docs["features"]:
         result["linked_documentation"] = docs
     result["feature_application_links"] = _feature_application_links(
-        all_configuration, names, feature_metadata or {})
+        all_configuration, names, feature_metadata or {}, repo_root)
     known_hashes = {item["path"] for item in file_hashes}
     file_hashes.extend(item for item in doc_hashes if item["path"] not in known_hashes)
     if skipped_docs:
