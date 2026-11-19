@@ -29,7 +29,8 @@ from the version selector in the sidebar to view the API at that release.
 
    :doc:`Architecture <architecture>`
    How deterministic corpus measurements, optional enrichment, and generated
-   artifacts fit together.
+   artifacts fit together, including the feature presence/absence association
+   matrix used on feature pages.
 
 .. toctree::
    :maxdepth: 2
