@@ -1266,6 +1266,26 @@ def generate(args: argparse.Namespace) -> None:
                  for v, count in p["frequent"]])
         related = associations.get(n, [])
         if related:
+            correlated: dict[str, dict[str, Any]] = {}
+            for group in related:
+                for item in group["positive"]:
+                    if item["phi"] < 0.50:
+                        continue
+                    for other in item["features"]:
+                        previous = correlated.get(other)
+                        if previous is None or item["phi"] > previous["phi"]:
+                            correlated[other] = {"phi": item["phi"], "node_type": group["node_type"]}
+            summary = sorted(correlated.items(), key=lambda entry: (-entry[1]["phi"], entry[0]))[:3]
+            if summary:
+                body += (
+                    '<section class="correlated-features"><h2>Correlated features</h2><ul>'
+                    + "".join(
+                        f'<li>{link(other + ".html", other)} '
+                        f'<small>{e(item["node_type"])} · φ {item["phi"]:+.2f}</small></li>'
+                        for other, item in summary
+                    )
+                    + "</ul></section>"
+                )
             sections = []
             for group in related:
                 rows_for_type = []
