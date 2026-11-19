@@ -339,7 +339,7 @@ def _local_doc_path(value: str, repo_root: Path, key_path: str, feature: str | N
         relative = Path(*relative_parts)
     else:
         relative = Path(candidate)
-        if relative.is_absolute() or ".." in relative.parts:
+        if not relative.name or relative.is_absolute() or ".." in relative.parts:
             return None
     if "__feature__" in str(relative):
         return None
