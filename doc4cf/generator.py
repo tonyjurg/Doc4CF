@@ -1,6 +1,6 @@
 """Build an offline corpus reference from Context-Fabric."""
 import argparse
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from collections import Counter
 from hashlib import sha256
 from html import escape
@@ -602,6 +602,261 @@ def load_corpus(src: Path, files: dict[str, Any], out: Path) -> Any:
         return Fabric(locations=[temp, str(src)]).load(features)
 
 
+def _validate_options(args: argparse.Namespace, files: dict[str, Any]) -> set[str]:
+    """Check option combinations and return the set of features to describe."""
+    context_file = getattr(args, "dataset_context", None)
+    context_dir = getattr(args, "context_dir", None)
+    if getattr(args, "feature_model", None) and not args.model:
+        raise ValueError("--feature-model requires --model")
+    if getattr(args, "targeted_evidence", False) and (not args.model or context_dir is None):
+        raise ValueError("--targeted-evidence requires --model and --context-dir")
+    selection = getattr(args, "describe_features", None)
+    selected = set(files)
+    context_pages_enabled = getattr(args, "context_pages", False)
+    if (context_file is not None or selection is not None or (context_dir is not None and not context_pages_enabled)) and not args.model:
+        raise ValueError("--dataset-context and --describe-features require --model; --context-dir without a model requires --context-pages")
+    if context_pages_enabled and context_dir is None:
+        raise ValueError("--context-pages requires --context-dir")
+    if selection is not None:
+        selected = {name.strip() for name in selection.split(",")}
+        unknown = selected.difference(files)
+        if unknown:
+            raise ValueError(f"Unknown or empty feature names: {sorted(unknown)}. Use exact TF filenames without .tf.")
+    return selected
+
+
+def _load_manifest(manifest_path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Read previously applied description inputs; unreadable manifests count as empty."""
+    applied_inputs: dict[str, Any] = {}
+    context_flags: dict[str, Any] = {}
+    if manifest_path.exists():
+        try:
+            previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            applied_inputs = previous_manifest.get("applied", {})
+            context_flags = previous_manifest.get("context_flags", {})
+            if not isinstance(applied_inputs, dict):
+                applied_inputs = {}
+            if not isinstance(context_flags, dict):
+                context_flags = {}
+        except (OSError, json.JSONDecodeError, AttributeError):
+            applied_inputs, context_flags = {}, {}
+    return applied_inputs, context_flags
+
+
+def _review_candidates(context_inputs: dict[str, Any], applied_inputs: dict[str, Any],
+                      has_model: bool) -> list[dict[str, Any]]:
+    """List features whose saved description inputs differ from the current ones."""
+    review_candidates: list[dict[str, Any]] = []
+    for name, current in context_inputs.items():
+        previous = applied_inputs.get(name)
+        if previous is None:
+            reasons = ["No previously applied contextual description"]
+        else:
+            labels = {
+                "dataset_context_sha256": "dataset context changed",
+                "feature_context_sha256": "feature family or relationships changed",
+                "feature_evidence_sha256": "feature evidence changed",
+                "evidence_mode": "evidence retrieval mode changed",
+                "prompt_sha256": "feature prompt changed",
+            }
+            if has_model:
+                labels.update({"provider": "provider changed", "model": "feature model changed"})
+            reasons = [label for key, label in labels.items() if previous.get(key) != current.get(key)]
+        if reasons:
+            review_candidates.append({"feature": name, "reasons": reasons})
+    return review_candidates
+
+
+def _observed_values(api: Any, files: dict[str, Any]) -> dict[str, set[Any]]:
+    """Collect every observed value per feature for validating model references."""
+    observed_values: dict[str, set[Any]] = {}
+    for name, info in files.items():
+        kind = info["kind"]
+        values: set[Any] = set()
+        if kind == "node":
+            values.update(value for _, value in api.Fs(name).items())
+        elif kind == "edge":
+            for _, ends in api.Es(name).items():
+                if isinstance(ends, dict):
+                    values.update(ends.values())
+        observed_values[name] = values
+    return observed_values
+
+
+def _render_structure_pages(api: Any, page: Callable[[str, str, str], None], cfg: dict[str, Any],
+                             nodes: dict[str, Any], graph: dict[str, Any], order: list[str],
+                             profiles: dict[str, Any]) -> str:
+    """Write the diagram and structure pages; return the section outline text."""
+    sections = cfg.get("sectionTypes","").split(",") if cfg.get("sectionTypes") else []
+    outline = " → ".join(sections)
+    structure = f"<p>Reference sections: {e(outline or 'unspecified')}. Context-Fabric orders the node types below from large to small. Linguistic units can overlap section boundaries.</p>"
+    options = "".join(f'<option value="{e(key)}">{e(key)}</option>' for key in nodes)
+    graph_data = json.dumps(graph, ensure_ascii=False).replace("<", r"\u003c")
+    # Computed levels carry the mean number of distinct slots covered by a node.
+    # Sort on that measurement explicitly so metadata constraints cannot supply the layout.
+    spans = {name: mean for name, mean, *_ in api.C.levels.data}
+    inferred = sorted(order, key=lambda t: (t == api.F.otype.slotType, -spans[t], t))
+    layout = json.dumps([[t, spans[t]] for t in inferred], ensure_ascii=False).replace("<", r"\u003c")
+    diagram = ('<p>Node types run from broadest average slot coverage to finest, with the slot type last. '
+               'Features sit near the types they annotate. Each line marks observed feature coverage.</p>'
+               '<div class="diagram-tools"><label>Explore <select id="diagram-focus"><option value="">Whole corpus</option>'
+               + options + '</select></label> <button id="diagram-reset">Show whole corpus</button> '
+               '<a id="diagram-reference" hidden>Open reference</a></div>'
+               '<p id="diagram-status" aria-live="polite"></p><div class="diagram-scroll">'
+               '<svg id="diagram" aria-label="Feature and node type relationships"></svg></div>'
+               '<script type="application/json" id="diagram-data">' + graph_data + '</script>'
+               '<script type="application/json" id="diagram-order">' + layout + '</script>'
+               '<script defer src="diagram.js"></script>')
+    page("diagram.html", "Corpus diagram", diagram)
+    structure += """<nav class="structure-choices" aria-label="Ways to explore corpus structure">
+<a href="#explorer"><svg viewBox="0 0 104 48" aria-hidden="true"><path d="M22 24h26l24-15m-24 15h30m-30 0 24 15"/><circle cx="20" cy="24" r="9"/><circle cx="77" cy="8" r="5"/><circle cx="84" cy="24" r="5"/><circle cx="77" cy="40" r="5"/></svg><strong>Graph explorer <span aria-hidden="true">↓</span></strong><span>Choose one feature or node type and follow its immediate connections.</span></a>
+<a href="diagram.html"><svg viewBox="0 0 104 48" aria-hidden="true"><path d="M22 8 51 15 82 8M22 24l29-9 31 25M22 40l29-7 31-9"/><rect x="8" y="5" width="17" height="6"/><rect x="8" y="21" width="17" height="6"/><rect x="8" y="37" width="17" height="6"/><circle cx="51" cy="15" r="5"/><circle cx="51" cy="33" r="5"/><rect x="80" y="5" width="17" height="6"/><rect x="80" y="21" width="17" height="6"/><rect x="80" y="37" width="17" height="6"/></svg><strong>Interactive corpus diagram <span aria-hidden="true">→</span></strong><span>See the whole corpus at once, then select a node to highlight its neighbors.</span></a>
+</nav>"""
+    structure += (f'<h2 id="explorer" tabindex="-1">Graph explorer</h2><label>Focus node <select id="focus">{options}</select></label>'
+                  '<div id="neighbors"></div><script type="application/json" id="graph">'
+                  + graph_data + '</script><h2>Node types in corpus order</h2>')
+    for t in order:
+        ids = api.F.otype.s(t)
+        related = [feature(n) for n,p in profiles.items() if t in p["sources"]]
+        structure += f'<details id="type-{e(t)}"><summary>{e(t)} <small>{len(ids):,} nodes</small></summary><p>' + " · ".join(related) + '</p></details>'
+    structure += '<p class="graph-download"><a href="knowledge_graph.json" download>Download knowledge graph (JSON)</a></p>'
+    page("structure.html","Structure browser", structure)
+    return outline
+
+
+def _render_text_page(api: Any, page: Callable[[str, str, str], None], cfg: dict[str, Any],
+                      files: dict[str, Any], profiles: dict[str, Any]) -> None:
+    """Write the text-format and encoding page."""
+    slots = range(1,min(12,api.F.otype.maxSlot)+1)
+    formats = []
+    for key, template in cfg.items():
+        if key.startswith("fmt:"):
+            unit = api.T.formats.get(key[4:]) or api.F.otype.slotType
+            sample_nodes = slots if unit == api.F.otype.slotType else api.F.otype.s(unit)[:12]
+            sample = api.T.text(sample_nodes, fmt=key[4:])
+            placeholders = api.CF.cformats[key[4:]][2]
+            fields = dict.fromkeys(n for alternatives, _ in placeholders for n in alternatives if n in files)
+            formats.append((e(key[4:]), e(unit), e(template), ", ".join(map(feature, fields)),
+                            f'<bdi dir="auto">{e(sample)}</bdi>'))
+    sample_unit = "slots"
+    if formats and any(unit != api.F.otype.slotType for unit in api.T.formats.values()):
+        sample_unit = "nodes of each format’s declared type"
+    text_body = f"<p>Declared rendering templates applied to the first twelve {sample_unit} in corpus order. Linked fields are inferred from each template.</p>" + table(["Format","Node type","Template","Contributing features","Sample"],formats)
+    if not formats:
+        slot_type = api.F.otype.slotType
+        candidates = sorted(
+            (n for n, p in profiles.items() if n != "otype" and p["kind"] == "node"
+             and files[n]["meta"].get("valueType") == "str" and slot_type in p["sources"]),
+            key=lambda n: (-profiles[n]["sources"][slot_type], n),
+        )
+        text_body = "<p>The corpus declares no rendering templates.</p>"
+        if candidates:
+            text_body += "<h2>String fields on slots</h2><p>Inspect these fields for transcription or annotation. Ranked by populated slots.</p>"
+            text_body += table(["Feature", "Populated slots", "First twelve slots"], [
+                (feature(n), f'{profiles[n]["sources"][slot_type]:,}',
+                 e(" · ".join(str(value) if value is not None else "∅"
+                              for value in (api.Fs(n).v(slot) for slot in slots))))
+                for n in candidates])
+    sample = "".join(str(v) for n in files if files[n]["kind"]=="node" for v,_ in profiles[n]["frequent"] if isinstance(v,str))
+    forms = ", ".join(f for f in ("NFC","NFD") if unicodedata.is_normalized(f,sample))
+    text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
+    page("text.html","Text & encoding",text_body)
+
+
+def _overview_section(overview_notes: str, context_data: Any) -> str:
+    """Render the "About this dataset" overview section, or an empty string."""
+    overview_description = ""
+    if overview_notes or context_data:
+        overview_description = "<section><h2>About this dataset</h2>"
+        if overview_notes:
+            overview_description += "".join(
+                f"<p>{e(paragraph)}</p>" for paragraph in overview_notes.strip().split("\n\n") if paragraph.strip()
+            )
+        if context_data:
+            dataset_context = context_data[0]
+            dataset_analysis = dataset_context.get("analysis", {})
+            badge = ai_indicator(
+                dataset_analysis.get("provider", "Unknown"), dataset_analysis.get("requested_model", "Unknown"),
+                dataset_analysis.get("responding_model"),
+                "Inferred from the corpus inventory and harvested app configuration. See the Audit report for evidence and review details.",
+                "dataset-overview",
+            )
+            overview_description += (
+                f"<p>{e(dataset_context['dataset_profile'])} {badge}</p>"
+            )
+        overview_description += "</section>"
+    return overview_description
+
+
+def _provenance_section(application: dict[str, Any] | None) -> str:
+    """Render configured provenance rows from the harvested app configuration."""
+    provenance_description = ""
+    if application:
+        app_config = application.get("configuration", {})
+        provenance = app_config.get("provenanceSpec", {}) if isinstance(app_config, dict) else {}
+        if isinstance(provenance, dict):
+            provenance_rows: list[tuple[str, str]] = []
+            for field_name, value in provenance.items():
+                if value is None or value == "" or value == [] or value == {}:
+                    continue
+                label = "".join((" " + char if char.isupper() else char) for char in str(field_name))
+                label = label.replace("_", " ").strip().title()
+                if isinstance(value, str) and ("<" in value or "{" in value or "}" in value):
+                    continue  # App URL templates are useful to inference, but not as overview links.
+                if isinstance(value, str) and str(field_name).lower() == "doi":
+                    rendered_value = link("https://doi.org/" + quote(value, safe="/"), value)
+                elif isinstance(value, str) and is_http_url(value):
+                    rendered_value = link(value, value)
+                else:
+                    rendered_value = e(value if isinstance(value, str) else json.dumps(
+                        value, ensure_ascii=False, sort_keys=True,
+                    ))
+                provenance_rows.append((e(label), rendered_value))
+            writing = app_config.get("writing") if isinstance(app_config, dict) else None
+            if writing:
+                provenance_rows.append(("Writing", e(writing)))
+            if provenance_rows:
+                provenance_description = (
+                    "<section><h2>Source and provenance</h2>"
+                    + table(["Field", "Configured value"], provenance_rows)
+                    + "</section>"
+                )
+    return provenance_description
+
+
+def _fallback_audit_body(feature_audit: dict[str, Any], application: dict[str, Any] | None) -> str:
+    """Render the audit page used when no contextual analysis report exists."""
+    evidence_audit = "".join(
+        f"<details><summary>{feature(n)}: additional evidence</summary><pre>{e(json.dumps({'requests': item['evidence_requests'], 'retrieved': item['additional_evidence']}, ensure_ascii=False, indent=2, sort_keys=True))}</pre></details>"
+        for n, item in sorted(feature_audit.items())
+        if item["evidence_requests"] or item["additional_evidence"]
+    ) or "<p>No additional evidence was requested.</p>"
+    return (
+        "<p>Technical record of the AI-assisted descriptions in this corpus site.</p>"
+        + audit_section("Harvested app files",
+                        "File fingerprints identify the application configuration and behavior inputs available to this build.",
+                        table(["Path", "SHA-256"], [
+            (e(path), e(digest)) for path, digest in application_source_files(application)
+        ]), "Show app file fingerprints")
+        + audit_section("Feature description provenance",
+                        "Provider and model details identify the source of each generated feature description.",
+                        table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
+                [(feature(n), e(item["provider"]), e(item["requested_model"]),
+                  e(item["responding_model"] or "Unavailable"),
+                  e("; ".join(item["uncertainties"]) or "None recorded"))
+                 for n, item in sorted(feature_audit.items())]),
+                        "Show feature provenance")
+        + audit_section("Input fingerprints",
+                        "Hashes describe the feature evidence and prompt inputs associated with each generated description.",
+                        "<pre>" + e(json.dumps(
+            {name: item["input_fingerprints"] for name, item in sorted(feature_audit.items())},
+            ensure_ascii=False, indent=2, sort_keys=True,
+        )) + "</pre>", "Show input fingerprints")
+        + audit_section("Targeted evidence details",
+                        "Requests and locally retrieved examples show what additional evidence supported the descriptions.",
+                        evidence_audit, "Show evidence details")
+    )
+
 def generate(args: argparse.Namespace) -> None:
     """Build the HTML corpus reference described by parsed CLI arguments.
 
@@ -624,22 +879,8 @@ def generate(args: argparse.Namespace) -> None:
     context_file = getattr(args, "dataset_context", None)
     overview_notes_file = getattr(args, "overview_notes", None)
     context_dir = getattr(args, "context_dir", None)
-    if getattr(args, "feature_model", None) and not args.model:
-        raise ValueError("--feature-model requires --model")
-    if getattr(args, "targeted_evidence", False) and (not args.model or context_dir is None):
-        raise ValueError("--targeted-evidence requires --model and --context-dir")
-    selection = getattr(args, "describe_features", None)
-    selected = set(files)
+    selected = _validate_options(args, files)
     context_pages_enabled = getattr(args, "context_pages", False)
-    if (context_file is not None or selection is not None or (context_dir is not None and not context_pages_enabled)) and not args.model:
-        raise ValueError("--dataset-context and --describe-features require --model; --context-dir without a model requires --context-pages")
-    if context_pages_enabled and context_dir is None:
-        raise ValueError("--context-pages requires --context-dir")
-    if selection is not None:
-        selected = {name.strip() for name in selection.split(",")}
-        unknown = selected.difference(files)
-        if unknown:
-            raise ValueError(f"Unknown or empty feature names: {sorted(unknown)}. Use exact TF filenames without .tf.")
     notes = context_file.read_text(encoding="utf-8-sig") if context_file else ""
     overview_notes = overview_notes_file.read_text(encoding="utf-8-sig") if overview_notes_file else ""
     cfg = files.get("otext", {}).get("meta", {})
@@ -661,13 +902,12 @@ def generate(args: argparse.Namespace) -> None:
     feature_model = getattr(args, "feature_model", None) or args.model
     context_data = None
     inventory = None
-    observed_values: dict[str, set[Any]] = {}
-    context_inputs = {}
-    applied_inputs = {}
-    context_flags = {}
-    feature_audit = {}
+    context_inputs: dict[str, Any] = {}
+    applied_inputs: dict[str, Any] = {}
+    context_flags: dict[str, Any] = {}
+    feature_audit: dict[str, Any] = {}
     audit_body = ""
-    review_candidates = []
+    review_candidates: list[dict[str, Any]] = []
     if context_dir is not None:
         from .context import feature_context_hashes, inventory_digest, load_context_artifacts
         inventory = dataset_inventory(src, files, api, getattr(args, "app_dir", None))
@@ -677,50 +917,14 @@ def generate(args: argparse.Namespace) -> None:
         context_inputs = feature_context_hashes(inventory, dataset_context, families,
                                                 relationships, provider, feature_model,
                                                 getattr(args, "targeted_evidence", False))
-        manifest_path = out / "context_manifest.json"
-        if manifest_path.exists():
-            try:
-                previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-                applied_inputs = previous_manifest.get("applied", {})
-                context_flags = previous_manifest.get("context_flags", {})
-                if not isinstance(applied_inputs, dict):
-                    applied_inputs = {}
-                if not isinstance(context_flags, dict):
-                    context_flags = {}
-            except (OSError, json.JSONDecodeError, AttributeError):
-                applied_inputs, context_flags = {}, {}
-        for name, current in context_inputs.items():
-            previous = applied_inputs.get(name)
-            if previous is None:
-                reasons = ["No previously applied contextual description"]
-            else:
-                labels = {
-                    "dataset_context_sha256": "dataset context changed",
-                    "feature_context_sha256": "feature family or relationships changed",
-                    "feature_evidence_sha256": "feature evidence changed",
-                    "evidence_mode": "evidence retrieval mode changed",
-                    "prompt_sha256": "feature prompt changed",
-                }
-                if args.model:
-                    labels.update({"provider": "provider changed", "model": "feature model changed"})
-                reasons = [label for key, label in labels.items() if previous.get(key) != current.get(key)]
-            if reasons:
-                review_candidates.append({"feature": name, "reasons": reasons})
+        applied_inputs, context_flags = _load_manifest(out / "context_manifest.json")
+        review_candidates = _review_candidates(context_inputs, applied_inputs, bool(args.model))
     else:
         from .app_context import extract_app_context
         application = extract_app_context(src, getattr(args, "app_dir", None))
     # Validation uses the complete set of observed values, while prompts
     # remain compact and include only the current feature's measured profile.
-    for name, info in files.items():
-        kind = info["kind"]
-        values: set[Any] = set()
-        if kind == "node":
-            values.update(value for _, value in api.Fs(name).items())
-        elif kind == "edge":
-            for _, ends in api.Es(name).items():
-                if isinstance(ends, dict):
-                    values.update(ends.values())
-        observed_values[name] = values
+    observed_values = _observed_values(api, files)
     if context_data:
         if inventory is None:
             raise RuntimeError("Context analysis requires a loaded inventory")
@@ -793,125 +997,10 @@ def generate(args: argparse.Namespace) -> None:
     graph = dict(nodes=nodes,edges=edges)
     (out/"knowledge_graph.json").write_text(json.dumps(graph, ensure_ascii=False, indent=2),encoding="utf-8")
     page("features.html","Feature index", '<label>Filter by feature, type or description <input id="filter" type="search"></label>' + table(["Feature","Kind","Description","Applies to"], rows))
-    sections = cfg.get("sectionTypes","").split(",") if cfg.get("sectionTypes") else []
-    outline = " → ".join(sections)
-    structure = f"<p>Reference sections: {e(outline or 'unspecified')}. Context-Fabric orders the node types below from large to small. Linguistic units can overlap section boundaries.</p>"
-    options = "".join(f'<option value="{e(key)}">{e(key)}</option>' for key in nodes)
-    graph_data = json.dumps(graph, ensure_ascii=False).replace("<", r"\u003c")
-    # Computed levels carry the mean number of distinct slots covered by a node.
-    # Sort on that measurement explicitly so metadata constraints cannot supply the layout.
-    spans = {name: mean for name, mean, *_ in api.C.levels.data}
-    inferred = sorted(order, key=lambda t: (t == api.F.otype.slotType, -spans[t], t))
-    layout = json.dumps([[t, spans[t]] for t in inferred], ensure_ascii=False).replace("<", r"\u003c")
-    diagram = ('<p>Node types run from broadest average slot coverage to finest, with the slot type last. '
-               'Features sit near the types they annotate. Each line marks observed feature coverage.</p>'
-               '<div class="diagram-tools"><label>Explore <select id="diagram-focus"><option value="">Whole corpus</option>'
-               + options + '</select></label> <button id="diagram-reset">Show whole corpus</button> '
-               '<a id="diagram-reference" hidden>Open reference</a></div>'
-               '<p id="diagram-status" aria-live="polite"></p><div class="diagram-scroll">'
-               '<svg id="diagram" aria-label="Feature and node type relationships"></svg></div>'
-               '<script type="application/json" id="diagram-data">' + graph_data + '</script>'
-               '<script type="application/json" id="diagram-order">' + layout + '</script>'
-               '<script defer src="diagram.js"></script>')
-    page("diagram.html", "Corpus diagram", diagram)
-    structure += """<nav class="structure-choices" aria-label="Ways to explore corpus structure">
-<a href="#explorer"><svg viewBox="0 0 104 48" aria-hidden="true"><path d="M22 24h26l24-15m-24 15h30m-30 0 24 15"/><circle cx="20" cy="24" r="9"/><circle cx="77" cy="8" r="5"/><circle cx="84" cy="24" r="5"/><circle cx="77" cy="40" r="5"/></svg><strong>Graph explorer <span aria-hidden="true">↓</span></strong><span>Choose one feature or node type and follow its immediate connections.</span></a>
-<a href="diagram.html"><svg viewBox="0 0 104 48" aria-hidden="true"><path d="M22 8 51 15 82 8M22 24l29-9 31 25M22 40l29-7 31-9"/><rect x="8" y="5" width="17" height="6"/><rect x="8" y="21" width="17" height="6"/><rect x="8" y="37" width="17" height="6"/><circle cx="51" cy="15" r="5"/><circle cx="51" cy="33" r="5"/><rect x="80" y="5" width="17" height="6"/><rect x="80" y="21" width="17" height="6"/><rect x="80" y="37" width="17" height="6"/></svg><strong>Interactive corpus diagram <span aria-hidden="true">→</span></strong><span>See the whole corpus at once, then select a node to highlight its neighbors.</span></a>
-</nav>"""
-    structure += (f'<h2 id="explorer" tabindex="-1">Graph explorer</h2><label>Focus node <select id="focus">{options}</select></label>'
-                  '<div id="neighbors"></div><script type="application/json" id="graph">'
-                  + graph_data + '</script><h2>Node types in corpus order</h2>')
-    for t in order:
-        ids = api.F.otype.s(t)
-        related = [feature(n) for n,p in profiles.items() if t in p["sources"]]
-        structure += f'<details id="type-{e(t)}"><summary>{e(t)} <small>{len(ids):,} nodes</small></summary><p>' + " · ".join(related) + '</p></details>'
-    structure += '<p class="graph-download"><a href="knowledge_graph.json" download>Download knowledge graph (JSON)</a></p>'
-    page("structure.html","Structure browser", structure)
-    slots = range(1,min(12,api.F.otype.maxSlot)+1)
-    formats = []
-    for key, template in cfg.items():
-        if key.startswith("fmt:"):
-            unit = api.T.formats.get(key[4:]) or api.F.otype.slotType
-            sample_nodes = slots if unit == api.F.otype.slotType else api.F.otype.s(unit)[:12]
-            sample = api.T.text(sample_nodes, fmt=key[4:])
-            placeholders = api.CF.cformats[key[4:]][2]
-            fields = dict.fromkeys(n for alternatives, _ in placeholders for n in alternatives if n in files)
-            formats.append((e(key[4:]), e(unit), e(template), ", ".join(map(feature, fields)),
-                            f'<bdi dir="auto">{e(sample)}</bdi>'))
-    sample_unit = "slots"
-    if formats and any(unit != api.F.otype.slotType for unit in api.T.formats.values()):
-        sample_unit = "nodes of each format’s declared type"
-    text_body = f"<p>Declared rendering templates applied to the first twelve {sample_unit} in corpus order. Linked fields are inferred from each template.</p>" + table(["Format","Node type","Template","Contributing features","Sample"],formats)
-    if not formats:
-        slot_type = api.F.otype.slotType
-        candidates = sorted(
-            (n for n, p in profiles.items() if n != "otype" and p["kind"] == "node"
-             and files[n]["meta"].get("valueType") == "str" and slot_type in p["sources"]),
-            key=lambda n: (-profiles[n]["sources"][slot_type], n),
-        )
-        text_body = "<p>The corpus declares no rendering templates.</p>"
-        if candidates:
-            text_body += "<h2>String fields on slots</h2><p>Inspect these fields for transcription or annotation. Ranked by populated slots.</p>"
-            text_body += table(["Feature", "Populated slots", "First twelve slots"], [
-                (feature(n), f'{profiles[n]["sources"][slot_type]:,}',
-                 e(" · ".join(str(value) if value is not None else "∅"
-                              for value in (api.Fs(n).v(slot) for slot in slots))))
-                for n in candidates])
-    sample = "".join(str(v) for n in files if files[n]["kind"]=="node" for v,_ in profiles[n]["frequent"] if isinstance(v,str))
-    forms = ", ".join(f for f in ("NFC","NFD") if unicodedata.is_normalized(f,sample))
-    text_body += f"<h2>Encoding</h2><p>All {len(files)} feature files decoded as UTF-8. Unicode normalization of sampled frequent string values: {e(forms or 'mixed or neither NFC nor NFD')}.</p>"
-    page("text.html","Text & encoding",text_body)
-    overview_description = ""
-    if overview_notes or context_data:
-        overview_description = "<section><h2>About this dataset</h2>"
-        if overview_notes:
-            overview_description += "".join(
-                f"<p>{e(paragraph)}</p>" for paragraph in overview_notes.strip().split("\n\n") if paragraph.strip()
-            )
-        if context_data:
-            dataset_context = context_data[0]
-            dataset_analysis = dataset_context.get("analysis", {})
-            badge = ai_indicator(
-                dataset_analysis.get("provider", "Unknown"), dataset_analysis.get("requested_model", "Unknown"),
-                dataset_analysis.get("responding_model"),
-                "Inferred from the corpus inventory and harvested app configuration. See the Audit report for evidence and review details.",
-                "dataset-overview",
-            )
-            overview_description += (
-                f"<p>{e(dataset_context['dataset_profile'])} {badge}</p>"
-            )
-        overview_description += "</section>"
-    provenance_description = ""
-    if application:
-        app_config = application.get("configuration", {})
-        provenance = app_config.get("provenanceSpec", {}) if isinstance(app_config, dict) else {}
-        if isinstance(provenance, dict):
-            provenance_rows: list[tuple[str, str]] = []
-            for field_name, value in provenance.items():
-                if value is None or value == "" or value == [] or value == {}:
-                    continue
-                label = "".join((" " + char if char.isupper() else char) for char in str(field_name))
-                label = label.replace("_", " ").strip().title()
-                if isinstance(value, str) and ("<" in value or "{" in value or "}" in value):
-                    continue  # App URL templates are useful to inference, but not as overview links.
-                if isinstance(value, str) and str(field_name).lower() == "doi":
-                    rendered_value = link("https://doi.org/" + quote(value, safe="/"), value)
-                elif isinstance(value, str) and is_http_url(value):
-                    rendered_value = link(value, value)
-                else:
-                    rendered_value = e(value if isinstance(value, str) else json.dumps(
-                        value, ensure_ascii=False, sort_keys=True,
-                    ))
-                provenance_rows.append((e(label), rendered_value))
-            writing = app_config.get("writing") if isinstance(app_config, dict) else None
-            if writing:
-                provenance_rows.append(("Writing", e(writing)))
-            if provenance_rows:
-                provenance_description = (
-                    "<section><h2>Source and provenance</h2>"
-                    + table(["Field", "Configured value"], provenance_rows)
-                    + "</section>"
-                )
+    outline = _render_structure_pages(api, page, cfg, nodes, graph, order, profiles)
+    _render_text_page(api, page, cfg, files, profiles)
+    overview_description = _overview_section(overview_notes, context_data)
+    provenance_description = _provenance_section(application)
     if context_data:
         from .context import _atomic_json, context_pages as render_context_pages
         dataset_context, families, relationships, family_analysis = context_data
@@ -942,36 +1031,7 @@ def generate(args: argparse.Namespace) -> None:
         cards.extend([("dataset.html", "Dataset architecture and glossary"),
                       ("relationships.html", "Feature relationship index")])
     if not audit_body:
-        evidence_audit = "".join(
-            f"<details><summary>{feature(n)}: additional evidence</summary><pre>{e(json.dumps({'requests': item['evidence_requests'], 'retrieved': item['additional_evidence']}, ensure_ascii=False, indent=2, sort_keys=True))}</pre></details>"
-            for n, item in sorted(feature_audit.items())
-            if item["evidence_requests"] or item["additional_evidence"]
-        ) or "<p>No additional evidence was requested.</p>"
-        audit_body = (
-            "<p>Technical record of the AI-assisted descriptions in this corpus site.</p>"
-            + audit_section("Harvested app files",
-                            "File fingerprints identify the application configuration and behavior inputs available to this build.",
-                            table(["Path", "SHA-256"], [
-                (e(path), e(digest)) for path, digest in application_source_files(application)
-            ]), "Show app file fingerprints")
-            + audit_section("Feature description provenance",
-                            "Provider and model details identify the source of each generated feature description.",
-                            table(["Feature", "Provider", "Requested model", "Responding model", "Uncertainties"],
-                    [(feature(n), e(item["provider"]), e(item["requested_model"]),
-                      e(item["responding_model"] or "Unavailable"),
-                      e("; ".join(item["uncertainties"]) or "None recorded"))
-                     for n, item in sorted(feature_audit.items())]),
-                            "Show feature provenance")
-            + audit_section("Input fingerprints",
-                            "Hashes describe the feature evidence and prompt inputs associated with each generated description.",
-                            "<pre>" + e(json.dumps(
-                {name: item["input_fingerprints"] for name, item in sorted(feature_audit.items())},
-                ensure_ascii=False, indent=2, sort_keys=True,
-            )) + "</pre>", "Show input fingerprints")
-            + audit_section("Targeted evidence details",
-                            "Requests and locally retrieved examples show what additional evidence supported the descriptions.",
-                            evidence_audit, "Show evidence details")
-        )
+        audit_body = _fallback_audit_body(feature_audit, application)
     page("audit.html", "Audit report", audit_body)
     page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>")
 
