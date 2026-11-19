@@ -446,7 +446,7 @@ def _feature_application_links(
                 parsed = urlparse(template)
                 local_doc = _local_doc_path(value, repo_root, path, feature) if repo_root else None
                 if (parsed.scheme in {"http", "https"} and parsed.netloc and not parsed.username
-                        and local_doc is not None and local_doc.is_file()):
+                        and repo_root is not None and local_doc is not None and local_doc.is_file()):
                     documentation_links.append({
                         "configuration_path": path,
                         "source_path": local_doc.relative_to(repo_root).as_posix(),
