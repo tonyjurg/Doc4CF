@@ -47,6 +47,63 @@ Build stages
    descriptions. With no model option, the generated corpus pages remain
    deterministic.
 
+Measured feature associations
+-----------------------------
+
+Node-feature pages can show a small, collapsible comparison between the
+presence patterns of the current feature and other node features. This is a
+deterministic corpus measurement; it does not use a model.
+
+For each node type, Doc4CF treats a feature as present when Text-Fabric returns
+an assigned value for a node, and absent when there is no assignment. An
+explicit value such as ``0`` is present. Every node of that type contributes
+to the comparison, including nodes where neither feature is assigned. The
+resulting 2 × 2 contingency table is:
+
+.. list-table:: Binary feature-presence contingency table
+   :header-rows: 1
+
+   * -
+     - Compared feature present
+     - Compared feature absent
+   * - Current feature present
+     - Both present (a)
+     - Current feature only (b)
+   * - Current feature absent
+     - Compared feature only (c)
+     - Both absent (d)
+
+Doc4CF calculates the phi coefficient (the correlation of two binary
+variables) from those four counts:
+
+.. code-block:: text
+
+   phi = (a*d - b*c) / sqrt((a+b)(c+d)(a+c)(b+d))
+
+The coefficient ranges from −1 to +1. A positive value means the two features
+tend to be present on the same nodes; a negative value means one tends to be
+present where the other is absent. Zero indicates no measured binary
+association. The feature page also reports the fraction of current-feature
+nodes among nodes where the compared feature is present and among nodes where
+it is absent, making the missing-data side of each comparison explicit.
+
+Comparisons stay within one node type so, for example, word-level and
+phrase-level coverage are not mixed. Constant features are omitted. A pair is
+eligible when each feature has at least 10 present and 10 absent nodes of that
+type, and the display requires ``abs(phi) >= 0.10``. It shows at most three
+positive and two inverse associations per node type. Features with exactly
+matching presence masks are grouped into one row, avoiding duplicate entries
+for identical coverage patterns. The results describe this corpus snapshot;
+they do not imply causation or define a linguistic relationship.
+
+In the N1904 snapshot, ``mood`` and ``tense`` have identical presence masks:
+they are both assigned on 28,357 word nodes and both absent on the remaining
+109,422 word nodes, giving ``phi = +1.00``. On word nodes, ``mood`` and
+``case`` have 6,653 jointly present nodes, 72,865 case-only nodes, 21,704
+mood-only nodes, and 36,557 nodes where both are absent (``phi ≈ −0.35``).
+The latter illustrates why counting only shared assignments misses useful
+inverse patterns.
+
 Optional feature enrichment
 ---------------------------
 

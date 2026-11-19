@@ -500,11 +500,18 @@ def profile(
     return result
 
 
-def _feature_cooccurrence(
-    node_assignments: dict[str, dict[str, Any]], order: list[str],
+def _feature_associations(
+    node_assignments: dict[str, dict[str, Any]], node_counts: dict[str, int], order: list[str],
 ) -> dict[str, list[dict[str, Any]]]:
-    """Measure same-node co-population for node features using compact ID arrays."""
+    """Rank binary presence/absence associations between node features.
+
+    For each node type, sparse feature assignments give the two presence
+    margins and their intersection. The remaining two contingency cells are
+    calculated from the full node population, so missing assignments count as
+    absence rather than disappearing from the comparison.
+    """
     from array import array
+    from hashlib import sha256
     from heapq import merge
     from itertools import combinations
 
@@ -519,34 +526,104 @@ def _feature_cooccurrence(
                 ids = array("Q", sorted(ids))
             by_type[node_type][name] = ids
 
-    overlaps: dict[str, list[dict[str, Any]]] = {name: [] for name in node_assignments}
+    associations: dict[str, list[dict[str, Any]]] = {name: [] for name in node_assignments}
     for node_type, feature_ids in by_type.items():
+        population = node_counts.get(node_type, 0)
+        if population == 0:
+            continue
         streams = [events(name, feature_ids[name]) for name in sorted(feature_ids)]
-        overlap_counts: Counter[tuple[str, str]] = Counter()
+        intersections: Counter[tuple[str, str]] = Counter()
         previous_node = None
         node_features = []
         for node, name in merge(*streams):
             if previous_node is not None and node != previous_node:
-                overlap_counts.update(combinations(node_features, 2))
+                intersections.update(combinations(node_features, 2))
                 node_features = []
             node_features.append(name)
             previous_node = node
         if node_features:
-            overlap_counts.update(combinations(node_features, 2))
-        for (left, right), common in overlap_counts.items():
-            left_count = len(feature_ids[left])
-            right_count = len(feature_ids[right])
-            overlaps[left].append({"feature": right, "node_type": node_type,
-                                   "count": common, "share": common / left_count})
-            overlaps[right].append({"feature": left, "node_type": node_type,
-                                    "count": common, "share": common / right_count})
+            intersections.update(combinations(node_features, 2))
 
-    # Keep this secondary evidence compact and only surface repeated, substantial overlap.
-    return {
-        name: sorted((item for item in items if item["count"] >= 10 and item["share"] >= 0.25),
-                     key=lambda item: (-item["share"], -item["count"], item["feature"], item["node_type"]))[:3]
-        for name, items in overlaps.items()
-    }
+        # Features with an identical node-presence mask share one matrix row;
+        # this prevents duplicate coverage fields from crowding the display.
+        pattern_groups: dict[bytes, list[str]] = {}
+        pattern_arrays: dict[bytes, Any] = {}
+        pattern_for: dict[str, bytes] = {}
+        for name, ids in feature_ids.items():
+            digest = sha256(ids.tobytes()).digest()
+            bucket = digest
+            suffix = 0
+            while bucket in pattern_arrays and pattern_arrays[bucket] != ids:
+                suffix += 1
+                bucket = digest + suffix.to_bytes(4, "big")
+            pattern_arrays[bucket] = ids
+            pattern_groups.setdefault(bucket, []).append(name)
+            pattern_for[name] = bucket
+
+        candidate_rows: dict[str, list[dict[str, Any]]] = {name: [] for name in feature_ids}
+        for left, right in combinations(sorted(feature_ids), 2):
+            both_present = intersections.get((left, right), 0)
+            left_present = len(feature_ids[left])
+            right_present = len(feature_ids[right])
+            left_only = left_present - both_present
+            right_only = right_present - both_present
+            neither = population - both_present - left_only - right_only
+            denominator = ((both_present + left_only) * (right_only + neither)
+                           * (both_present + right_only) * (left_only + neither)) ** 0.5
+            if denominator == 0:
+                continue
+            phi = (both_present * neither - left_only * right_only) / denominator
+
+            def record(target_present, target_absent, other_present, other_absent,
+                       target_only, other_only, correlation):
+                if min(target_present, target_absent, other_present, other_absent) < 10:
+                    return None
+                if abs(correlation) < 0.10:
+                    return None
+                return {
+                    "node_type": node_type,
+                    "phi": correlation,
+                    "both_present": both_present,
+                    "other_only": other_only,
+                    "target_only": target_only,
+                    "both_absent": neither,
+                    "target_when_other_present": both_present / other_present,
+                    "target_when_other_absent": target_only / other_absent,
+                    "other_present": other_present,
+                    "other_absent": other_absent,
+                }
+
+            for target, other, target_present, other_present, target_only, other_only in (
+                (left, right, left_present, right_present, left_only, right_only),
+                (right, left, right_present, left_present, right_only, left_only),
+            ):
+                item = record(target_present, population - target_present,
+                              other_present, population - other_present,
+                              target_only, other_only, phi)
+                if item is not None:
+                    item["pattern"] = pattern_for[other]
+                    candidate_rows[target].append(item)
+
+        for target, rows in candidate_rows.items():
+            grouped_rows: dict[bytes, dict[str, Any]] = {}
+            for item in rows:
+                group = grouped_rows.setdefault(item["pattern"], {**item, "features": []})
+                group["features"].extend(pattern_groups[item["pattern"]])
+            unique_rows = []
+            for item in grouped_rows.values():
+                item["features"] = sorted(set(item["features"]) - {target})
+                item.pop("pattern")
+                if item["features"]:
+                    unique_rows.append(item)
+            positive = sorted((item for item in unique_rows if item["phi"] >= 0.10),
+                              key=lambda item: (-item["phi"], -item["both_present"], item["features"]))[:3]
+            inverse = sorted((item for item in unique_rows if item["phi"] <= -0.10),
+                             key=lambda item: (item["phi"], -item["target_only"], item["features"]))[:2]
+            if positive or inverse:
+                associations[target].append({"node_type": node_type,
+                                             "positive": positive, "inverse": inverse})
+
+    return associations
 
 
 def dataset_inventory(
@@ -1091,7 +1168,7 @@ def generate(args: argparse.Namespace) -> None:
     node_assignments: dict[str, dict[str, Any]] = {}
     for n, info in files.items():
         p = profiles[n] = profile(api, n, info, order, node_counts, node_assignments)
-    cooccurrence = _feature_cooccurrence(node_assignments, order)
+    associations = _feature_associations(node_assignments, node_counts, order)
     for n, info in files.items():
         p = profiles[n]
         kind, meta = info["kind"], info["meta"]
@@ -1145,7 +1222,8 @@ def generate(args: argparse.Namespace) -> None:
                 "Based on feature metadata and measured values available for this corpus."
             )
             badge = ai_indicator(PROVIDERS[provider][0], feature_model, record["model"], explanation, f"feature-{n}")
-            body += f'<aside><h2>Generated description {badge}</h2><p>{e(record["text"])}</p></aside>'
+            body += (f'<section class="inferred-description"><h2>Description {badge}</h2>'
+                     f'<p>{e(record["text"])}</p></section>')
             feature_audit[n] = {
                 "provider": PROVIDERS[provider][0], "requested_model": feature_model,
                 "responding_model": record["model"], "uncertainties": record.get("uncertainties", []),
@@ -1186,21 +1264,37 @@ def generate(args: argparse.Namespace) -> None:
                 [(e(json.dumps(v, ensure_ascii=False)), f"{count:,}",
                   f"{count / p['value_count']:.1%}" if p["value_count"] else "—")
                  for v, count in p["frequent"]])
-        related = cooccurrence.get(n, [])
+        related = associations.get(n, [])
         if related:
-            related_rows = []
-            for item in related:
-                related_link = link(item["feature"] + ".html", item["feature"])
-                related_rows.append(
-                    f'<li>{related_link} — {item["count"]:,} shared {e(item["node_type"])} nodes '
-                    f'({item["share"]:.1%} of this feature’s populated {e(item["node_type"])} nodes)</li>'
+            sections = []
+            for group in related:
+                rows_for_type = []
+                for relation, items in (("Positive", group["positive"]), ("Inverse", group["inverse"])):
+                    for item in items:
+                        names = ", ".join(link(other + ".html", other) for other in item["features"])
+                        present = (f'{item["both_present"]:,} / {item["other_present"]:,} '
+                                   f'({item["target_when_other_present"]:.1%})')
+                        absent = (f'{item["target_only"]:,} / {item["other_absent"]:,} '
+                                  f'({item["target_when_other_absent"]:.1%})')
+                        rows_for_type.append((names, f'{item["phi"]:+.2f}', present, absent))
+                if rows_for_type:
+                    sections.append(
+                        f'<h3>{e(group["node_type"])} nodes</h3>'
+                        + table(["Compared feature(s)", "φ", f"{e(n)} present when compared feature is present",
+                                 f"{e(n)} present when compared feature is absent"], rows_for_type)
+                    )
+            if sections:
+                body += (
+                    '<details class="feature-associations"><summary>Presence/absence associations</summary>'
+                    '<p>Each comparison is calculated separately across all nodes of the listed type. '
+                    'Present means the feature has an assigned value; absent means no assignment. '
+                    'φ ranges from −1 (opposite presence patterns) to +1 (matching patterns). '
+                    'Only non-constant pairs with at least 10 present and 10 absent nodes per feature, '
+                    'and |φ| ≥ 0.10, are shown. Identical presence patterns are grouped. '
+                    'These are descriptive associations, not causal claims. '
+                    '<a href="../../../api/architecture.html#measured-feature-associations">Read the scoring method</a>.</p>'
+                    + "".join(sections) + "</details>"
                 )
-            related_items = "".join(related_rows)
-            body += ('<details class="feature-cooccurrence"><summary>Often co-populated with '
-                     f'{len(related)} feature(s)</summary><p>Up to three features with at least 25% overlap '
-                     '(and at least 10 shared nodes) are shown. Co-occurrence indicates overlap only, '
-                     'not a semantic relationship.</p>'
-                     f'<ul>{related_items}</ul></details>')
         body += _feature_application_section(page_application, n, set(files))
         body += "<details><summary>Source metadata</summary>" + table(["Field","Value"],[(e(k),e(v)) for k,v in meta.items()]) + "</details>"
         page(f"features/{n}.html", n + ".tf", body)
