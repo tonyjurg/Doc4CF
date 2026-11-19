@@ -454,8 +454,8 @@ def _feature_application_links(
                     })
             values = value if isinstance(value, list) else [value]
 
-            def refers_to_feature(item: Any) -> bool:
-                if item == feature:
+            def refers_to_feature(item: Any, feature_name: str = feature) -> bool:
+                if item == feature_name:
                     return True
                 if not isinstance(item, str):
                     return False
@@ -463,7 +463,7 @@ def _feature_application_links(
                 if parsed.scheme in {"http", "https"}:
                     return False
                 tokens = re.findall(r"[A-Za-z0-9_@.-]+", item)
-                return feature in tokens or "{" + feature + "}" in item
+                return feature_name in tokens or "{" + feature_name + "}" in item
 
             if any(refers_to_feature(item) for item in values):
                 refs.append({"path": path, "value": value})
