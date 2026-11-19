@@ -1020,7 +1020,6 @@ def generate(args: argparse.Namespace) -> None:
         for t in valid:
             edges.append({"from":fid, "to":t, "relation":"valid on"})
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
-        body += _feature_application_section(page_application, n, set(files))
         if args.model and n in selected:
             evidence = dict(corpus=corpus, **p)
             # Raw headers are direct corpus evidence for every feature. Keep
@@ -1079,6 +1078,7 @@ def generate(args: argparse.Namespace) -> None:
                 body += f"<h2>{heading}</h2>" + table(["Node type",unit], [(link(f"../structure.html#type-{t}",t),f"{count:,}") for t,count in p[field].items()])
         if p["frequent"]:
             body += f'<h2>Frequent values</h2><p>{p["distinct"]:,} distinct values. Whitespace is shown in quotes.</p>' + table(["Value","Occurrences"],[(e(json.dumps(v,ensure_ascii=False)),f"{count:,}") for v,count in p["frequent"]])
+        body += _feature_application_section(page_application, n, set(files))
         body += "<details><summary>Source metadata</summary>" + table(["Field","Value"],[(e(k),e(v)) for k,v in meta.items()]) + "</details>"
         page(f"features/{n}.html", n + ".tf", body)
         rows.append((feature(n),e(kind),e(p["description"]),e(", ".join(p["sources"]))))
