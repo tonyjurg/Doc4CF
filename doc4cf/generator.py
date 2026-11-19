@@ -1009,8 +1009,8 @@ def main() -> None:
             result = analyze_context(args.corpus, args.analyze_context, args.provider,
                                      dataset_model, family_model, args.cache, args.app_dir,
                                      args.dataset_instructions)
-            print(f"Context artifacts written to {args.analyze_context}")
-            print(f"Inventory SHA-256: {result['inventory_sha256']}")
+            logger.info("Context artifacts written to %s", args.analyze_context)
+            logger.info("Inventory SHA-256: %s", result["inventory_sha256"])
             return
         if args.export_inventory:
             export_inventory(args.corpus, args.export_inventory, args.app_dir)

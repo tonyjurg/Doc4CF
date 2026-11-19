@@ -4,7 +4,9 @@ from __future__ import annotations
 import ast
 from datetime import date, datetime
 import hashlib
+import json
 from pathlib import Path
+import re
 from typing import Any
 
 import yaml
@@ -13,7 +15,35 @@ import yaml
 _MAX_DOCSTRING = 1800
 _MAX_APP_FILES = 100
 _MAX_APP_CONTEXT_CHARS = 32000
-_SENSITIVE_NAME_PARTS = ("password", "secret", "token", "credential", "api_key", "apikey")
+_MAX_FILE_BYTES = 256 * 1024
+_MAX_YAML_NODES = 5000
+_SENSITIVE_NAME_PARTS = ("password", "passwd", "secret", "token", "credential", "api_key", "apikey",
+                         "private_key", "privatekey")
+# Whole-word name parts: matching these as substrings would hit e.g. "keyword".
+_SENSITIVE_NAME_WORDS = frozenset({"key", "keys", "auth", "authorization", "cookie", "cookies",
+                                   "bearer", "session", "private", "pwd", "pass"})
+_URL_CREDENTIALS = re.compile(r"://[^/\s:@]+:[^/\s@]+@")
+_OPAQUE_SECRET = re.compile(r"[A-Za-z0-9+/=_-]{32,}")
+_REDACTED = "<redacted>"
+
+
+class _TooLarge(ValueError):
+    """Raised when untrusted configuration exceeds the node budget."""
+
+
+def _is_sensitive_name(name: str) -> bool:
+    """Return True when an identifier or key looks like it names a credential."""
+    lowered = name.lower()
+    if any(part in lowered for part in _SENSITIVE_NAME_PARTS):
+        return True
+    spaced = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", name)
+    words = re.split(r"[^A-Za-z0-9]+", spaced.lower())
+    return any(word in _SENSITIVE_NAME_WORDS for word in words)
+
+
+def _is_sensitive_value(value: str) -> bool:
+    """Return True for URLs with embedded credentials and long opaque tokens."""
+    return bool(_URL_CREDENTIALS.search(value) or _OPAQUE_SECRET.fullmatch(value.strip()))
 
 
 def _clip(value: str, limit: int = _MAX_DOCSTRING) -> str:
@@ -21,7 +51,22 @@ def _clip(value: str, limit: int = _MAX_DOCSTRING) -> str:
     return value if len(value) <= limit else value[:limit].rsplit(" ", 1)[0] + " …"
 
 
-def _normalize_yaml(value: Any, depth: int = 0) -> Any:
+def _clean_text(value: str, limit: int) -> str:
+    return _REDACTED if _is_sensitive_value(value) else _clip(value, limit)
+
+
+def _normalize_yaml(value: Any, depth: int = 0, budget: list[int] | None = None) -> Any:
+    """Copy a YAML tree into plain, bounded, redacted JSON-safe values.
+
+    YAML aliases share one object between many places, so walking the loaded
+    tree can visit exponentially many nodes. ``budget`` counts every visited
+    node and raises :class:`_TooLarge` when the allowance is spent.
+    """
+    if budget is None:
+        budget = [_MAX_YAML_NODES]
+    budget[0] -= 1
+    if budget[0] < 0:
+        raise _TooLarge("configuration exceeds the node budget")
     if depth > 10:
         return "<nested configuration omitted>"
     if value is None or isinstance(value, (bool, int, float)):
@@ -29,23 +74,27 @@ def _normalize_yaml(value: Any, depth: int = 0) -> Any:
     if isinstance(value, (date, datetime)):
         return value.isoformat()
     if isinstance(value, str):
-        return _clip(value, 1000)
+        return _clean_text(value, 1000)
     if isinstance(value, list):
-        return [_normalize_yaml(item, depth + 1) for item in value[:200]]
+        return [_normalize_yaml(item, depth + 1, budget) for item in value[:200]]
     if isinstance(value, dict):
         normalized = {}
         for key, item in list(value.items())[:200]:
             name = str(key)
-            if any(part in name.lower() for part in _SENSITIVE_NAME_PARTS):
-                normalized[name] = "<redacted>"
+            if _is_sensitive_name(name):
+                normalized[name] = _REDACTED
             else:
-                normalized[name] = _normalize_yaml(item, depth + 1)
+                normalized[name] = _normalize_yaml(item, depth + 1, budget)
         return normalized
-    return _clip(str(value), 500)
+    return _clean_text(str(value), 500)
 
 
 def _source_hash(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _selected_config(config: Any) -> dict[str, Any]:
@@ -91,13 +140,14 @@ def _json_literal(node: ast.expr) -> tuple[bool, Any]:
         if item is None or isinstance(item, (bool, int, float)):
             return item
         if isinstance(item, str):
-            return _clip(item, 500)
+            return _clean_text(item, 500)
         if isinstance(item, (list, tuple)):
             return [normalize(part, depth + 1) for part in item[:100]]
         if isinstance(item, (set, frozenset)):
             return sorted((normalize(part, depth + 1) for part in item), key=str)
         if isinstance(item, dict) and all(isinstance(key, str) for key in item):
-            return {key: normalize(part, depth + 1) for key, part in list(item.items())[:100]}
+            return {key: _REDACTED if _is_sensitive_name(key) else normalize(part, depth + 1)
+                    for key, part in list(item.items())[:100]}
         raise TypeError("not a JSON-safe literal")
 
     try:
@@ -117,7 +167,7 @@ def _literal_settings(body: list[ast.stmt]) -> list[dict[str, Any]]:
             continue
         for target in targets:
             target_name = _target_name(target)
-            if any(part in target_name.lower() for part in _SENSITIVE_NAME_PARTS):
+            if _is_sensitive_name(target_name):
                 continue
             is_literal, value = _json_literal(value_node)
             if not is_literal:
@@ -150,8 +200,8 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
         for keyword in item.keywords:
             if keyword.arg is None:
                 keywords["**"] = _call_name(keyword.value)
-            elif any(part in keyword.arg.lower() for part in _SENSITIVE_NAME_PARTS):
-                keywords[keyword.arg] = "<redacted>"
+            elif _is_sensitive_name(keyword.arg):
+                keywords[keyword.arg] = _REDACTED
             else:
                 is_literal, literal = _json_literal(keyword.value) if capture_arguments else (False, None)
                 keywords[keyword.arg] = literal if is_literal else "<dynamic>"
@@ -177,7 +227,10 @@ def _function_summary(node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str,
 
 def _python_summary(path: Path, relative_path: str) -> dict[str, Any]:
     source = path.read_text(encoding="utf-8-sig")
-    tree = ast.parse(source, filename=relative_path)
+    try:
+        tree = ast.parse(source, filename=relative_path)
+    except (MemoryError, RecursionError) as error:
+        raise SyntaxError(type(error).__name__) from error
     classes = []
     for node in tree.body:
         if not isinstance(node, ast.ClassDef):
@@ -196,12 +249,11 @@ def _python_summary(path: Path, relative_path: str) -> dict[str, Any]:
         if isinstance(node, ast.Assign) and isinstance(node.value, (ast.Constant, ast.List, ast.Tuple)):
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id.isupper():
-                    if any(part in target.id.lower() for part in _SENSITIVE_NAME_PARTS):
+                    if _is_sensitive_name(target.id):
                         continue
-                    try:
-                        constants[target.id] = ast.literal_eval(node.value)
-                    except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
-                        pass
+                    is_literal, literal = _json_literal(node.value)
+                    if is_literal:
+                        constants[target.id] = literal
     return {
         "path": relative_path,
         "module_docstring": _clip(ast.get_docstring(tree) or ""),
@@ -225,11 +277,11 @@ def extract_app_context(corpus: Path, app_dir: Path | None = None) -> dict[str, 
     if not app.is_dir():
         return None
     repo_root = app.parent
-    all_files = sorted(path for path in app.rglob("*") if path.is_file()
-                       and (path.suffix.lower() in {".yaml", ".yml", ".py"}))
-    files = all_files[:_MAX_APP_FILES]
-    if not files:
+    candidates, skipped = _eligible_files(app)
+    if not candidates:
         return None
+    all_files = candidates[:_MAX_APP_FILES]
+    omitted_count = len(candidates) - len(all_files)
     yaml_files = [path for path in all_files if path.suffix.lower() in {".yaml", ".yml"}]
     configuration: dict[str, Any] = {}
     additional_configuration = {}
@@ -243,30 +295,83 @@ def extract_app_context(corpus: Path, app_dir: Path | None = None) -> dict[str, 
         try:
             loaded = yaml.safe_load(config_path.read_text(encoding="utf-8-sig")) or {}
             parsed_config = _selected_config(loaded)
-        except (OSError, UnicodeError, yaml.YAMLError):
+        except (OSError, UnicodeError, yaml.YAMLError, RecursionError):
             parsed_config = {"parse_status": "YAML could not be parsed safely"}
+        except _TooLarge:
+            parsed_config = {"parse_status": "YAML configuration too large to summarize"}
         if config_path == primary_config:
             configuration = parsed_config
         else:
             additional_configuration[relative_path] = parsed_config
     python_files = []
-    for path in files:
+    for path in all_files:
         relative_path = path.relative_to(repo_root).as_posix()
         if path.suffix.lower() != ".py":
             continue
         try:
             python_files.append(_python_summary(path, relative_path))
-        except (OSError, UnicodeError, SyntaxError) as error:
+        except (OSError, UnicodeError, SyntaxError, ValueError) as error:
             python_files.append({"path": relative_path, "parse_status": f"Python AST unavailable: {type(error).__name__}"})
     result: dict[str, Any] = {"configuration": configuration,
               "additional_configuration": additional_configuration,
               "python_behavior": python_files, "source_files": file_hashes}
-    if len(all_files) > len(files):
-        result["omitted_file_count"] = len(all_files) - len(files)
-    omitted_behavior = []
-    while len(str(result)) > _MAX_APP_CONTEXT_CHARS and python_files:
-        omitted_behavior.append(python_files.pop()["path"])
-        result["python_behavior"] = python_files
-    if omitted_behavior:
-        result["omitted_python_behavior"] = list(reversed(omitted_behavior))
+    if omitted_count:
+        result["omitted_file_count"] = omitted_count
+    if skipped:
+        result["skipped_files"] = skipped
+    _enforce_size_cap(result)
     return result
+
+
+def _eligible_files(app: Path) -> tuple[list[Path], list[str]]:
+    """List regular YAML/Python files that really live inside ``app``.
+
+    Symbolic links are never followed (a cloned repository could point them
+    at files outside the app directory) and oversized files are skipped
+    before they are read, hashed, or parsed.
+    """
+    root = app.resolve()
+    eligible: list[Path] = []
+    skipped: list[str] = []
+    for path in sorted(app.rglob("*")):
+        if path.suffix.lower() not in {".yaml", ".yml", ".py"}:
+            continue
+        relative = path.relative_to(app.parent).as_posix()
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root):
+            skipped.append(f"{relative} (symbolic link or outside app directory)")
+        elif path.stat().st_size > _MAX_FILE_BYTES:
+            skipped.append(f"{relative} (larger than {_MAX_FILE_BYTES} bytes)")
+        else:
+            eligible.append(path)
+    return eligible, skipped[:_MAX_APP_FILES]
+
+
+def _size(result: dict[str, Any]) -> int:
+    return len(json.dumps(result, ensure_ascii=False, default=str))
+
+
+def _enforce_size_cap(result: dict[str, Any]) -> None:
+    """Shrink ``result`` in place until it fits the prompt-size allowance.
+
+    Python summaries go first, then additional configuration files, then the
+    primary configuration, so the output stays bounded whatever the app holds.
+    """
+    omitted_python = []
+    python_files = result["python_behavior"]
+    while _size(result) > _MAX_APP_CONTEXT_CHARS and python_files:
+        omitted_python.append(python_files.pop()["path"])
+    if omitted_python:
+        result["omitted_python_behavior"] = list(reversed(omitted_python))
+    additional = result["additional_configuration"]
+    omitted_config = []
+    while _size(result) > _MAX_APP_CONTEXT_CHARS and additional:
+        largest = max(additional, key=lambda name: len(json.dumps(additional[name], default=str)))
+        omitted_config.append(largest)
+        del additional[largest]
+    if omitted_config:
+        result["omitted_additional_configuration"] = sorted(omitted_config)
+    configuration = result["configuration"]
+    for name in sorted(configuration, key=lambda key: -len(json.dumps(configuration[key], default=str))):
+        if _size(result) <= _MAX_APP_CONTEXT_CHARS:
+            break
+        configuration[name] = "<omitted: too large>"

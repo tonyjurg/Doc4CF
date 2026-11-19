@@ -21,7 +21,7 @@ const focusNode = document.querySelector("#focus");
 if (focusNode) {
   const graph = JSON.parse(document.querySelector("#graph").textContent);
   const panel = document.querySelector("#neighbors");
-  function draw() {
+  const draw = () => {
     const id = focusNode.value;
     const record = graph.nodes[id];
     const heading = document.createElement("h3");
@@ -42,7 +42,7 @@ if (focusNode) {
     detail.href = record.featureName ? "features/" + encodeURIComponent(record.featureName) + ".html" : "#type-" + encodeURIComponent(record.origName);
     detail.textContent = "Open reference";
     panel.replaceChildren(heading, detail, label, links);
-  }
+  };
   focusNode.addEventListener("change", draw);
   draw();
 }
