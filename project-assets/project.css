@@ -6,3 +6,4 @@ footer{display:flex;gap:1.3rem;flex-wrap:wrap}footer a{display:inline-flex;align
 
 .cli-options dt{margin-top:1rem;font-weight:650}.cli-options dd{margin:.2rem 0 .6rem}
 .scroll{overflow-x:auto}.comparison{border-collapse:collapse;min-width:60rem;width:100%;background:#fff}.comparison th,.comparison td{padding:.85rem;vertical-align:top;text-align:left;border:1px solid #c6d0c5}.comparison thead th{background:#e9efe5}.comparison tbody th{min-width:10rem}
+.card-links{display:flex;flex-direction:column;align-items:flex-start;gap:.35rem}
