@@ -1149,12 +1149,14 @@ def _fallback_audit_body(feature_audit: dict[str, Any], application: dict[str, A
     )
 
 def generate(args: argparse.Namespace) -> None:
-    """Build the HTML corpus reference described by parsed CLI arguments.
+    """Build a corpus reference in HTML and optionally Markdown.
 
     ``args`` is an :class:`argparse.Namespace` with ``corpus`` and ``output``
     paths plus the optional switches accepted by :func:`main`. The function
     always builds deterministic corpus pages; model descriptions and contextual
     pages are added only when their corresponding options and inputs are given.
+    ``--markdown`` adds a Doc4TF-inspired corpus index and per-feature files,
+    reusing the same measured profiles and model responses as the site build.
 
     Raises:
         ValueError: If the corpus, selected features, or context options are
@@ -1496,7 +1498,7 @@ def main() -> None:
                         help="Let the model request missing feature evidence, retrieve it locally, then generate the description")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
     parser.add_argument("--markdown", action="store_true",
-                        help="Also export a lightweight Markdown set to OUTPUT/markdown")
+                        help="Also write a Doc4TF-inspired Markdown index and feature pages to OUTPUT/markdown; reuses the site's data and inference")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
                         help="Retained for CLI compatibility; model details now appear beside inferred content")
     parser.add_argument("--cache", type=Path, default=Path(".doc4cf-cache"))

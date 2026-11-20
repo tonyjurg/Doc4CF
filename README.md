@@ -16,6 +16,14 @@ doc4cf N1904/tf/1.0.0 site
 
 Open `site/index.html`. All navigation, search and graph exploration work with local files. Add `--markdown` to also create a lightweight Markdown documentation set under `site/markdown/`, with an overview, feature index, and one page per feature. Inferred descriptions and their model attribution are included when model enrichment is enabled. Context-Fabric may build a compiled cache next to the corpus, so use a writable copy. Build into a fresh output directory when switching corpora.
 
+### Markdown companion
+
+```sh
+doc4cf N1904/tf/1.0.0 site --markdown
+```
+
+The export follows [Doc4TF](https://github.com/tonyjurg/Doc4TF)'s lightweight structure: a corpus index and a separate file for each feature. The index stays concise, using the short feature description, applicability, and two common observed values. Each feature page keeps the feature description and measured profile, and adds the inferred description with model attribution when the build generates one. The simple per-feature format is easy to review and adapt, and leaves room for additional calculated summaries and clearly labeled inferences. The Markdown output adds no model requests beyond those already needed by the selected site build.
+
 ## Distribute and install privately
 
 In an activated Python 3.13+ virtual environment, run:
