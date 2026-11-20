@@ -14,6 +14,8 @@ The workflow is designed to remain useful without a model. Inventory export, det
 4. **Generate descriptions.** A site build using `--context-dir DIR` supplies the dataset context and relevant family/relationship context together with measured feature evidence. `--dataset-context FILE` can add editorial guidance. `--describe-features` can limit model requests while still building every feature page. `--targeted-evidence` optionally lets the model request a bounded set of extra values or examples, which Doc4CF then retrieves from the corpus itself.
 5. **Validate and inspect.** Responses use structured JSON where supported and are validated locally. Feature and value references must match the current inventory. Stale context is rejected. `--context-pages` adds dataset, relationship, and review pages; `context_review.json` records processed descriptions, affected inputs, and context flags.
 
+The optional `--markdown` output mirrors Doc4TF's lightweight index-and-feature-file structure. It carries the same measured summaries and any selected, validated model descriptions into Markdown, with source text kept separate from inferred prose and model attribution retained. Exporting this format reuses the site build's responses rather than creating additional model calls. Keeping each feature's material in its own file also makes it straightforward to add further calculated fields and clearly labeled interpretations over time.
+
 For exact commands and options, see the [install guide](install-guide.html#runtime-options) and the [README](README.md). The corpus notebooks demonstrate pinned data revisions, local caches, optional model enrichment, validation, and publication workflows.
 
 ## Evidence and safety rules

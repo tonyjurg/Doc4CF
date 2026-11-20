@@ -21,6 +21,7 @@ feature metadata.
        BUILD --> PROFILE["Feature and structure pages"]
        BUILD --> GRAPH["Knowledge graph and text views"]
        BUILD -->|"optional: --context-pages"| REVIEW["Context review pages"]
+       PROFILE -->|"optional: --markdown"| MD["Doc4TF-inspired Markdown index and feature pages"]
        BUILD -->|"selected features only"| FEATMODEL["Optional feature descriptions"]
        FEATMODEL -->|"schema and evidence validation; cache"| PROFILE
 
@@ -46,6 +47,20 @@ Build stages
    artifacts are supplied, it can add context pages and enrich selected feature
    descriptions. With no model option, the generated corpus pages remain
    deterministic.
+
+Markdown companion
+------------------
+
+Pass ``--markdown`` to write a lightweight Markdown set in
+``OUTPUT/markdown/`` alongside the HTML site. It follows Doc4TF's
+corpus-index and one-file-per-feature structure, with Doc4CF's measured values
+and optional inferred descriptions added to the feature pages. The index uses
+short feature descriptions and the two most common values; feature pages carry
+the richer measurements and model attribution. This separates quick browsing
+from per-feature detail and leaves the format straightforward to extend with
+additional calculated summaries and clearly labeled interpretations. Markdown
+rendering uses the same build responses and makes no extra model requests. See
+the `runtime option guide <https://tonyjurg.github.io/Doc4CF/install-guide.html#runtime-options>`_.
 
 Measured feature associations
 -----------------------------
