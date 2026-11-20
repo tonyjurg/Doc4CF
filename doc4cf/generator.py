@@ -118,7 +118,9 @@ def feature_description_prompt(
     name: str, base_prompt: str = FEATURE_SYSTEM, kind: str | None = None,
 ) -> str:
     """Select kind guidance or a more specific structural-feature prompt."""
-    guidance = _STRUCTURAL_GUIDANCE.get(name) or _FEATURE_KIND_GUIDANCE.get(kind)
+    guidance = _STRUCTURAL_GUIDANCE.get(name)
+    if guidance is None and kind is not None:
+        guidance = _FEATURE_KIND_GUIDANCE.get(kind)
     return f"{base_prompt}\n\n{guidance}" if guidance else base_prompt
 
 
@@ -364,6 +366,72 @@ def write_page(
 <link rel="stylesheet" href="{prefix}style.css"><script defer src="{prefix}browse.js"></script></head>
 <body><header>{brand}<nav aria-label="Corpus navigation">{nav}</nav></header>
 <main><small>{e(corpus)}</small><h1>{e(title)}</h1>{body}</main>{footer}</body></html>""", encoding="utf-8")
+
+
+def markdown_cell(value: Any) -> str:
+    """Format a value safely for a Markdown table cell."""
+    return str(value).replace("\\", "\\\\").replace("|", "\\|").replace("\r", " ").replace("\n", " ")
+
+
+def write_markdown_feature(
+    output: Path, name: str, kind: str, encoding: str, value_type: str,
+    description: str, inferred_description: str | None, sources: dict[str, int], coverage: dict[str, float],
+    frequent: Sequence[tuple[str, int]], value_count: int,
+    endpoint_pairs: Sequence[dict[str, Any]], degree_summary: dict[str, dict[str, Any]],
+    inferred: dict[str, Any] | None, metadata: dict[str, str],
+) -> None:
+    """Write a compact, standalone Markdown page for one feature."""
+    path = output / "features" / f"{quote(name, safe='')}.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [f"# {name}.tf", "", "[← Corpus index](../index.md)", "",
+             f"**{kind.title()} feature** · {encoding} · {value_type}", "", "## Description", ""]
+    lines.append(description or "No source description is available.")
+    if inferred:
+        lines.extend(["", "## Generated description", "", inferred_description or "",
+                      "", f"*AI-assisted · {inferred['provider']} · {inferred['model']}*", ""])
+    else:
+        lines.append("")
+    if sources:
+        lines.extend(["## Applies to", "", "| Node type | Populated nodes |", "| --- | ---: |"])
+        lines.extend(f"| {markdown_cell(node_type)} | {count:,} ({coverage.get(node_type, 0):.1%}) |"
+                     for node_type, count in sources.items())
+        lines.append("")
+    if endpoint_pairs:
+        lines.extend(["## Observed edge connections", "", "| Source node type | Target node type | Edges |", "| --- | --- | ---: |"])
+        lines.extend(f"| {markdown_cell(item['source_type'])} | {markdown_cell(item['target_type'])} | {item['edge_count']:,} |"
+                     for item in endpoint_pairs)
+        lines.append("")
+        if degree_summary:
+            lines.extend(["### Targets per connected source node", "", "| Source node type | Source nodes | Minimum | Median | Maximum |", "| --- | ---: | ---: | ---: | ---: |"])
+            lines.extend(f"| {markdown_cell(node_type)} | {summary['source_nodes']:,} | {summary['min']:,} | {summary['median']:g} | {summary['max']:,} |"
+                         for node_type, summary in degree_summary.items())
+            lines.append("")
+    if frequent:
+        lines.extend(["## Frequent values", "", "| Value | Occurrences | % of populated values |", "| --- | ---: | ---: |"])
+        lines.extend(f"| `{markdown_cell(json.dumps(value, ensure_ascii=False))}` | {count:,} | {count / value_count:.1%} |"
+                     for value, count in frequent)
+        lines.append("")
+    lines.extend(["<details>", "<summary>Source metadata</summary>", "", "| Field | Value |", "| --- | --- |"])
+    lines.extend(f"| {markdown_cell(key)} | {markdown_cell(value)} |" for key, value in metadata.items())
+    lines.extend(["", "</details>", ""])
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def write_markdown_index(output: Path, corpus: str,
+                         feature_rows: Sequence[tuple[str, str, str, str, str]]) -> None:
+    """Write a lightweight linked feature index and corpus landing page."""
+    output.mkdir(parents=True, exist_ok=True)
+    lines = [f"# {corpus}", "", "Generated with [Doc4CF](https://github.com/tonyjurg/Doc4CF).", "",
+             "Browse the feature descriptions and measured profiles below.", "",
+             "## Features", "", "| Feature | Kind | Description | Applies to | Two most common values |",
+             "| --- | --- | --- | --- | --- |"]
+    lines.extend(f"| [{markdown_cell(name)}](features/{quote(name, safe='')}.md) | {markdown_cell(kind)} | "
+                 f"{markdown_cell(description)} | {markdown_cell(applies_to)} | {markdown_cell(common_values)} |"
+                 for name, kind, description, applies_to, common_values in feature_rows)
+    lines.append("")
+    (output / "index.md").write_text("\n".join(lines), encoding="utf-8")
+    feature_index = "# Features\n\n" + "\n".join(lines[8:])
+    (output / "features.md").write_text(feature_index.rstrip() + "\n", encoding="utf-8")
 
 
 def describe(
@@ -1113,6 +1181,8 @@ def generate(args: argparse.Namespace) -> None:
     corpus = next((identity[k] for k in ("title", "name", "description", "acronym")
                    if identity.get(k)), src.name)
     out.mkdir(parents=True, exist_ok=True)
+    markdown_out = out / "markdown" if getattr(args, "markdown", False) else None
+    markdown_rows: list[tuple[str, str, str, str, str]] = []
     api = load_corpus(src, files, out)
     if not api:
         raise RuntimeError("Context-Fabric could not load the corpus")
@@ -1181,6 +1251,7 @@ def generate(args: argparse.Namespace) -> None:
     for n, info in files.items():
         p = profiles[n]
         kind, meta = info["kind"], info["meta"]
+        inferred: dict[str, Any] | None = None
         valid = [f"otype::{t}" for t in p["sources"]]
         fid = f"feature::{n}"
         nodes[fid] = dict(type=f"{kind}_feature", valid_on=valid, featureName=n,
@@ -1227,6 +1298,7 @@ def generate(args: argparse.Namespace) -> None:
                 applied_inputs[n] = context_inputs[n]
             else:
                 record = description_record(evidence, args.model, args.cache, provider)
+            inferred = {"provider": PROVIDERS[provider][0], "model": record["model"]}
             explanation = (
                 "Based on measured feature data, supplied metadata, and dataset context. "
                 "Interpretations may need review against the source corpus."
@@ -1337,6 +1409,21 @@ def generate(args: argparse.Namespace) -> None:
         body += "<details><summary>Source metadata</summary>" + table(["Field","Value"],[(e(k),e(v)) for k,v in meta.items()]) + "</details>"
         page(f"features/{n}.html", n + ".tf", body)
         rows.append((feature(n),e(kind),e(p["description"]),e(", ".join(p["sources"]))))
+        if markdown_out is not None:
+            applies_to = ", ".join(p["sources"])
+            common_values = "; ".join(
+                f"`{json.dumps(value, ensure_ascii=False)}` ({count:,})"
+                for value, count in p["frequent"][:2]
+            ) or "—"
+            markdown_rows.append((n, kind, p["description"], applies_to, common_values))
+            write_markdown_feature(
+                markdown_out, n, kind, info["encoding"],
+                meta.get("valueType", "configuration" if kind == "config" else "unvalued"),
+                p["description"], record["text"] if inferred else None,
+                p["sources"], p["coverage"], p["frequent"],
+                p["value_count"], p.get("endpoint_pairs", []), p.get("degree_summary", {}),
+                inferred, meta,
+            )
     graph = dict(nodes=nodes,edges=edges)
     (out/"knowledge_graph.json").write_text(json.dumps(graph, ensure_ascii=False, indent=2),encoding="utf-8")
     page("features.html","Feature index", '<label>Filter by feature, type or description <input id="filter" type="search"></label>' + table(["Feature","Kind","Description","Applies to"], rows))
@@ -1377,6 +1464,8 @@ def generate(args: argparse.Namespace) -> None:
         audit_body = _fallback_audit_body(feature_audit, application)
     page("audit.html", "Audit report", audit_body)
     page("index.html",corpus, f'<p>{len(files)} feature files · {len(order)} node types · {api.F.otype.maxSlot:,} {e(api.F.otype.slotType)} slots</p><p>{e(outline)}</p>' + provenance_description + overview_description + '<div class="cards">' + "".join(link(url,title) for url,title in cards) + "</div>")
+    if markdown_out is not None:
+        write_markdown_index(markdown_out, corpus, markdown_rows)
 
 
 def main() -> None:
@@ -1406,6 +1495,8 @@ def main() -> None:
     parser.add_argument("--targeted-evidence", action="store_true",
                         help="Let the model request missing feature evidence, retrieve it locally, then generate the description")
     parser.add_argument("--describe-features", metavar="NAMES", help="Comma-separated features to enrich; all pages are still built")
+    parser.add_argument("--markdown", action="store_true",
+                        help="Also export a lightweight Markdown set to OUTPUT/markdown")
     parser.add_argument("--model-attribution", choices=("feature", "overview", "none"), default="feature",
                         help="Retained for CLI compatibility; model details now appear beside inferred content")
     parser.add_argument("--cache", type=Path, default=Path(".doc4cf-cache"))

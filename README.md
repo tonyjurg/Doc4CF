@@ -14,7 +14,7 @@ git clone --depth 1 https://github.com/CenterBLC/N1904.git
 doc4cf N1904/tf/1.0.0 site
 ```
 
-Open `site/index.html`. All navigation, search and graph exploration work with local files. Context-Fabric may build a compiled cache next to the corpus, so use a writable copy. Build into a fresh output directory when switching corpora.
+Open `site/index.html`. All navigation, search and graph exploration work with local files. Add `--markdown` to also create a lightweight Markdown documentation set under `site/markdown/`, with an overview, feature index, and one page per feature. Inferred descriptions and their model attribution are included when model enrichment is enabled. Context-Fabric may build a compiled cache next to the corpus, so use a writable copy. Build into a fresh output directory when switching corpora.
 
 ## Distribute and install privately
 
