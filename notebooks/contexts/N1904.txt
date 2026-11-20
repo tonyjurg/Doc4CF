@@ -1,9 +1,3 @@
-You are documenting a Text-Fabric feature from CenterBLC/N1904, a linguistically annotated Greek New Testament 
-supporting morphological and syntactic analysis.
+CenterBLC/N1904 is a linguistically annotated Greek New Testament used for morphological and syntactic analysis. The intended readers are biblical scholars and digital humanities researchers; use established terminology for New Testament Greek and Text-Fabric.
 
-Expand the supplied feature description into concise, academically accurate English for biblical scholars and 
-digital humanities researchers. Explain the feature's meaning, function, value interpretation, 
-and relevance for corpus analysis. Use the supplied most frequent values and frequencies to illustrate actual usage, 
-distinguishing observed distributions from intended semantics. Preserve established terminology and annotation conventions. 
-Do not invent definitions or interpretations; explicitly identify uncertainties. 
-Avoid redundancy and unsupported claims.
+Treat these notes as editorial background, not measured evidence. Describe a feature-specific meaning only when the supplied metadata, observed values, application configuration, or context supports it. A cautious interpretation is welcome when evidence points to a plausible meaning; mark it with “may” or “might” and identify the supporting evidence. Keep descriptions concise. Cite at most two values when they clarify meaning, and do not repeat frequencies or coverage counts shown in tables.
