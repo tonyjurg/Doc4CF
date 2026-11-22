@@ -2,66 +2,6 @@
   "inventory_sha256": "64e5809680b77fa45850d8b0ca2010ff4ab4cd3e977228931f3518e956212405",
   "affected_descriptions": [
     {
-      "feature": "oslots",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "otext",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "otype",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "parent",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "person",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "punctuation",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "ref",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "referent",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "rela",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "role",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
       "feature": "rule",
       "reasons": [
         "No previously applied contextual description"
@@ -198,18 +138,41 @@
     "normalized",
     "note",
     "num",
-    "number"
+    "number",
+    "oslots",
+    "otext",
+    "otype",
+    "parent",
+    "person",
+    "punctuation",
+    "ref",
+    "referent",
+    "rela",
+    "role"
   ],
   "context_flags": [
+    {
+      "feature": "after",
+      "flags": [
+        {
+          "issue": "Source description says material after the end of the word, yet sources populate phrase and subphrase nodes as well as word nodes; cross-feature boundaries with punctuation and trailer are unverified.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.after.sources",
+            "features.after.metadata.description",
+            "dataset_context.ambiguities[2]"
+          ]
+        }
+      ]
+    },
     {
       "feature": "appositioncontainer",
       "flags": [
         {
-          "issue": "Feature documentation missing from inventory",
+          "issue": "Metadata lacks a detailed definition of apposition container and its relationship to other syntax features.",
           "status": "missing_evidence",
           "evidence": [
-            "application_evidence.linked_documentation is empty; feature_links references docs/features/appositioncontainer.md but no linked documentation content is provided.",
-            "context.dataset.ambiguities: omitted_feature_documentation lists 15 features without provided documentation content; omitted_feature_application_links is true."
+            "features.appositioncontainer.metadata.description"
           ]
         }
       ]
@@ -218,11 +181,11 @@
       "feature": "articular",
       "flags": [
         {
-          "issue": "feature description omits subphrase node type present in sources",
+          "issue": "metadata description lists sentence, group, clause, phrase, or wg but omits subphrase",
           "status": "inconsistency",
           "evidence": [
-            "sources includes subphrase: 11897",
-            "description text lists only sentence, group, clause, phrase, wg"
+            "features.articular.metadata.description",
+            "features.articular.sources includes subphrase"
           ]
         }
       ]
@@ -231,18 +194,11 @@
       "feature": "before",
       "flags": [
         {
-          "issue": "overlapping scope with punctuation and related material features",
+          "issue": "before overlaps with punctuation and other material features",
           "status": "inconsistency",
           "evidence": [
             "dataset_context.ambiguities[2]",
-            "feature_relationships overlapping_scope before→punctuation (inferred)"
-          ]
-        },
-        {
-          "issue": "minimal source description for `before`",
-          "status": "missing_evidence",
-          "evidence": [
-            "feature_metadata.description: “this is XML attribute before”"
+            "feature_relationships overlapping_scope (before, punctuation) inferred"
           ]
         }
       ]
@@ -251,19 +207,10 @@
       "feature": "book",
       "flags": [
         {
-          "issue": "lang value el on book nodes may conflict with declared writing system grc",
-          "status": "inconsistency",
-          "evidence": [
-            "features.lang.observed_node_types",
-            "features.lang.frequent_values",
-            "application.configuration.writing"
-          ]
-        },
-        {
-          "issue": "inheritance or explicit storage of book values on non-book nodes is undocumented",
+          "issue": "book value assignment mechanism on non-book nodes",
           "status": "missing_evidence",
           "evidence": [
-            "features.book.sources"
+            "features.book.sources lists populated counts for chapter, clause, group, phrase, sentence, subphrase, verse, wg, and word nodes, but no inheritance or assignment rule is documented."
           ]
         }
       ]
@@ -272,17 +219,10 @@
       "feature": "bookshort",
       "flags": [
         {
-          "issue": "sources object omits chapter and verse node types",
+          "issue": "bookshort value propagation to non-book nodes",
           "status": "missing_evidence",
           "evidence": [
-            "features.bookshort.sources lacks chapter and verse although both are corpus node types"
-          ]
-        },
-        {
-          "issue": "bookshort contributes_to ref relationship is inferred",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_relationships entry for source_feature bookshort to target_feature ref has needs_review true and status inferred"
+            "features.bookshort.sources lists populated counts on book, clause, group, phrase, sentence, subphrase, wg, and word nodes, but no inheritance or assignment rule is documented"
           ]
         }
       ]
@@ -296,7 +236,7 @@
           "evidence": [
             "features.case.metadata.description",
             "features.morph.metadata.description",
-            "feature_relationships[0]"
+            "feature_relationships source_feature case target_feature morph status inferred needs_review true"
           ]
         }
       ]
@@ -305,18 +245,10 @@
       "feature": "chapter",
       "flags": [
         {
-          "issue": "chapter feature not populated on book nodes",
+          "issue": "chapter feature appears on many non-chapter node types",
           "status": "missing_evidence",
           "evidence": [
-            "features.chapter.sources omits book; structure.node_types_in_corpus_order lists 27 book nodes"
-          ]
-        },
-        {
-          "issue": "XML ref attribute derivation not detailed",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.chapter.metadata.description",
-            "features.chapter.metadata.dataSourceFormat"
+            "features.chapter.sources"
           ]
         }
       ]
@@ -329,7 +261,8 @@
           "status": "inconsistency",
           "evidence": [
             "dataset_context.ambiguities[3]",
-            "feature_relationships[0]"
+            "features.clausetype.metadata.description",
+            "features.cltype.metadata.description"
           ]
         }
       ]
@@ -338,7 +271,7 @@
       "feature": "cls",
       "flags": [
         {
-          "issue": "cls, sp, typ, and typems have overlapping scopes on clause/phrase/word nodes; precise distinctions are not documented",
+          "issue": "cls overlaps in scope with typ, sp, and typems on clause/phrase/word nodes without documented distinctions",
           "status": "missing_evidence",
           "evidence": [
             "dataset_context.ambiguities[4]",
@@ -352,12 +285,12 @@
       "feature": "cltype",
       "flags": [
         {
-          "issue": "cltype and clausetype both labeled 'clause type' with potentially different value sets",
+          "issue": "cltype and clausetype are both described as clause type with different value sets",
           "status": "inconsistency",
           "evidence": [
+            "dataset_context.ambiguities[3]",
             "features.cltype.metadata.description",
-            "features.clausetype.metadata.description",
-            "dataset_context.ambiguities[3]"
+            "features.clausetype.metadata.description"
           ]
         }
       ]
@@ -366,43 +299,11 @@
       "feature": "criticalsign",
       "flags": [
         {
-          "issue": "criticalsign has no documented semantics beyond 'this is XML attribute criticalsign'; value meanings are unspecified.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.criticalsign.metadata.description"
-          ]
-        },
-        {
-          "issue": "boundaries between criticalsign and after, punctuation, trailer, and before are not cross-verified.",
-          "status": "missing_evidence",
-          "evidence": [
-            "dataset_context.ambiguities[2]",
-            "features.criticalsign.metadata.description",
-            "features.after.metadata.description",
-            "features.trailer.metadata.description"
-          ]
-        }
-      ]
-    },
-    {
-      "feature": "crule",
-      "flags": [
-        {
-          "issue": "crule is described as 'clause rule (from xml attribute Rule)' but sources show populated values on sentence (838) and wg (5,558) nodes in addition to clause (4,720).",
+          "issue": "criticalsign overlaps in scope with punctuation, after, and trailer; exact boundaries are not verified",
           "status": "inconsistency",
           "evidence": [
-            "features.crule.description",
-            "features.crule.sources"
-          ]
-        },
-        {
-          "issue": "The meanings of ClCl and ClCl2 are undocumented, and the referenced docs/features/crule.md has no linked content in the inventory.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.crule.frequent",
-            "features.crule.feature_metadata",
-            "application_evidence.feature_links.documentation_links",
-            "application_evidence.linked_documentation"
+            "dataset_context.ambiguities[2]",
+            "feature_relationships criticalsign-punctuation overlapping_scope"
           ]
         }
       ]
@@ -411,10 +312,11 @@
       "feature": "degree",
       "flags": [
         {
-          "issue": "No explicit value set or part-of-speech scope documented for degree.",
+          "issue": "Part-of-speech scope for degree values is not explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "features.degree.metadata.description provides only 'grammatical degree'; frequent values comparative and superlative are observed but undefined."
+            "features.degree.metadata.description",
+            "features.degree.sources"
           ]
         }
       ]
@@ -423,19 +325,11 @@
       "feature": "discontinuous",
       "flags": [
         {
-          "issue": "Description says “word” but populated sources include phrase and subphrase nodes.",
+          "issue": "feature description mentions word nodes only, but sources also populate phrase and subphrase nodes",
           "status": "inconsistency",
           "evidence": [
-            "features.discontinuous.metadata.description",
+            "features.discontinuous.description",
             "features.discontinuous.sources"
-          ]
-        },
-        {
-          "issue": "Only value 1 is observed; no definition for absent nodes or alternative values.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.discontinuous.distinct",
-            "features.discontinuous.frequent"
           ]
         }
       ]
@@ -444,13 +338,10 @@
       "feature": "domain",
       "flags": [
         {
-          "issue": "undocumented value semantics",
+          "issue": "domain value semantics",
           "status": "missing_evidence",
           "evidence": [
-            "features.domain.metadata.description",
-            "feature_family.syntax_clause.purpose",
-            "features.domain.sources",
-            "structure.node_types_in_corpus_order"
+            "features.domain.metadata.description is circular ('domain'); frequent values 092004 and 089017 are attested without inventory definition."
           ]
         }
       ]
@@ -459,11 +350,11 @@
       "feature": "frame",
       "flags": [
         {
-          "issue": "Edge directionality and semantics not fully specified for frame",
+          "issue": "frame edge directionality and semantics are not fully specified",
           "status": "missing_evidence",
           "evidence": [
-            "dataset_context.ambiguities[7]",
-            "features.frame.metadata.description"
+            "dataset_context.ambiguities[7] states edge features provide source/target counts but do not fully specify edge directionality or semantics",
+            "features.frame.metadata.description is 'frame' and edgeValues is empty"
           ]
         }
       ]
@@ -472,19 +363,10 @@
       "feature": "framespec",
       "flags": [
         {
-          "issue": "Feature family purpose states framespec applies to clauses, phrases, and groups, but observed sources cover only phrase, subphrase, and word; clause and group show no populated values.",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_family.purpose",
-            "features.framespec.sources"
-          ]
-        },
-        {
-          "issue": "Metadata cites external dataSource and converterSourceLocation URLs that the inventory does not independently verify.",
+          "issue": "framespec semantics and value syntax are not explained beyond the metadata label",
           "status": "missing_evidence",
           "evidence": [
-            "features.framespec.metadata.dataSource",
-            "features.framespec.metadata.converterSourceLocation"
+            "features.framespec.metadata.description"
           ]
         }
       ]
@@ -493,11 +375,10 @@
       "feature": "function",
       "flags": [
         {
-          "issue": "undocumented value semantics",
+          "issue": "Feature semantics underspecified",
           "status": "missing_evidence",
           "evidence": [
-            "features.function.metadata.description",
-            "dataset_context.ambiguities[4]"
+            "features.function.metadata.description provides only 'this is XML attribute function'; no explicit definition of syntactic function values is present in the inventory"
           ]
         }
       ]
@@ -506,29 +387,10 @@
       "feature": "gender",
       "flags": [
         {
-          "issue": "partial node-type coverage",
+          "issue": "gender–morph relationship verification",
           "status": "missing_evidence",
           "evidence": [
-            "features.gender.sources lists phrase (17,658), subphrase (56,317), and word (73,975) only; corpus has 137,779 word nodes and other node types with no gender assignments"
-          ]
-        },
-        {
-          "issue": "feature relationship unverified",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_relationships describes gender as related_to morph with needs_review true and status inferred"
-          ]
-        }
-      ]
-    },
-    {
-      "feature": "gloss",
-      "flags": [
-        {
-          "issue": "undefined metadata acronym",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.gloss.metadata.description 'English gloss (BGVB)'"
+            "feature_relationships source_feature gender target_feature morph status inferred needs_review true"
           ]
         }
       ]
@@ -537,21 +399,25 @@
       "feature": "id",
       "flags": [
         {
-          "issue": "distinct count equals word source count despite phrase and subphrase also carrying ids",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.id.distinct",
-            "features.id.sources",
-            "features.id.frequent"
-          ]
-        },
-        {
-          "issue": "id and nodeid are both described as XML identifiers but are observed on different node types",
+          "issue": "distinct count versus populated-node sources",
           "status": "inconsistency",
           "evidence": [
-            "features.id.description",
-            "features.id.sources",
-            "context.ambiguities.nodeid observed only on sentence, clause, and wg nodes"
+            "features.id.distinct equals the word-node source count but is lower than the combined populated-node total across phrase, subphrase, and word in features.id.sources, so ID uniqueness or scope across node types is unverified."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "junction",
+      "flags": [
+        {
+          "issue": "Overlapping scopes of junction with cls, typ, and typems on clause/phrase/word nodes are not precisely distinguished in the inventory.",
+          "status": "missing_evidence",
+          "evidence": [
+            "dataset_context.ambiguities[4]",
+            "features.typ.metadata.description",
+            "features.cls.metadata.description",
+            "features.typems.metadata.description"
           ]
         }
       ]
@@ -560,12 +426,13 @@
       "feature": "lang",
       "flags": [
         {
-          "issue": "lang value el on book nodes may conflict with declared writing system grc; relationship between language code and writing system is not explained",
+          "issue": "lang value el on book nodes may conflict with declared writing system grc",
           "status": "inconsistency",
           "evidence": [
-            "dataset.ambiguities[0]",
             "features.lang.observed_node_types",
-            "application.configuration.writing"
+            "features.lang.frequent_values",
+            "application.configuration.writing",
+            "dataset_context.ambiguities[0]"
           ]
         }
       ]
@@ -574,10 +441,11 @@
       "feature": "lemma",
       "flags": [
         {
-          "issue": "lemma appears on non-slot node types (phrase, subphrase) as well as words",
-          "status": "missing_evidence",
+          "issue": "Multiple word-text features overlap without a designated primary surface-text convention",
+          "status": "inconsistency",
           "evidence": [
-            "features.lemma.sources"
+            "context.dataset.ambiguities[1]",
+            "features.otext.metadata.fmt:lex-orig-plain"
           ]
         }
       ]
@@ -586,30 +454,11 @@
       "feature": "lemmatranslit",
       "flags": [
         {
-          "issue": "The lemmatranslit-to-lemma relationship is marked inferred and needs review; the inventory does not explain how phrase/subphrase values relate to word-lemma transliteration.",
+          "issue": "Relationship between lemmatranslit and lemma is inferred, not explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "features.lemmatranslit.sources",
-            "feature_relationships[2]"
-          ]
-        }
-      ]
-    },
-    {
-      "feature": "ln",
-      "flags": [
-        {
-          "issue": "feature meaning undocumented",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.ln.metadata.description equals “ln” only"
-          ]
-        },
-        {
-          "issue": "partial node coverage",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.ln.sources lists phrase (43,153), subphrase (83,726), and word (126,879), below total node counts for those types"
+            "feature_relationships lists lemmatranslit related_to lemma with status inferred",
+            "metadata describes lemmatranslit as transliteration of the word lemma"
           ]
         }
       ]
@@ -618,17 +467,11 @@
       "feature": "mood",
       "flags": [
         {
-          "issue": "mood is populated on phrase and subphrase nodes as well as word nodes",
-          "status": "missing_evidence",
+          "issue": "Feature metadata describes mood as verbal mood, but observed sources include phrase and subphrase nodes in addition to word nodes.",
+          "status": "inconsistency",
           "evidence": [
-            "features.mood.sources reports phrase 27355, subphrase 1002, word 28357; no documentation explains non-word coverage"
-          ]
-        },
-        {
-          "issue": "mood-to-morph relationship is marked inferred and needs review",
-          "status": "missing_evidence",
-          "evidence": [
-            "feature_relationships lists source_feature mood, target_feature morph, status inferred, needs_review true"
+            "features.mood.feature_metadata.description",
+            "features.mood.sources"
           ]
         }
       ]
@@ -637,19 +480,18 @@
       "feature": "morph",
       "flags": [
         {
-          "issue": "Feature family purpose states morph encodes categories for words and phrases, but observed sources also include subphrase nodes.",
+          "issue": "morph sources include subphrase nodes, but the feature-family purpose mentions only words and phrases",
           "status": "inconsistency",
           "evidence": [
-            "features.morph.sources",
-            "feature_family.purpose"
+            "features.morph.sources includes subphrase",
+            "feature_family.purpose mentions words and phrases"
           ]
         },
         {
-          "issue": "Exact code semantics are missing from the inventory; a documentation link to docs/features/morph.md exists while context reports linked_documentation as empty.",
+          "issue": "relationship between morph and sp is inferred rather than explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "application_evidence.feature_links.documentation_links",
-            "context.ambiguities"
+            "feature_relationships source_feature sp target_feature morph status inferred needs_review true"
           ]
         }
       ]
@@ -658,10 +500,10 @@
       "feature": "nodeid",
       "flags": [
         {
-          "issue": "nodeid is described as an XML node ID but is observed only on sentence, clause, and wg nodes; coverage on other node types is absent.",
-          "status": "missing_evidence",
+          "issue": "nodeid is described as an XML node ID but is observed only on sentence, clause, and wg nodes",
+          "status": "inconsistency",
           "evidence": [
-            "context.ambiguities: nodeid coverage",
+            "features.nodeid.metadata.description",
             "features.nodeid.observed_node_types"
           ]
         }
@@ -671,11 +513,10 @@
       "feature": "normalized",
       "flags": [
         {
-          "issue": "Multiple word-text features overlap (text, unicode, normalized, translit, unaccent) without a designated primary surface-text convention.",
-          "status": "inconsistency",
+          "issue": "normalized values appear on phrase and subphrase nodes as well as word nodes",
+          "status": "missing_evidence",
           "evidence": [
-            "context.dataset.ambiguities[1]",
-            "feature_family.features"
+            "features.normalized.sources lists phrase, subphrase, and word; no inventory text explains non-word coverage."
           ]
         }
       ]
@@ -684,12 +525,13 @@
       "feature": "note",
       "flags": [
         {
-          "issue": "needs_review",
+          "issue": "feature documentation and semantic scope unresolved",
           "status": "missing_evidence",
           "evidence": [
-            "dataset_context.needs_review",
-            "feature_family.needs_review",
-            "application_evidence.linked_documentation"
+            "features.note.metadata.description",
+            "features.note.sources",
+            "features.note.frequent",
+            "dataset.context.needs_review"
           ]
         }
       ]
@@ -698,11 +540,11 @@
       "feature": "num",
       "flags": [
         {
-          "issue": "Undocumented num assignment on non-book/sentence/word node types",
-          "status": "missing_evidence",
+          "issue": "Metadata description limits num to book, sentence, and word, while sources populate it on eight node types including clause, group, phrase, subphrase, and wg.",
+          "status": "inconsistency",
           "evidence": [
-            "features.num.metadata.description covers book, sentence, and word only",
-            "features.num.sources shows populated values on clause, group, phrase, subphrase, and wg nodes without a stated rule"
+            "features.num.metadata.description",
+            "features.num.sources"
           ]
         }
       ]
@@ -711,27 +553,124 @@
       "feature": "number",
       "flags": [
         {
-          "issue": "number is populated on only 98,937 of 137,779 word nodes, with partial coverage on phrase and subphrase.",
+          "issue": "Conflicting descriptions of feature number",
+          "status": "contradiction",
+          "evidence": [
+            "context claim that feature number is a generated number not in XML",
+            "feature number metadata description grammatical number and frequent values singular and plural"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "otext",
+      "flags": [
+        {
+          "issue": "Template-to-node usage and section navigation behavior are not specified",
           "status": "missing_evidence",
           "evidence": [
-            "features.number.sources.word",
-            "structure.node_types_in_corpus_order.word"
+            "feature_metadata",
+            "application.configuration"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "feature": "otype",
+      "flags": [
         {
-          "issue": "feature family purpose mentions words and phrases, but sources also include subphrase without explicit documentation.",
+          "issue": "Runtime viewtypes may adjust sentence labels and hidden node types, affecting how otype labels are interpreted in the app",
+          "status": "missing_evidence",
+          "evidence": [
+            "app/app.py: TfApp.viewtype"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "parent",
+      "flags": [
+        {
+          "issue": "Metadata description says parent relationship between words, but endpoint_pairs show sources include clause, group, phrase, sentence, wg, and word.",
+          "status": "contradiction",
+          "evidence": [
+            "features.parent.metadata.description",
+            "features.parent.endpoint_pairs"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "person",
+      "flags": [
+        {
+          "issue": "value semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.person.metadata.description provides no explicit definitions for p1 or p3"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "punctuation",
+      "flags": [
+        {
+          "issue": "Punctuation overlaps with before, after, trailer, and criticalsign; exact cross-feature boundaries are not verified",
           "status": "inconsistency",
           "evidence": [
-            "feature_family.purpose",
-            "features.number.sources.subphrase"
+            "dataset.context.ambiguities[2]"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "feature": "ref",
+      "flags": [
         {
-          "issue": "relationship to morph is inferred from feature_relationships, not explicitly documented in feature metadata.",
+          "issue": "distinct ref count equals word-node count despite phrase and subphrase coverage",
           "status": "missing_evidence",
           "evidence": [
-            "feature_relationships[0]",
-            "features.number.metadata.description"
+            "features.ref.sources",
+            "features.ref.distinct"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "referent",
+      "flags": [
+        {
+          "issue": "Metadata describes referent as a number, but observed values are string identifiers.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.referent.metadata.description",
+            "features.referent.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "rela",
+      "flags": [
+        {
+          "issue": "rela metadata provides no semantic definition beyond 'XML attribute rela', leaving the meaning of Appo undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.rela.feature_metadata.description",
+            "features.rela.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "role",
+      "flags": [
+        {
+          "issue": "Overlapping scopes between role and cls/typ/typems on clause/phrase/word nodes",
+          "status": "missing_evidence",
+          "evidence": [
+            "dataset_context.ambiguities[4]"
           ]
         }
       ]
@@ -743,9 +682,20 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Cross-feature boundaries between after, punctuation, trailer, and criticalsign are not verified."
+        "Whether values on phrase and subphrase nodes carry the same 'after word' meaning as on word nodes is unresolved.",
+        "The interpretation of frequent values as trailing spacing or punctuation is suggested by observed values but not proven by metadata."
       ],
-      "context_flags": [],
+      "context_flags": [
+        {
+          "issue": "Source description says material after the end of the word, yet sources populate phrase and subphrase nodes as well as word nodes; cross-feature boundaries with punctuation and trailer are unverified.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.after.sources",
+            "features.after.metadata.description",
+            "dataset_context.ambiguities[2]"
+          ]
+        }
+      ],
       "evidence_requests": [],
       "additional_evidence": [],
       "input_fingerprints": {
@@ -755,7 +705,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "appositioncontainer": {
@@ -763,15 +713,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The terse description '1 if it is an apposition container' does not define the syntactic criteria for an apposition container or distinguish it from related clause/phrase annotations; full documentation is not linked in the inventory, so semantics rely on the metadata stub. Only value 1 is observed, so whether additional values are possible is unresolved."
+        "Whether 'apposition container' carries the same syntactic scope on clause, phrase, subphrase, and wg nodes, since metadata only gives the one-line definition."
       ],
       "context_flags": [
         {
-          "issue": "Feature documentation missing from inventory",
+          "issue": "Metadata lacks a detailed definition of apposition container and its relationship to other syntax features.",
           "status": "missing_evidence",
           "evidence": [
-            "application_evidence.linked_documentation is empty; feature_links references docs/features/appositioncontainer.md but no linked documentation content is provided.",
-            "context.dataset.ambiguities: omitted_feature_documentation lists 15 features without provided documentation content; omitted_feature_application_links is true."
+            "features.appositioncontainer.metadata.description"
           ]
         }
       ],
@@ -784,7 +733,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "articular": {
@@ -792,15 +741,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The prose description lists sentence, group, clause, phrase, and wg but omits subphrase, although sources include subphrase (11,897 populated nodes). It is unclear whether nodes lacking articular=1 lack an article or are simply unannotated."
+        "The metadata does not define what counts as 'has an article' or the syntactic scope of the article."
       ],
       "context_flags": [
         {
-          "issue": "feature description omits subphrase node type present in sources",
+          "issue": "metadata description lists sentence, group, clause, phrase, or wg but omits subphrase",
           "status": "inconsistency",
           "evidence": [
-            "sources includes subphrase: 11897",
-            "description text lists only sentence, group, clause, phrase, wg"
+            "features.articular.metadata.description",
+            "features.articular.sources includes subphrase"
           ]
         }
       ],
@@ -813,7 +762,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "before": {
@@ -821,23 +770,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The source description is only “this is XML attribute before,” so the precise semantic class of `before` values (punctuation, editorial marker, manuscript material) is not explicitly defined.",
-        "Cross-feature boundaries between `before`, `after`, `trailer`, `criticalsign`, and `punctuation` are not verified, so overlap or duplication may occur."
+        "It is uncertain whether `before` values mark punctuation or other preceding material; the cross-feature boundary with `punctuation`, `after`, `trailer`, and `criticalsign` is not verified."
       ],
       "context_flags": [
         {
-          "issue": "overlapping scope with punctuation and related material features",
+          "issue": "before overlaps with punctuation and other material features",
           "status": "inconsistency",
           "evidence": [
             "dataset_context.ambiguities[2]",
-            "feature_relationships overlapping_scope before→punctuation (inferred)"
-          ]
-        },
-        {
-          "issue": "minimal source description for `before`",
-          "status": "missing_evidence",
-          "evidence": [
-            "feature_metadata.description: “this is XML attribute before”"
+            "feature_relationships overlapping_scope (before, punctuation) inferred"
           ]
         }
       ],
@@ -850,7 +791,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "book": {
@@ -858,23 +799,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether book values on non-book nodes are inherited or explicitly stored is undocumented; the lang=el observation on book nodes may conflict with the declared grc writing system, and the relationship is unexplained."
+        "Whether book values on non-book node types are inherited from an ancestor book node or independently assigned is not specified in the inventory."
       ],
       "context_flags": [
         {
-          "issue": "lang value el on book nodes may conflict with declared writing system grc",
-          "status": "inconsistency",
-          "evidence": [
-            "features.lang.observed_node_types",
-            "features.lang.frequent_values",
-            "application.configuration.writing"
-          ]
-        },
-        {
-          "issue": "inheritance or explicit storage of book values on non-book nodes is undocumented",
+          "issue": "book value assignment mechanism on non-book nodes",
           "status": "missing_evidence",
           "evidence": [
-            "features.book.sources"
+            "features.book.sources lists populated counts for chapter, clause, group, phrase, sentence, subphrase, verse, wg, and word nodes, but no inheritance or assignment rule is documented."
           ]
         }
       ],
@@ -887,7 +819,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "bookshort": {
@@ -895,23 +827,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether the 27 abbreviations follow a standardized New Testament book order or Nestle 1904 editorial convention is not documented beyond the XML ref attribute.",
-        "Absence of bookshort values on chapter and verse nodes may mean no value is recorded rather than inapplicability.",
-        "The inferred contribution of bookshort to ref needs review and is not independently verified."
+        "Whether bookshort values on non-book node types are inherited from book nodes or assigned independently; whether a corresponding full book-name feature exists."
       ],
       "context_flags": [
         {
-          "issue": "sources object omits chapter and verse node types",
+          "issue": "bookshort value propagation to non-book nodes",
           "status": "missing_evidence",
           "evidence": [
-            "features.bookshort.sources lacks chapter and verse although both are corpus node types"
-          ]
-        },
-        {
-          "issue": "bookshort contributes_to ref relationship is inferred",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_relationships entry for source_feature bookshort to target_feature ref has needs_review true and status inferred"
+            "features.bookshort.sources lists populated counts on book, clause, group, phrase, sentence, subphrase, wg, and word nodes, but no inheritance or assignment rule is documented"
           ]
         }
       ],
@@ -924,7 +847,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "case": {
@@ -932,7 +855,7 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The case–morph link is inferred and flagged for review; case assignment on phrase and subphrase nodes is not otherwise explained in the inventory."
+        "The case–morph relationship is inferred rather than explicitly documented; the inventory marks it needs_review."
       ],
       "context_flags": [
         {
@@ -941,7 +864,7 @@
           "evidence": [
             "features.case.metadata.description",
             "features.morph.metadata.description",
-            "feature_relationships[0]"
+            "feature_relationships source_feature case target_feature morph status inferred needs_review true"
           ]
         }
       ],
@@ -954,7 +877,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "chapter": {
@@ -962,23 +885,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether chapter numbers restart within each book is undocumented; 28 distinct values may reflect the maximum chapters in a single book.",
-        "The absence of chapter values on book nodes is not explained as intentional or as missing data."
+        "The inventory does not specify whether chapter values on clause, group, phrase, sentence, subphrase, wg, and word nodes are directly assigned or inherited from section ancestry."
       ],
       "context_flags": [
         {
-          "issue": "chapter feature not populated on book nodes",
+          "issue": "chapter feature appears on many non-chapter node types",
           "status": "missing_evidence",
           "evidence": [
-            "features.chapter.sources omits book; structure.node_types_in_corpus_order lists 27 book nodes"
-          ]
-        },
-        {
-          "issue": "XML ref attribute derivation not detailed",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.chapter.metadata.description",
-            "features.chapter.metadata.dataSourceFormat"
+            "features.chapter.sources"
           ]
         }
       ],
@@ -991,7 +905,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "clausetype": {
@@ -999,7 +913,7 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether clausetype and cltype represent the same syntactic typology or distinct schemes; whether nominalized is the only intended value or merely the only populated one; why clause-type values occur on sentence and wg nodes."
+        "Whether nominalized exhaustively defines clause type across clause, sentence, and wg nodes is unresolved; the distinction between clausetype and cltype is undocumented."
       ],
       "context_flags": [
         {
@@ -1007,7 +921,8 @@
           "status": "inconsistency",
           "evidence": [
             "dataset_context.ambiguities[3]",
-            "feature_relationships[0]"
+            "features.clausetype.metadata.description",
+            "features.cltype.metadata.description"
           ]
         }
       ],
@@ -1020,7 +935,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "cls": {
@@ -1028,11 +943,11 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Meaning of individual cls values is undocumented beyond \"XML attribute cls\"; distinct count is 18 but only 12 frequent values are reported. Overlap with sp, typ, typems lacks documented distinctions."
+        "The inventory does not define the cls value set or precise semantic distinctions from overlapping features typ, sp, and typems; sources counts are populated nodes only, so missing assignments are unrecorded rather than negative."
       ],
       "context_flags": [
         {
-          "issue": "cls, sp, typ, and typems have overlapping scopes on clause/phrase/word nodes; precise distinctions are not documented",
+          "issue": "cls overlaps in scope with typ, sp, and typems on clause/phrase/word nodes without documented distinctions",
           "status": "missing_evidence",
           "evidence": [
             "dataset_context.ambiguities[4]",
@@ -1050,7 +965,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "cltype": {
@@ -1058,17 +973,16 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether VerbElided, Verbless, and Minor exhaust all cltype values is unconfirmed.",
-        "The semantic relationship and value-set differences between cltype and clausetype are not documented."
+        "It is unresolved whether cltype values on sentence and wg nodes carry the same syntactic meaning as on clause nodes, and how cltype relates to clausetype given their overlapping descriptions."
       ],
       "context_flags": [
         {
-          "issue": "cltype and clausetype both labeled 'clause type' with potentially different value sets",
+          "issue": "cltype and clausetype are both described as clause type with different value sets",
           "status": "inconsistency",
           "evidence": [
+            "dataset_context.ambiguities[3]",
             "features.cltype.metadata.description",
-            "features.clausetype.metadata.description",
-            "dataset_context.ambiguities[3]"
+            "features.clausetype.metadata.description"
           ]
         }
       ],
@@ -1081,7 +995,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "criticalsign": {
@@ -1089,26 +1003,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "No semantic definition is provided for criticalsign values beyond 'this is XML attribute criticalsign'.",
-        "Metadata editors ('Evangelists and apostles', 'Eberhart Nestle (1904)') may reflect source-text attribution rather than feature curation.",
-        "Whether the seven listed values exhaust the feature domain is not explicitly stated, though distinct is 7."
+        "The metadata only describes criticalsign as 'this is XML attribute criticalsign,' so its editorial or textual-critical function is unproven; whether values mark textual-critical, editorial, or XML-origin boundaries is unclear."
       ],
       "context_flags": [
         {
-          "issue": "criticalsign has no documented semantics beyond 'this is XML attribute criticalsign'; value meanings are unspecified.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.criticalsign.metadata.description"
-          ]
-        },
-        {
-          "issue": "boundaries between criticalsign and after, punctuation, trailer, and before are not cross-verified.",
-          "status": "missing_evidence",
+          "issue": "criticalsign overlaps in scope with punctuation, after, and trailer; exact boundaries are not verified",
+          "status": "inconsistency",
           "evidence": [
             "dataset_context.ambiguities[2]",
-            "features.criticalsign.metadata.description",
-            "features.after.metadata.description",
-            "features.trailer.metadata.description"
+            "feature_relationships criticalsign-punctuation overlapping_scope"
           ]
         }
       ],
@@ -1121,7 +1024,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "crule": {
@@ -1129,30 +1032,10 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The semantic distinction between ClCl and ClCl2 is not documented; they may represent clause rule categories from XML attribute Rule, but this is unverified.",
-        "Population on sentence and wg nodes despite a clause-oriented description may indicate broader attribute application or an inventory gap.",
-        "External documentation docs/features/crule.md is referenced but linked_documentation is empty, so its content is unavailable."
+        "The semantic meaning of ClCl and ClCl2 is not defined in feature metadata or linked documentation.",
+        "Whether the XML Rule attribute carries the same interpretation on sentence and wg nodes as on clause nodes is unresolved."
       ],
-      "context_flags": [
-        {
-          "issue": "crule is described as 'clause rule (from xml attribute Rule)' but sources show populated values on sentence (838) and wg (5,558) nodes in addition to clause (4,720).",
-          "status": "inconsistency",
-          "evidence": [
-            "features.crule.description",
-            "features.crule.sources"
-          ]
-        },
-        {
-          "issue": "The meanings of ClCl and ClCl2 are undocumented, and the referenced docs/features/crule.md has no linked content in the inventory.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.crule.frequent",
-            "features.crule.feature_metadata",
-            "application_evidence.feature_links.documentation_links",
-            "application_evidence.linked_documentation"
-          ]
-        }
-      ],
+      "context_flags": [],
       "evidence_requests": [],
       "additional_evidence": [],
       "input_fingerprints": {
@@ -1162,7 +1045,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "degree": {
@@ -1170,14 +1053,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Value semantics are undocumented: it is unclear whether comparative and superlative apply to adjectives, adverbs, or other categories, and the inferred link to morph is unreviewed."
+        "The part-of-speech scope of degree is not explicitly documented; the inferred link to morph lacks inventory confirmation."
       ],
       "context_flags": [
         {
-          "issue": "No explicit value set or part-of-speech scope documented for degree.",
+          "issue": "Part-of-speech scope for degree values is not explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "features.degree.metadata.description provides only 'grammatical degree'; frequent values comparative and superlative are observed but undefined."
+            "features.degree.metadata.description",
+            "features.degree.sources"
           ]
         }
       ],
@@ -1190,7 +1074,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "discontinuous": {
@@ -1198,25 +1082,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The description restricts the flag to “word,” but sources also list phrase and subphrase; whether semantics differ by node type is unclear.",
-        "Only value 1 is attested (distinct = 1), so the existence or meaning of 0 or other values is unknown.",
-        "The phrase “out of sequence in the xml” is not further defined."
+        "The description says “word” but sources include phrase and subphrase nodes, so the intended node scope is unclear; the precise meaning of “out of sequence in the xml” is not defined."
       ],
       "context_flags": [
         {
-          "issue": "Description says “word” but populated sources include phrase and subphrase nodes.",
+          "issue": "feature description mentions word nodes only, but sources also populate phrase and subphrase nodes",
           "status": "inconsistency",
           "evidence": [
-            "features.discontinuous.metadata.description",
+            "features.discontinuous.description",
             "features.discontinuous.sources"
-          ]
-        },
-        {
-          "issue": "Only value 1 is observed; no definition for absent nodes or alternative values.",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.discontinuous.distinct",
-            "features.discontinuous.frequent"
           ]
         }
       ],
@@ -1229,7 +1103,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "domain": {
@@ -1237,17 +1111,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether domain denotes a semantic, textual, or annotation domain is unresolved; the metadata supplies only the label domain and the six-digit codes are unexplained. Its relationship to overlapping syntax features such as clausetype, cltype, typ, and typems is undocumented."
+        "The exact meaning of domain values is unresolved; they may represent textual or linguistic domains from MACULA, but the inventory metadata only repeats the name \"domain\" and provides no value set or definition."
       ],
       "context_flags": [
         {
-          "issue": "undocumented value semantics",
+          "issue": "domain value semantics",
           "status": "missing_evidence",
           "evidence": [
-            "features.domain.metadata.description",
-            "feature_family.syntax_clause.purpose",
-            "features.domain.sources",
-            "structure.node_types_in_corpus_order"
+            "features.domain.metadata.description is circular ('domain'); frequent values 092004 and 089017 are attested without inventory definition."
           ]
         }
       ],
@@ -1260,7 +1131,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "frame": {
@@ -1268,18 +1139,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The semantic meaning of frame is undocumented beyond the label; the relation between source and target words is unknown.",
-        "Directionality is implied by source/target structure but not explicitly verified in the inventory.",
-        "Whether A0, A1, A2, and AA2 denote distinct relation types or a value hierarchy is not explained.",
-        "Targets count edge endpoints, so the number of unique target nodes is unavailable."
+        "The precise semantic meaning of frame edges is unspecified; metadata labels it only 'frame' with empty edgeValues, so the 'syntactic frame relation' interpretation is unsupported and may be incorrect."
       ],
       "context_flags": [
         {
-          "issue": "Edge directionality and semantics not fully specified for frame",
+          "issue": "frame edge directionality and semantics are not fully specified",
           "status": "missing_evidence",
           "evidence": [
-            "dataset_context.ambiguities[7]",
-            "features.frame.metadata.description"
+            "dataset_context.ambiguities[7] states edge features provide source/target counts but do not fully specify edge directionality or semantics",
+            "features.frame.metadata.description is 'frame' and edgeValues is empty"
           ]
         }
       ],
@@ -1292,7 +1160,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "f145d0b2169c48fc0c5c05e62a91503e7c3cc509d5679e46dd812b40d5bba244"
+        "prompt_sha256": "5838dd125a3a74df7f213412cab02926b9a744ef0b584949d9fd95273577b471"
       }
     },
     "framespec": {
@@ -1300,25 +1168,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The semantics of framespec values are not defined in the inventory; they may encode frame or slot specifications from the XML lowfat tree source.",
-        "Coverage is limited to phrase, subphrase, and word nodes; absence elsewhere means no value is recorded, not a negative class.",
-        "Relationship to sibling syntax features such as clausetype, cltype, typ, and typems is unclear."
+        "The meaning of framespec values is undocumented; the patterns A0:n... and A1:n... may denote frame references, node references, or both, but this is not confirmed by metadata or documentation."
       ],
       "context_flags": [
         {
-          "issue": "Feature family purpose states framespec applies to clauses, phrases, and groups, but observed sources cover only phrase, subphrase, and word; clause and group show no populated values.",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_family.purpose",
-            "features.framespec.sources"
-          ]
-        },
-        {
-          "issue": "Metadata cites external dataSource and converterSourceLocation URLs that the inventory does not independently verify.",
+          "issue": "framespec semantics and value syntax are not explained beyond the metadata label",
           "status": "missing_evidence",
           "evidence": [
-            "features.framespec.metadata.dataSource",
-            "features.framespec.metadata.converterSourceLocation"
+            "features.framespec.metadata.description"
           ]
         }
       ],
@@ -1331,7 +1188,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "function": {
@@ -1339,15 +1196,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Exact semantic mapping of abbreviated values (e.g., Pred, Cmpl, Subj, Objc) is not documented beyond the stub 'this is XML attribute function'; overlap with cls, typ, typems, and clausetype on clause/phrase/word nodes is unresolved."
+        "The metadata describes function only as 'this is XML attribute function'; interpreting Pred and Cmpl as syntactic functions is suggested by the syntax_clause feature family purpose and label configuration but is not explicitly stated in the feature description. Populated node counts indicate where values exist; absence on a node type means no recorded value, not a negative class."
       ],
       "context_flags": [
         {
-          "issue": "undocumented value semantics",
+          "issue": "Feature semantics underspecified",
           "status": "missing_evidence",
           "evidence": [
-            "features.function.metadata.description",
-            "dataset_context.ambiguities[4]"
+            "features.function.metadata.description provides only 'this is XML attribute function'; no explicit definition of syntactic function values is present in the inventory"
           ]
         }
       ],
@@ -1360,7 +1216,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "gender": {
@@ -1368,21 +1224,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The gender–morph link is marked inferred and needs review; sources cover only phrase, subphrase, and word nodes, so absence on other node types or within listed types means no recorded value rather than a negative class; exhaustiveness of the three values is unconfirmed."
+        "The gender–morph relationship is inferred rather than directly documented; sources counts reflect populated nodes only, so unlisted nodes may lack assignments."
       ],
       "context_flags": [
         {
-          "issue": "partial node-type coverage",
+          "issue": "gender–morph relationship verification",
           "status": "missing_evidence",
           "evidence": [
-            "features.gender.sources lists phrase (17,658), subphrase (56,317), and word (73,975) only; corpus has 137,779 word nodes and other node types with no gender assignments"
-          ]
-        },
-        {
-          "issue": "feature relationship unverified",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_relationships describes gender as related_to morph with needs_review true and status inferred"
+            "feature_relationships source_feature gender target_feature morph status inferred needs_review true"
           ]
         }
       ],
@@ -1395,7 +1244,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "gloss": {
@@ -1403,19 +1252,10 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "BGVB is not expanded in metadata; its referent or standard is undefined.",
-        "The gloss–lemma relationship is marked inferred and needs review; gloss may complement lemma but this is not documented.",
-        "Whether all word nodes carry a gloss is unconfirmed; sources counts only populated nodes."
+        "The metadata abbreviation “BGVB” is not expanded in the supplied inventory.",
+        "The relationship between gloss and lemma is marked inferred in the context, not explicitly documented."
       ],
-      "context_flags": [
-        {
-          "issue": "undefined metadata acronym",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.gloss.metadata.description 'English gloss (BGVB)'"
-          ]
-        }
-      ],
+      "context_flags": [],
       "evidence_requests": [],
       "additional_evidence": [],
       "input_fingerprints": {
@@ -1425,7 +1265,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "id": {
@@ -1433,27 +1273,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether id values are unique across all populated node types or reused between phrase, subphrase, and word nodes is unresolved; distinct (137,779) equals the word-node source count while phrase and subphrase also report populated ids.",
-        "The frequency of 2 for leading values suggests possible cross-node-type id reuse or duplicate assignment, but the inventory does not explain this.",
-        "The apparent book/chapter/verse/word encoding in values like n40001001001 is not documented and may be coincidental."
+        "It is unresolved whether the same XML ID can occur on multiple node types or whether values are unique across phrase, subphrase, and word nodes."
       ],
       "context_flags": [
         {
-          "issue": "distinct count equals word source count despite phrase and subphrase also carrying ids",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.id.distinct",
-            "features.id.sources",
-            "features.id.frequent"
-          ]
-        },
-        {
-          "issue": "id and nodeid are both described as XML identifiers but are observed on different node types",
+          "issue": "distinct count versus populated-node sources",
           "status": "inconsistency",
           "evidence": [
-            "features.id.description",
-            "features.id.sources",
-            "context.ambiguities.nodeid observed only on sentence, clause, and wg nodes"
+            "features.id.distinct equals the word-node source count but is lower than the combined populated-node total across phrase, subphrase, and word in features.id.sources, so ID uniqueness or scope across node types is unverified."
           ]
         }
       ],
@@ -1466,7 +1293,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "junction": {
@@ -1474,9 +1301,20 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The inventory does not define the syntactic criteria distinguishing coordinate from subordinate junctions; the feature may mark clause-level coordination/subordination or phrase-level juncture, but this interpretation is not explicitly documented."
+        "Metadata defines junction only as \"type of junction\" without defining coordinate or subordinate; a syntactic coordination/subordination reading is plausible but unproven. The inventory does not distinguish junction's scope from overlapping features cls, typ, and typems."
       ],
-      "context_flags": [],
+      "context_flags": [
+        {
+          "issue": "Overlapping scopes of junction with cls, typ, and typems on clause/phrase/word nodes are not precisely distinguished in the inventory.",
+          "status": "missing_evidence",
+          "evidence": [
+            "dataset_context.ambiguities[4]",
+            "features.typ.metadata.description",
+            "features.cls.metadata.description",
+            "features.typems.metadata.description"
+          ]
+        }
+      ],
       "evidence_requests": [],
       "additional_evidence": [],
       "input_fingerprints": {
@@ -1486,7 +1324,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "lang": {
@@ -1494,16 +1332,17 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether el denotes the language of the entire text or a book-level metadata label is unproven; coverage is limited to book nodes, so values for other node types are unrecorded rather than absent by design."
+        "The relationship between the lang value el and the declared writing system grc is unexplained; it is unclear whether el denotes text language or script."
       ],
       "context_flags": [
         {
-          "issue": "lang value el on book nodes may conflict with declared writing system grc; relationship between language code and writing system is not explained",
+          "issue": "lang value el on book nodes may conflict with declared writing system grc",
           "status": "inconsistency",
           "evidence": [
-            "dataset.ambiguities[0]",
             "features.lang.observed_node_types",
-            "application.configuration.writing"
+            "features.lang.frequent_values",
+            "application.configuration.writing",
+            "dataset_context.ambiguities[0]"
           ]
         }
       ],
@@ -1516,7 +1355,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "lemma": {
@@ -1524,16 +1363,16 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The inventory does not explain why lemma is populated on phrase and subphrase nodes as well as word nodes, or whether those values represent head lemmas, inherited annotations, or another convention.",
-        "Distinct count 5,396 spans all populated node types; per-type distributions are not provided.",
-        "Source description is minimal (\"lexical lemma\"), so finer semantic nuance is not attested."
+        "Whether lemma values on phrase and subphrase nodes are independent annotations or derived from word nodes is unresolved.",
+        "The inventory does not designate lemma as the primary surface-text convention among overlapping word-text features."
       ],
       "context_flags": [
         {
-          "issue": "lemma appears on non-slot node types (phrase, subphrase) as well as words",
-          "status": "missing_evidence",
+          "issue": "Multiple word-text features overlap without a designated primary surface-text convention",
+          "status": "inconsistency",
           "evidence": [
-            "features.lemma.sources"
+            "context.dataset.ambiguities[1]",
+            "features.otext.metadata.fmt:lex-orig-plain"
           ]
         }
       ],
@@ -1546,7 +1385,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "lemmatranslit": {
@@ -1554,16 +1393,16 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "It is unclear whether lemmatranslit values on phrase and subphrase nodes are inherited from constituent words or independently assigned; the feature description only defines it as the transliteration of the word lemma.",
-        "The relationship to the lemma feature is inferred from metadata and is not explicitly documented in the inventory."
+        "The specific transliteration scheme or standard is not stated in the feature metadata.",
+        "The relationship between lemmatranslit and lemma is marked inferred rather than explicitly documented."
       ],
       "context_flags": [
         {
-          "issue": "The lemmatranslit-to-lemma relationship is marked inferred and needs review; the inventory does not explain how phrase/subphrase values relate to word-lemma transliteration.",
+          "issue": "Relationship between lemmatranslit and lemma is inferred, not explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "features.lemmatranslit.sources",
-            "feature_relationships[2]"
+            "feature_relationships lists lemmatranslit related_to lemma with status inferred",
+            "metadata describes lemmatranslit as transliteration of the word lemma"
           ]
         }
       ],
@@ -1576,7 +1415,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "ln": {
@@ -1584,24 +1423,9 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The semantics of ln are undocumented; the metadata description is only “ln.” The frequent values are opaque numeric strings (e.g., “92.24,” “92.11”) and might represent lexical identifiers, lemma numbers, or another coding scheme, but this is unsupported. Sources counts are partial, so absence of a value on a phrase, subphrase, or word node is not a negative assignment."
+        "The metadata provides no definition beyond “ln”; whether dotted values represent line numbers, references, or another identifier is unsupported."
       ],
-      "context_flags": [
-        {
-          "issue": "feature meaning undocumented",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.ln.metadata.description equals “ln” only"
-          ]
-        },
-        {
-          "issue": "partial node coverage",
-          "status": "missing_evidence",
-          "evidence": [
-            "features.ln.sources lists phrase (43,153), subphrase (83,726), and word (126,879), below total node counts for those types"
-          ]
-        }
-      ],
+      "context_flags": [],
       "evidence_requests": [],
       "additional_evidence": [],
       "input_fingerprints": {
@@ -1611,7 +1435,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "mood": {
@@ -1619,22 +1443,16 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "It is unclear whether mood values on phrase and subphrase nodes are inherited from child word nodes or independently annotated.",
-        "The relationship between mood and the morph feature is inferred in the inventory and not explicitly documented."
+        "The mood–morph relationship is marked inferred and needs review, so it is not directly documented.",
+        "Mood is described as verbal mood yet sources include phrase and subphrase nodes, so values on non-word nodes may represent propagated annotation rather than direct verbal inflection."
       ],
       "context_flags": [
         {
-          "issue": "mood is populated on phrase and subphrase nodes as well as word nodes",
-          "status": "missing_evidence",
+          "issue": "Feature metadata describes mood as verbal mood, but observed sources include phrase and subphrase nodes in addition to word nodes.",
+          "status": "inconsistency",
           "evidence": [
-            "features.mood.sources reports phrase 27355, subphrase 1002, word 28357; no documentation explains non-word coverage"
-          ]
-        },
-        {
-          "issue": "mood-to-morph relationship is marked inferred and needs review",
-          "status": "missing_evidence",
-          "evidence": [
-            "feature_relationships lists source_feature mood, target_feature morph, status inferred, needs_review true"
+            "features.mood.feature_metadata.description",
+            "features.mood.sources"
           ]
         }
       ],
@@ -1647,7 +1465,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "morph": {
@@ -1655,25 +1473,23 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Exact morphological code semantics are not documented in the inventory; docs/features/morph.md is referenced but its content is not included.",
-        "Relationships between morph and sp, case, tense, voice, mood, person, gender, number, and degree are inferred, not explicitly documented.",
-        "Missing morph values on phrase and subphrase nodes are unexplained; absence is not a negative class."
+        "The precise distinction between morph and sp is not documented; their relationship is inferred.",
+        "The internal structure of the morphological code is not explained beyond the label 'morphological code.'"
       ],
       "context_flags": [
         {
-          "issue": "Feature family purpose states morph encodes categories for words and phrases, but observed sources also include subphrase nodes.",
+          "issue": "morph sources include subphrase nodes, but the feature-family purpose mentions only words and phrases",
           "status": "inconsistency",
           "evidence": [
-            "features.morph.sources",
-            "feature_family.purpose"
+            "features.morph.sources includes subphrase",
+            "feature_family.purpose mentions words and phrases"
           ]
         },
         {
-          "issue": "Exact code semantics are missing from the inventory; a documentation link to docs/features/morph.md exists while context reports linked_documentation as empty.",
+          "issue": "relationship between morph and sp is inferred rather than explicitly documented",
           "status": "missing_evidence",
           "evidence": [
-            "application_evidence.feature_links.documentation_links",
-            "context.ambiguities"
+            "feature_relationships source_feature sp target_feature morph status inferred needs_review true"
           ]
         }
       ],
@@ -1686,7 +1502,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "nodeid": {
@@ -1694,14 +1510,14 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether the numeric nodeid structure encodes stable XML identifiers across all node types or only the three observed types; the identifier semantics are not documented."
+        "The internal structure of the numeric identifier is undocumented, and it is unclear whether nodeid should exist on node types beyond sentence, clause, and wg."
       ],
       "context_flags": [
         {
-          "issue": "nodeid is described as an XML node ID but is observed only on sentence, clause, and wg nodes; coverage on other node types is absent.",
-          "status": "missing_evidence",
+          "issue": "nodeid is described as an XML node ID but is observed only on sentence, clause, and wg nodes",
+          "status": "inconsistency",
           "evidence": [
-            "context.ambiguities: nodeid coverage",
+            "features.nodeid.metadata.description",
             "features.nodeid.observed_node_types"
           ]
         }
@@ -1715,7 +1531,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "normalized": {
@@ -1723,15 +1539,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Metadata labels values as \"lemma normalized,\" but it is unclear whether normalized contains lemmas, normalized surface forms, or both; coverage is absent for book, chapter, verse, sentence, group, clause, and wg nodes."
+        "The exact normalization rule (accent, case, or punctuation handling) is not documented beyond the terse metadata 'lemma normalized'.",
+        "Why a surface-text feature carries values on phrase and subphrase nodes in addition to word nodes is unexplained."
       ],
       "context_flags": [
         {
-          "issue": "Multiple word-text features overlap (text, unicode, normalized, translit, unaccent) without a designated primary surface-text convention.",
-          "status": "inconsistency",
+          "issue": "normalized values appear on phrase and subphrase nodes as well as word nodes",
+          "status": "missing_evidence",
           "evidence": [
-            "context.dataset.ambiguities[1]",
-            "feature_family.features"
+            "features.normalized.sources lists phrase, subphrase, and word; no inventory text explains non-word coverage."
           ]
         }
       ],
@@ -1744,7 +1560,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "note": {
@@ -1752,16 +1568,17 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The label 'annotation of linguistic nature' does not define the annotation's scope or criteria; it is unclear whether 'discontinuous discourse' carries the same interpretation on phrase and word nodes or how it relates to other annotation features."
+        "The meaning of 'discontinuous discourse' is not explicitly defined; whether it marks a discourse-level discontinuity is uncertain. Feature documentation is marked needs_review."
       ],
       "context_flags": [
         {
-          "issue": "needs_review",
+          "issue": "feature documentation and semantic scope unresolved",
           "status": "missing_evidence",
           "evidence": [
-            "dataset_context.needs_review",
-            "feature_family.needs_review",
-            "application_evidence.linked_documentation"
+            "features.note.metadata.description",
+            "features.note.sources",
+            "features.note.frequent",
+            "dataset.context.needs_review"
           ]
         }
       ],
@@ -1774,7 +1591,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "num": {
@@ -1782,15 +1599,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "The source description gives no numbering rule for clause, group, phrase, subphrase, or wg nodes despite populated values there; it is unclear whether num restarts per parent section or follows another scheme."
+        "Metadata describes num only for book, sentence, and word, but sources show populated values on clause, group, phrase, subphrase, and wg nodes; the numbering rule for those types is undocumented."
       ],
       "context_flags": [
         {
-          "issue": "Undocumented num assignment on non-book/sentence/word node types",
-          "status": "missing_evidence",
+          "issue": "Metadata description limits num to book, sentence, and word, while sources populate it on eight node types including clause, group, phrase, subphrase, and wg.",
+          "status": "inconsistency",
           "evidence": [
-            "features.num.metadata.description covers book, sentence, and word only",
-            "features.num.sources shows populated values on clause, group, phrase, subphrase, and wg nodes without a stated rule"
+            "features.num.metadata.description",
+            "features.num.sources"
           ]
         }
       ],
@@ -1803,7 +1620,7 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     },
     "number": {
@@ -1811,33 +1628,15 @@
       "requested_model": "nvidia/nemotron-3.5-super-vl:free",
       "responding_model": "nvidia/nemotron-3.5-super-vl:free",
       "uncertainties": [
-        "Whether number on phrase and subphrase nodes reflects head-word agreement, phrase-level inflection, or another convention is undocumented.",
-        "Distinct count of 2 implies no dual value is recorded, despite Ancient Greek traditionally having a dual; this may reflect source data or annotation choices.",
-        "Missing assignments on 38,842 word nodes mean no value is recorded, not that those words lack number."
+        "The context also describes feature number as a generated sequential number (book 1–27, sentence per chapter, word per verse), which conflicts with the observed grammatical-number values singular and plural."
       ],
       "context_flags": [
         {
-          "issue": "number is populated on only 98,937 of 137,779 word nodes, with partial coverage on phrase and subphrase.",
-          "status": "missing_evidence",
+          "issue": "Conflicting descriptions of feature number",
+          "status": "contradiction",
           "evidence": [
-            "features.number.sources.word",
-            "structure.node_types_in_corpus_order.word"
-          ]
-        },
-        {
-          "issue": "feature family purpose mentions words and phrases, but sources also include subphrase without explicit documentation.",
-          "status": "inconsistency",
-          "evidence": [
-            "feature_family.purpose",
-            "features.number.sources.subphrase"
-          ]
-        },
-        {
-          "issue": "relationship to morph is inferred from feature_relationships, not explicitly documented in feature metadata.",
-          "status": "missing_evidence",
-          "evidence": [
-            "feature_relationships[0]",
-            "features.number.metadata.description"
+            "context claim that feature number is a generated number not in XML",
+            "feature number metadata description grammatical number and frequent values singular and plural"
           ]
         }
       ],
@@ -1850,7 +1649,284 @@
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
-        "prompt_sha256": "0e57f60037667efa0c1cd6644dd5712af50b355f2d8fde7442bad8f1a90b1e08"
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "oslots": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Edge directionality and full semantics for oslots are not fully specified in the inventory."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "e1a6794c9ed19ffdd179a63acf2863170d6097ff1e671f189576e699dd2a71cc",
+        "feature_evidence_sha256": "73ab9319f66ea2e3c6cd03c5e4e0c7173b5e9e3ac9410de5ea538b2574ecc021",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "95d3742387eb8d0ee1429370efa1b503bed8906965e0e40a908c2f3d7d36775b"
+      }
+    },
+    "otext": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Which nodes use each text template and how the level constraint affects section navigation are not specified."
+      ],
+      "context_flags": [
+        {
+          "issue": "Template-to-node usage and section navigation behavior are not specified",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_metadata",
+            "application.configuration"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "0cc29e1adc83a65710cf2436a9313748aadfa6a802c8aed25c5c5a305c7dce44",
+        "feature_evidence_sha256": "0d82ee9a64949be480ad03c61f2843f09ba77d4a55d1d2887190c2970bfcbba4",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "06213893d559504a82f92c1b8fa3febd980d7586333b9ec6f8f025b8cb8a779a"
+      }
+    },
+    "otype": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether each otype label corresponds to a specific structural unit beyond the word slot type is not defined by otype alone."
+      ],
+      "context_flags": [
+        {
+          "issue": "Runtime viewtypes may adjust sentence labels and hidden node types, affecting how otype labels are interpreted in the app",
+          "status": "missing_evidence",
+          "evidence": [
+            "app/app.py: TfApp.viewtype"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "8a89cbb7d0ea2e733f51efc96e409ee65b5e2d662e8214271180203429ba7656",
+        "feature_evidence_sha256": "6db971c72d6568ce9de3c45efbbcb6858e577710a45ff76ec71270540da6aac9",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "441f4d4a62d73285c11f112a0d49e5fc59199576b1333a6e8c7535af3d6d56a4"
+      }
+    },
+    "parent": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Metadata describes parent as a relationship between words, but observed edges originate from clause, group, phrase, sentence, wg, and word nodes; edge directionality and semantics are not fully specified in the inventory."
+      ],
+      "context_flags": [
+        {
+          "issue": "Metadata description says parent relationship between words, but endpoint_pairs show sources include clause, group, phrase, sentence, wg, and word.",
+          "status": "contradiction",
+          "evidence": [
+            "features.parent.metadata.description",
+            "features.parent.endpoint_pairs"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "188f6b925b48e05852f52f54fa65fde8d60d27911dea8be5ba58ad7344af6de1",
+        "feature_evidence_sha256": "5ff2c60e875ed421d3c7705136b3b0373d66f5f9332a799b2e52abf389069337",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "5838dd125a3a74df7f213412cab02926b9a744ef0b584949d9fd95273577b471"
+      }
+    },
+    "person": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata description is only 'grammatical person'; explicit definitions of p1 and p3 are not attested. It is unclear whether phrase and subphrase values are directly annotated or inherited."
+      ],
+      "context_flags": [
+        {
+          "issue": "value semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.person.metadata.description provides no explicit definitions for p1 or p3"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "923d0eef985e80ccb921f26f56a80b9d7632efe78d7129c17af41627f2995ed0",
+        "feature_evidence_sha256": "d221d0a25ddc5782a572220e90175bc898b98192aec7737522723e8d5305c185",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "punctuation": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether punctuation captures all trailing punctuation or only a subset is unclear; cross-feature boundaries with before, after, trailer, and criticalsign are unverified."
+      ],
+      "context_flags": [
+        {
+          "issue": "Punctuation overlaps with before, after, trailer, and criticalsign; exact cross-feature boundaries are not verified",
+          "status": "inconsistency",
+          "evidence": [
+            "dataset.context.ambiguities[2]"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "1bbd1cc9a558afcd10a7d517dc9f706e865dc5b27f1dbaea6d34920a8631bbb7",
+        "feature_evidence_sha256": "d7372b6024832a758b9b0b80a8d1c0dfdaa0a0c7450f7ad24642c7ffefb5e56f",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "ref": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "ref is populated on phrase, subphrase, and word nodes, but its distinct count equals the word-node count; whether phrase/subphrase values duplicate word values or use coarser granularity is unresolved, and num's exact role in building ref is inferred rather than directly documented."
+      ],
+      "context_flags": [
+        {
+          "issue": "distinct ref count equals word-node count despite phrase and subphrase coverage",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.ref.sources",
+            "features.ref.distinct"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "e617c62409ec4b49723d539edf58749f5a369c1e6060e1dff98b9689ea6c1c9f",
+        "feature_evidence_sha256": "d41603157a73b4349f25518d694cfb680c9674438ee4394eb206df92f09544b8",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "referent": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether referent values point to node identifiers or denote something else is unresolved; the metadata description “number of referent” does not explain the string format."
+      ],
+      "context_flags": [
+        {
+          "issue": "Metadata describes referent as a number, but observed values are string identifiers.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.referent.metadata.description",
+            "features.referent.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "4ff544db2f6cb95071904571beecd154ca8e126a75a29ed091f23f64664b2244",
+        "feature_evidence_sha256": "47f5216dc81d44277d7328d8d50373668c312c771a10eaa1f8b0a9192c5ac2f4",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "rela": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic meaning of rela and its value Appo is not explicitly defined in the source metadata; the syntactic-relation interpretation is inferred from label-template co-occurrence with function and cls."
+      ],
+      "context_flags": [
+        {
+          "issue": "rela metadata provides no semantic definition beyond 'XML attribute rela', leaving the meaning of Appo undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.rela.feature_metadata.description",
+            "features.rela.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "bc24d50ef2f1671f3aa3958d885005793a1370b0f09ec8951981bb81dd4b289c",
+        "feature_evidence_sha256": "d0529e701f8d7c1b0da15e6b58b184bbe0a3c42382e66d0c9325f52802e29057",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "role": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The precise semantic distinctions between role and overlapping features cls, typ, and typems on clause, phrase, and word nodes are not documented in the inventory."
+      ],
+      "context_flags": [
+        {
+          "issue": "Overlapping scopes between role and cls/typ/typems on clause/phrase/word nodes",
+          "status": "missing_evidence",
+          "evidence": [
+            "dataset_context.ambiguities[4]"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "8435eb28eadeb4b8e0597cf0fb318e1c2ee71266adb6cae87bbca75e8005be0a",
+        "feature_context_sha256": "61d1bf63fdf7b690bad80401f4ab85ebd5f302d91bff84976d4aedfafb4ca2b6",
+        "feature_evidence_sha256": "b7381b0f241d3710de2d04075c3092ca7c7f9bd42935217e9d0dfa65d46ae8ec",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
       }
     }
   }

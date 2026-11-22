@@ -37,6 +37,8 @@ The `context_manifest.json` and `context_review.json` outputs make the inputs an
 
 ## Current examples
 
-The checked-in N1904, DSS, and Old Babylonian sites demonstrate generated feature descriptions alongside deterministic corpus measurements. The Old Babylonian context-first example uses `nvidia/nemotron-3.5-super-vl:free`; the current generated set has model descriptions for 66 of 67 features, with `volume` remaining deterministic. Model descriptions are cached locally during generation, and the checked-in site does not require a model key or network access to browse.
+The checked-in N1904 and Old Babylonian sites include generated feature descriptions alongside deterministic corpus measurements. The DSS example currently contains measured documentation without model descriptions. The Old Babylonian example uses `nvidia/nemotron-3.5-super-vl:free` for 66 of 67 feature descriptions, with `volume` remaining deterministic. See the [example methods comparison](example-methods.html) for measured coverage and the inference layers visible in each site. Model descriptions are cached locally during generation, and the checked-in sites do not require a model key or network access to browse.
 
 The three notebooks under `notebooks/` are the runnable workflows for rebuilding examples from their pinned upstream corpus revisions. Their current settings determine whether a run is offline, context-only, or enriched with per-feature model descriptions.
+
+The N1904 workflow also applies a source-cited editorial clarification for `ln`. Reviewed prose is labeled separately from an unedited inference, while the source metadata, raw model cache, and original uncertainty flags remain available for traceability.
