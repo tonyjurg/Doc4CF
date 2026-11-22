@@ -31,6 +31,17 @@ class VersionOptions(html.parser.HTMLParser):
             self.options.append(dict(attrs))
 
 
+def build_environment() -> dict[str, str]:
+    """Return the environment for code from release tags, without credentials.
+
+    Release checkouts run their own build backend and ``conf.py``. The workflow's
+    ``GH_TOKEN`` is only needed to list releases, so it is not passed on.
+    """
+    markers = ("TOKEN", "SECRET", "PASSWORD", "CREDENTIAL", "API_KEY")
+    return {key: value for key, value in os.environ.items()
+            if not any(marker in key.upper() for marker in markers)}
+
+
 def git(*args: str) -> str:
     """Run a Git command against the repository without invoking a shell."""
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
@@ -102,7 +113,7 @@ def build_one(source: Path, output: Path, label: str, entries: list[dict], pytho
         for entry in entries
     ]
     environment = {
-        **os.environ,
+        **build_environment(),
         "DOC4CF_DOCS_SOURCE": str(source),
         "DOC4CF_DOCS_VERSION": label,
         "DOC4CF_DOCS_VERSIONS": json.dumps(versions),
@@ -152,6 +163,7 @@ def build_release(source: Path, output: Path, tag: str, entries: list[dict], dep
         subprocess.run(
             [str(python), "-m", "pip", "install", "--disable-pip-version-check", str(source), *dependencies],
             check=True,
+            env=build_environment(),
         )
         build_one(source, output, tag, entries, python)
 
