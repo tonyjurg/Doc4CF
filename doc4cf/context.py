@@ -9,6 +9,7 @@ from typing import Any
 from urllib.error import HTTPError
 
 from .generator import (
+    UNSAFE_TEXT,
     ai_indicator, application_source_files, audit_section, export_inventory, feature_description_prompt, request_with_completion_retry, write_atomic,
     feature as feature_link,
 )
@@ -214,11 +215,23 @@ def _keys(value, required, optional=()):
         raise ValueError(f"Invalid context artifact object; expected keys {sorted(required)}")
 
 
+_MAX_STRING_CHARS = 4000
+_MAX_LIST_ITEMS = 100
+
+
+def _check_text(value, label):
+    if len(value) > _MAX_STRING_CHARS:
+        raise ValueError(f"Context artifact field {label} is longer than {_MAX_STRING_CHARS} characters")
+    if UNSAFE_TEXT.search(value):
+        raise ValueError(f"Context artifact field {label} contains control or bidirectional override characters")
+
+
 def _string(value, label):
     if not isinstance(value, str):
         raise TypeError(f"Context artifact field {label} must be a string")
     if not value.strip():
         raise ValueError(f"Context artifact field {label} must be a non-empty string")
+    _check_text(value, label)
 
 
 def _string_list(value, label):
@@ -226,6 +239,10 @@ def _string_list(value, label):
         raise TypeError(f"Context artifact field {label} must be an array of strings")
     if any(not item.strip() for item in value):
         raise ValueError(f"Context artifact field {label} must be an array of non-empty strings")
+    if len(value) > _MAX_LIST_ITEMS:
+        raise ValueError(f"Context artifact field {label} has more than {_MAX_LIST_ITEMS} items")
+    for item in value:
+        _check_text(item, label)
 
 
 def _status(value):
