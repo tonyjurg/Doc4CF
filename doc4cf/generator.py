@@ -6,6 +6,7 @@ from hashlib import sha256
 from html import escape
 import json
 import logging
+import re
 import time
 import random
 from datetime import UTC, datetime
@@ -434,6 +435,22 @@ def write_markdown_index(output: Path, corpus: str,
     (output / "features.md").write_text(feature_index.rstrip() + "\n", encoding="utf-8")
 
 
+# Bidirectional overrides/isolates can make text display differently from what it
+# says, and other control characters have no place in a description.
+UNSAFE_TEXT = re.compile("[\u202a-\u202e\u2066-\u2069\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]")
+MAX_DESCRIPTION_CHARS = 4000
+
+
+def clean_model_text(text: str) -> str:
+    """Remove unsafe characters from model output and reject runaway lengths."""
+    if len(text) > MAX_DESCRIPTION_CHARS:
+        raise ValueError(f"Model description is longer than {MAX_DESCRIPTION_CHARS} characters")
+    text = UNSAFE_TEXT.sub("", text).strip()
+    if not text:
+        raise ValueError("Model returned an empty description")
+    return text
+
+
 def describe(
     evidence: dict[str, Any], model: str, cache: Path, provider: str = "openrouter",
 ) -> str:
@@ -488,10 +505,14 @@ def description_record(
     digest = sha256(payload).hexdigest()
     file = cache / (digest + ".json")
     if file.exists():
-        return json.loads(file.read_text(encoding="utf-8"))
+        cached = json.loads(file.read_text(encoding="utf-8"))
+        cached["text"] = clean_model_text(cached["text"])
+        if cached.get("model"):
+            cached["model"] = UNSAFE_TEXT.sub("", str(cached["model"]))[:200]
+        return cached
     legacy = cache / (digest + ".txt")
     if legacy.exists():
-        return {"text": legacy.read_text(encoding="utf-8"), "model": None}
+        return {"text": clean_model_text(legacy.read_text(encoding="utf-8")), "model": None}
     req = build_provider_request(provider, payload, "--model")
     reply = request_with_completion_retry(req)
     if provider == "anthropic":
@@ -504,7 +525,9 @@ def description_record(
         content = reply["choices"][0]["message"]["content"]
     if not isinstance(content, str) or not content.strip():
         raise ValueError(f"{label} returned an empty description")
-    result = {"text": content.strip(), "model": reply.get("model") or None}
+    text = clean_model_text(content)
+    reply_model = reply.get("model")
+    result = {"text": text, "model": UNSAFE_TEXT.sub("", str(reply_model))[:200] if reply_model else None}
     cache.mkdir(parents=True, exist_ok=True)
     # Replace the final cache entry only after serialization has completed.
     write_atomic(file, json.dumps(result, ensure_ascii=False), mode=0o600)
