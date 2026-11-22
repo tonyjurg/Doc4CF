@@ -369,9 +369,33 @@ def write_page(
 <main><small>{e(corpus)}</small><h1>{e(title)}</h1>{body}</main>{footer}</body></html>""", encoding="utf-8")
 
 
+_MARKDOWN_SPECIAL = re.compile(r"([\\`*_{}\[\]()!#+\-.|~])")
+
+
+def markdown_text(value: Any) -> str:
+    """Return ``value`` as inert Markdown text.
+
+    Corpus metadata, feature names, values and model replies are untrusted. HTML is
+    escaped and Markdown syntax (links, images, emphasis, code, tables) is
+    backslash-escaped, so the text cannot add links, images or raw HTML. Bare URLs
+    stay visible as text; some viewers may still make them clickable.
+    """
+    text = escape(" ".join(str(value).split()), quote=False)
+    return _MARKDOWN_SPECIAL.sub(r"\\\1", text)
+
+
+def markdown_code(value: Any) -> str:
+    """Return ``value`` as an inline code span whose fence cannot be closed early."""
+    text = " ".join(str(value).split())
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    fence = "`" * (longest + 1)
+    pad = " " if text.startswith("`") or text.endswith("`") else ""
+    return f"{fence}{pad}{text.replace('|', chr(92) + '|')}{pad}{fence}"
+
+
 def markdown_cell(value: Any) -> str:
     """Format a value safely for a Markdown table cell."""
-    return str(value).replace("\\", "\\\\").replace("|", "\\|").replace("\r", " ").replace("\n", " ")
+    return markdown_text(value)
 
 
 def write_markdown_feature(
@@ -384,12 +408,13 @@ def write_markdown_feature(
     """Write a compact, standalone Markdown page for one feature."""
     path = output / "features" / f"{quote(name, safe='')}.md"
     path.parent.mkdir(parents=True, exist_ok=True)
-    lines = [f"# {name}.tf", "", "[← Corpus index](../index.md)", "",
-             f"**{kind.title()} feature** · {encoding} · {value_type}", "", "## Description", ""]
-    lines.append(description or "No source description is available.")
+    lines = [f"# {markdown_text(name)}.tf", "", "[← Corpus index](../index.md)", "",
+             f"**{markdown_text(kind.title())} feature** · {markdown_text(encoding)} · {markdown_text(value_type)}",
+             "", "## Description", ""]
+    lines.append(markdown_text(description) if description else "No source description is available.")
     if inferred:
-        lines.extend(["", "## Generated description", "", inferred_description or "",
-                      "", f"*AI-assisted · {inferred['provider']} · {inferred['model']}*", ""])
+        lines.extend(["", "## Generated description", "", markdown_text(inferred_description or ""),
+                      "", f"*AI-assisted · {markdown_text(inferred['provider'])} · {markdown_text(inferred['model'])}*", ""])
     else:
         lines.append("")
     if sources:
@@ -409,7 +434,7 @@ def write_markdown_feature(
             lines.append("")
     if frequent:
         lines.extend(["## Frequent values", "", "| Value | Occurrences | % of populated values |", "| --- | ---: | ---: |"])
-        lines.extend(f"| `{markdown_cell(json.dumps(value, ensure_ascii=False))}` | {count:,} | {count / value_count:.1%} |"
+        lines.extend(f"| {markdown_code(json.dumps(value, ensure_ascii=False))} | {count:,} | {count / value_count:.1%} |"
                      for value, count in frequent)
         lines.append("")
     lines.extend(["<details>", "<summary>Source metadata</summary>", "", "| Field | Value |", "| --- | --- |"])
@@ -419,16 +444,20 @@ def write_markdown_feature(
 
 
 def write_markdown_index(output: Path, corpus: str,
-                         feature_rows: Sequence[tuple[str, str, str, str, str]]) -> None:
+                         feature_rows: Sequence[tuple[str, str, str, str, Sequence[tuple[Any, int]]]]) -> None:
     """Write a lightweight linked feature index and corpus landing page."""
     output.mkdir(parents=True, exist_ok=True)
-    lines = [f"# {corpus}", "", "Generated with [Doc4CF](https://github.com/tonyjurg/Doc4CF).", "",
+    lines = [f"# {markdown_text(corpus)}", "", "Generated with [Doc4CF](https://github.com/tonyjurg/Doc4CF).", "",
              "Browse the feature descriptions and measured profiles below.", "",
              "## Features", "", "| Feature | Kind | Description | Applies to | Two most common values |",
              "| --- | --- | --- | --- | --- |"]
-    lines.extend(f"| [{markdown_cell(name)}](features/{quote(name, safe='')}.md) | {markdown_cell(kind)} | "
-                 f"{markdown_cell(description)} | {markdown_cell(applies_to)} | {markdown_cell(common_values)} |"
-                 for name, kind, description, applies_to, common_values in feature_rows)
+    for name, kind, description, applies_to, frequent in feature_rows:
+        common_values = "; ".join(
+            f"{markdown_code(json.dumps(value, ensure_ascii=False))} ({count:,})"
+            for value, count in frequent[:2]
+        ) or "—"
+        lines.append(f"| [{markdown_cell(name)}](features/{quote(name, safe='')}.md) | {markdown_cell(kind)} | "
+                     f"{markdown_cell(description)} | {markdown_cell(applies_to)} | {common_values} |")
     lines.append("")
     (output / "index.md").write_text("\n".join(lines), encoding="utf-8")
     feature_index = "# Features\n\n" + "\n".join(lines[8:])
@@ -1207,7 +1236,7 @@ def generate(args: argparse.Namespace) -> None:
                    if identity.get(k)), src.name)
     out.mkdir(parents=True, exist_ok=True)
     markdown_out = out / "markdown" if getattr(args, "markdown", False) else None
-    markdown_rows: list[tuple[str, str, str, str, str]] = []
+    markdown_rows: list[tuple[str, str, str, str, Sequence[tuple[Any, int]]]] = []
     api = load_corpus(src, files, out)
     if not api:
         raise RuntimeError("Context-Fabric could not load the corpus")
@@ -1436,11 +1465,7 @@ def generate(args: argparse.Namespace) -> None:
         rows.append((feature(n),e(kind),e(p["description"]),e(", ".join(p["sources"]))))
         if markdown_out is not None:
             applies_to = ", ".join(p["sources"])
-            common_values = "; ".join(
-                f"`{json.dumps(value, ensure_ascii=False)}` ({count:,})"
-                for value, count in p["frequent"][:2]
-            ) or "—"
-            markdown_rows.append((n, kind, p["description"], applies_to, common_values))
+            markdown_rows.append((n, kind, p["description"], applies_to, p["frequent"][:2]))
             write_markdown_feature(
                 markdown_out, n, kind, info["encoding"],
                 meta.get("valueType", "configuration" if kind == "config" else "unvalued"),
