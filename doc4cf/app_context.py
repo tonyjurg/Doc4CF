@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import re
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import ParseResult, urlparse
 
 import yaml
 
@@ -309,6 +309,14 @@ def _python_summary(path: Path, relative_path: str) -> dict[str, Any]:
     }
 
 
+def _parse_url(value: str) -> ParseResult:
+    """``urlparse`` that treats malformed URLs (for example ``http://[::1``) as plain text."""
+    try:
+        return urlparse(value)
+    except ValueError:
+        return ParseResult("", "", value, "", "", "")
+
+
 def _walk_config(value: Any, path: str = "configuration"):
     if isinstance(value, dict):
         for key, item in value.items():
@@ -320,13 +328,33 @@ def _walk_config(value: Any, path: str = "configuration"):
         yield path, value
 
 
+_DOC_ROOT_MARKERS = (".git", "tf", "pyproject.toml", "setup.py")
+_DOC_DIRECTORIES = frozenset({"app", "docs", "doc", "documentation"})
+
+
+def _is_project_root(repo_root: Path) -> bool:
+    """Only treat ``app.parent`` as a documentation root when it looks like a project.
+
+    With ``--app-dir`` the parent can be any directory, for example a home folder.
+    Reading configured ``.md``/``.txt`` pointers from there would expose unrelated
+    files to the model provider and to the generated pages.
+    """
+    return any((repo_root / marker).exists() for marker in _DOC_ROOT_MARKERS)
+
+
 def _local_doc_path(value: str, repo_root: Path, key_path: str, feature: str | None = None) -> Path | None:
-    """Resolve only explicitly configured documentation pointers inside the checkout."""
+    """Resolve only explicitly configured documentation pointers inside the checkout.
+
+    Pointers must stay inside a project root and are limited to ``app/``, ``docs/``
+    and files directly in the root. Hidden files and directories are never read.
+    """
+    if not _is_project_root(repo_root):
+        return None
     candidate = value
     for marker in ("<feature>", "{feature}", "${feature}"):
         candidate = candidate.replace(marker, feature or "__feature__")
     candidate = candidate.strip()
-    parsed = urlparse(candidate)
+    parsed = _parse_url(candidate)
     if parsed.scheme in {"http", "https"}:
         if parsed.netloc.lower() not in {"github.com", "www.github.com"}:
             return None
@@ -348,8 +376,21 @@ def _local_doc_path(value: str, repo_root: Path, key_path: str, feature: str | N
         relative = Path("docs/features") / relative.with_suffix(".md")
     elif not relative.suffix and "docpage" in key_path.lower():
         relative = Path("docs") / relative.with_suffix(".md")
+    if any(part.startswith(".") for part in relative.parts):
+        return None
+    if len(relative.parts) > 1 and relative.parts[0].lower() not in _DOC_DIRECTORIES:
+        return None
+    # Check before resolving: resolution would conceal a symlink or hidden alias.
+    if any((repo_root / Path(*relative.parts[:index])).is_symlink()
+           for index in range(1, len(relative.parts) + 1)):
+        return None
     path = (repo_root / relative).resolve()
     if not path.is_relative_to(repo_root) or path.suffix.lower() not in {".md", ".rst", ".txt"}:
+        return None
+    rooted_parts = path.relative_to(repo_root).parts
+    if any(part.startswith(".") for part in rooted_parts):
+        return None
+    if len(rooted_parts) > 1 and rooted_parts[0].lower() not in _DOC_DIRECTORIES:
         return None
     return path
 
@@ -443,7 +484,7 @@ def _feature_application_links(
                 template = value
                 for marker in ("<feature>", "{feature}", "${feature}"):
                     template = template.replace(marker, feature)
-                parsed = urlparse(template)
+                parsed = _parse_url(template)
                 local_doc = _local_doc_path(value, repo_root, path, feature) if repo_root else None
                 if (parsed.scheme in {"http", "https"} and parsed.netloc and not parsed.username
                         and repo_root is not None and local_doc is not None and local_doc.is_file()):
@@ -459,7 +500,7 @@ def _feature_application_links(
                     return True
                 if not isinstance(item, str):
                     return False
-                parsed = urlparse(item)
+                parsed = _parse_url(item)
                 if parsed.scheme in {"http", "https"}:
                     return False
                 tokens = re.findall(r"[A-Za-z0-9_@.-]+", item)
