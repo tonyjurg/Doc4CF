@@ -6,6 +6,7 @@ from hashlib import sha256
 from html import escape
 import json
 import logging
+import re
 import time
 import random
 from datetime import UTC, datetime
@@ -368,9 +369,33 @@ def write_page(
 <main><small>{e(corpus)}</small><h1>{e(title)}</h1>{body}</main>{footer}</body></html>""", encoding="utf-8")
 
 
+_MARKDOWN_SPECIAL = re.compile(r"([\\`*_{}\[\]()!#+\-.|~])")
+
+
+def markdown_text(value: Any) -> str:
+    """Return ``value`` as inert Markdown text.
+
+    Corpus metadata, feature names, values and model replies are untrusted. HTML is
+    escaped and Markdown syntax (links, images, emphasis, code, tables) is
+    backslash-escaped, so the text cannot add links, images or raw HTML. Bare URLs
+    stay visible as text; some viewers may still make them clickable.
+    """
+    text = escape(" ".join(str(value).split()), quote=False)
+    return _MARKDOWN_SPECIAL.sub(r"\\\1", text)
+
+
+def markdown_code(value: Any) -> str:
+    """Return ``value`` as an inline code span whose fence cannot be closed early."""
+    text = " ".join(str(value).split())
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    fence = "`" * (longest + 1)
+    pad = " " if text.startswith("`") or text.endswith("`") else ""
+    return f"{fence}{pad}{text.replace('|', chr(92) + '|')}{pad}{fence}"
+
+
 def markdown_cell(value: Any) -> str:
     """Format a value safely for a Markdown table cell."""
-    return str(value).replace("\\", "\\\\").replace("|", "\\|").replace("\r", " ").replace("\n", " ")
+    return markdown_text(value)
 
 
 def write_markdown_feature(
@@ -383,12 +408,13 @@ def write_markdown_feature(
     """Write a compact, standalone Markdown page for one feature."""
     path = output / "features" / f"{quote(name, safe='')}.md"
     path.parent.mkdir(parents=True, exist_ok=True)
-    lines = [f"# {name}.tf", "", "[← Corpus index](../index.md)", "",
-             f"**{kind.title()} feature** · {encoding} · {value_type}", "", "## Description", ""]
-    lines.append(description or "No source description is available.")
+    lines = [f"# {markdown_text(name)}.tf", "", "[← Corpus index](../index.md)", "",
+             f"**{markdown_text(kind.title())} feature** · {markdown_text(encoding)} · {markdown_text(value_type)}",
+             "", "## Description", ""]
+    lines.append(markdown_text(description) if description else "No source description is available.")
     if inferred:
-        lines.extend(["", "## Generated description", "", inferred_description or "",
-                      "", f"*AI-assisted · {inferred['provider']} · {inferred['model']}*", ""])
+        lines.extend(["", "## Generated description", "", markdown_text(inferred_description or ""),
+                      "", f"*AI-assisted · {markdown_text(inferred['provider'])} · {markdown_text(inferred['model'])}*", ""])
     else:
         lines.append("")
     if sources:
@@ -408,7 +434,7 @@ def write_markdown_feature(
             lines.append("")
     if frequent:
         lines.extend(["## Frequent values", "", "| Value | Occurrences | % of populated values |", "| --- | ---: | ---: |"])
-        lines.extend(f"| `{markdown_cell(json.dumps(value, ensure_ascii=False))}` | {count:,} | {count / value_count:.1%} |"
+        lines.extend(f"| {markdown_code(json.dumps(value, ensure_ascii=False))} | {count:,} | {count / value_count:.1%} |"
                      for value, count in frequent)
         lines.append("")
     lines.extend(["<details>", "<summary>Source metadata</summary>", "", "| Field | Value |", "| --- | --- |"])
@@ -418,20 +444,40 @@ def write_markdown_feature(
 
 
 def write_markdown_index(output: Path, corpus: str,
-                         feature_rows: Sequence[tuple[str, str, str, str, str]]) -> None:
+                         feature_rows: Sequence[tuple[str, str, str, str, Sequence[tuple[Any, int]]]]) -> None:
     """Write a lightweight linked feature index and corpus landing page."""
     output.mkdir(parents=True, exist_ok=True)
-    lines = [f"# {corpus}", "", "Generated with [Doc4CF](https://github.com/tonyjurg/Doc4CF).", "",
+    lines = [f"# {markdown_text(corpus)}", "", "Generated with [Doc4CF](https://github.com/tonyjurg/Doc4CF).", "",
              "Browse the feature descriptions and measured profiles below.", "",
              "## Features", "", "| Feature | Kind | Description | Applies to | Two most common values |",
              "| --- | --- | --- | --- | --- |"]
-    lines.extend(f"| [{markdown_cell(name)}](features/{quote(name, safe='')}.md) | {markdown_cell(kind)} | "
-                 f"{markdown_cell(description)} | {markdown_cell(applies_to)} | {markdown_cell(common_values)} |"
-                 for name, kind, description, applies_to, common_values in feature_rows)
+    for name, kind, description, applies_to, frequent in feature_rows:
+        common_values = "; ".join(
+            f"{markdown_code(json.dumps(value, ensure_ascii=False))} ({count:,})"
+            for value, count in frequent[:2]
+        ) or "—"
+        lines.append(f"| [{markdown_cell(name)}](features/{quote(name, safe='')}.md) | {markdown_cell(kind)} | "
+                     f"{markdown_cell(description)} | {markdown_cell(applies_to)} | {common_values} |")
     lines.append("")
     (output / "index.md").write_text("\n".join(lines), encoding="utf-8")
     feature_index = "# Features\n\n" + "\n".join(lines[8:])
     (output / "features.md").write_text(feature_index.rstrip() + "\n", encoding="utf-8")
+
+
+# Bidirectional overrides/isolates can make text display differently from what it
+# says, and other control characters have no place in a description.
+UNSAFE_TEXT = re.compile("[\u202a-\u202e\u2066-\u2069\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]")
+MAX_DESCRIPTION_CHARS = 4000
+
+
+def clean_model_text(text: str) -> str:
+    """Remove unsafe characters from model output and reject runaway lengths."""
+    if len(text) > MAX_DESCRIPTION_CHARS:
+        raise ValueError(f"Model description is longer than {MAX_DESCRIPTION_CHARS} characters")
+    text = UNSAFE_TEXT.sub("", text).strip()
+    if not text:
+        raise ValueError("Model returned an empty description")
+    return text
 
 
 def describe(
@@ -488,10 +534,14 @@ def description_record(
     digest = sha256(payload).hexdigest()
     file = cache / (digest + ".json")
     if file.exists():
-        return json.loads(file.read_text(encoding="utf-8"))
+        cached = json.loads(file.read_text(encoding="utf-8"))
+        cached["text"] = clean_model_text(cached["text"])
+        if cached.get("model"):
+            cached["model"] = UNSAFE_TEXT.sub("", str(cached["model"]))[:200]
+        return cached
     legacy = cache / (digest + ".txt")
     if legacy.exists():
-        return {"text": legacy.read_text(encoding="utf-8"), "model": None}
+        return {"text": clean_model_text(legacy.read_text(encoding="utf-8")), "model": None}
     req = build_provider_request(provider, payload, "--model")
     reply = request_with_completion_retry(req)
     if provider == "anthropic":
@@ -504,7 +554,9 @@ def description_record(
         content = reply["choices"][0]["message"]["content"]
     if not isinstance(content, str) or not content.strip():
         raise ValueError(f"{label} returned an empty description")
-    result = {"text": content.strip(), "model": reply.get("model") or None}
+    text = clean_model_text(content)
+    reply_model = reply.get("model")
+    result = {"text": text, "model": UNSAFE_TEXT.sub("", str(reply_model))[:200] if reply_model else None}
     cache.mkdir(parents=True, exist_ok=True)
     # Replace the final cache entry only after serialization has completed.
     write_atomic(file, json.dumps(result, ensure_ascii=False), mode=0o600)
@@ -575,8 +627,35 @@ def profile(
     return result
 
 
+_MAX_ASSOCIATION_FEATURES = 60
+_MAX_ASSOCIATION_WORK = 40_000_000
+
+
+def _bounded_association_features(feature_ids: dict[str, Any]) -> dict[str, Any]:
+    """Keep the best-covered features so pair counting stays within a fixed budget.
+
+    Counting co-occurrences costs about ``entries * (features - 1) / 2`` steps, so
+    the work grows with the square of the number of features. Features are kept in
+    order of coverage until either limit is reached.
+    """
+    kept: list[str] = []
+    entries = 0
+    for name in sorted(feature_ids, key=lambda key: (-len(feature_ids[key]), key)):
+        proposed_entries = entries + len(feature_ids[name])
+        if kept and (len(kept) >= _MAX_ASSOCIATION_FEATURES
+                     or proposed_entries * len(kept) > 2 * _MAX_ASSOCIATION_WORK):
+            break
+        kept.append(name)
+        entries = proposed_entries
+    if len(kept) < len(feature_ids):
+        logger.warning("Feature associations compare the %d best-covered of %d features for one node type.",
+                       len(kept), len(feature_ids))
+    return {name: feature_ids[name] for name in kept}
+
+
 def _feature_associations(
     node_assignments: dict[str, dict[str, Any]], node_counts: dict[str, int], order: list[str],
+    limited_types: dict[str, tuple[int, set[str]]] | None = None,
 ) -> dict[str, list[dict[str, Any]]]:
     """Rank binary presence/absence associations between node features.
 
@@ -605,6 +684,12 @@ def _feature_associations(
     for node_type, feature_ids in by_type.items():
         population = node_counts.get(node_type, 0)
         if population == 0:
+            continue
+        total_features = len(feature_ids)
+        feature_ids = _bounded_association_features(feature_ids)
+        if limited_types is not None and len(feature_ids) < total_features:
+            limited_types[node_type] = (total_features, set(feature_ids))
+        if len(feature_ids) < 2:
             continue
         streams = [events(name, feature_ids[name]) for name in sorted(feature_ids)]
         intersections: Counter[tuple[str, str]] = Counter()
@@ -701,6 +786,22 @@ def _feature_associations(
                                              "positive": positive, "inverse": inverse})
 
     return associations
+
+
+def _association_limit_notice(
+    name: str, node_types: dict[str, Any], limited_types: dict[str, tuple[int, set[str]]],
+) -> str:
+    """Explain partial comparisons on the affected feature pages."""
+    notices = []
+    for node_type in node_types:
+        if node_type not in limited_types:
+            continue
+        total, selected = limited_types[node_type]
+        excluded = " This feature was excluded from that comparison." if name not in selected else ""
+        notices.append(f"<p>Association analysis on {e(node_type)} nodes is limited to the "
+                       f"{len(selected):,} best-covered of {total:,} features.{excluded}</p>")
+    return ('<aside class="association-limits"><h2>Association coverage</h2>'
+            + "".join(notices) + "</aside>") if notices else ""
 
 
 def dataset_inventory(
@@ -1184,7 +1285,7 @@ def generate(args: argparse.Namespace) -> None:
                    if identity.get(k)), src.name)
     out.mkdir(parents=True, exist_ok=True)
     markdown_out = out / "markdown" if getattr(args, "markdown", False) else None
-    markdown_rows: list[tuple[str, str, str, str, str]] = []
+    markdown_rows: list[tuple[str, str, str, str, Sequence[tuple[Any, int]]]] = []
     api = load_corpus(src, files, out)
     if not api:
         raise RuntimeError("Context-Fabric could not load the corpus")
@@ -1249,7 +1350,8 @@ def generate(args: argparse.Namespace) -> None:
     node_assignments: dict[str, dict[str, Any]] = {}
     for n, info in files.items():
         p = profiles[n] = profile(api, n, info, order, node_counts, node_assignments)
-    associations = _feature_associations(node_assignments, node_counts, order)
+    limited_association_types: dict[str, tuple[int, set[str]]] = {}
+    associations = _feature_associations(node_assignments, node_counts, order, limited_association_types)
     for n, info in files.items():
         p = profiles[n]
         kind, meta = info["kind"], info["meta"]
@@ -1350,6 +1452,7 @@ def generate(args: argparse.Namespace) -> None:
                 [(e(json.dumps(v, ensure_ascii=False)), f"{count:,}",
                   f"{count / p['value_count']:.1%}" if p["value_count"] else "—")
                  for v, count in p["frequent"]])
+        body += _association_limit_notice(n, node_assignments.get(n, {}), limited_association_types)
         related = associations.get(n, [])
         if related:
             correlated: dict[str, dict[str, Any]] = {}
@@ -1413,11 +1516,7 @@ def generate(args: argparse.Namespace) -> None:
         rows.append((feature(n),e(kind),e(p["description"]),e(", ".join(p["sources"]))))
         if markdown_out is not None:
             applies_to = ", ".join(p["sources"])
-            common_values = "; ".join(
-                f"`{json.dumps(value, ensure_ascii=False)}` ({count:,})"
-                for value, count in p["frequent"][:2]
-            ) or "—"
-            markdown_rows.append((n, kind, p["description"], applies_to, common_values))
+            markdown_rows.append((n, kind, p["description"], applies_to, p["frequent"][:2]))
             write_markdown_feature(
                 markdown_out, n, kind, info["encoding"],
                 meta.get("valueType", "configuration" if kind == "config" else "unvalued"),

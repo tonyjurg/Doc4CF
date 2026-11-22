@@ -69,6 +69,13 @@ Node-feature pages can show a small, collapsible comparison between the
 presence patterns of the current feature and other node features. This is a
 deterministic corpus measurement; it does not use a model.
 
+For each node type, analysis selects up to 60 features in descending order of
+coverage, with alphabetical ties. It stops earlier if the estimated pair-counting
+work would exceed 40 million operations. The estimate is the number of selected
+assignments multiplied by one less than the selected feature count, divided by
+two. Affected feature pages report the reduced comparison scope and identify
+features excluded from analysis. Smaller inputs retain the complete comparison.
+
 For each node type, Doc4CF treats a feature as present when Text-Fabric returns
 an assigned value for a node, and absent when there is no assignment. An
 explicit value such as ``0`` is present. Every node of that type contributes
