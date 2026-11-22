@@ -69,7 +69,10 @@ Node-feature pages can show a small, collapsible comparison between the
 presence patterns of the current feature and other node features. This is a
 deterministic corpus measurement; it does not use a model.
 
-For each node type, analysis selects up to 60 features in descending order of
+For each node type, analysis first removes features with fewer than 10 present
+or 10 absent nodes. These fields cannot pass the comparison thresholds below;
+constant fields therefore do not consume the work budget or displace useful
+comparisons. Analysis selects up to 60 eligible features in descending order of
 coverage, with alphabetical ties. It stops earlier if the estimated pair-counting
 work would exceed 40 million operations. The estimate is the number of selected
 assignments multiplied by one less than the selected feature count, divided by

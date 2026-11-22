@@ -16,6 +16,11 @@
       }
     },
     "processed_descriptions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "feature_analysis": {
+      "description": "Per-feature provenance, uncertainty, and evidence records included in generated audit reports.",
+      "type": "object",
+      "additionalProperties": {"type": "object"}
+    },
     "context_flags": {
       "type": "array",
       "items": {

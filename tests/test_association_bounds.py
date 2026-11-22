@@ -6,6 +6,22 @@ from doc4cf import generator
 
 
 class AssociationBounds(unittest.TestCase):
+    def test_constant_and_sparse_features_do_not_consume_the_comparison_budget(self):
+        assignments = {"constant": {"word": array("Q", range(1, 61))},
+                       "rare": {"word": array("Q", [1, 2])},
+                       "a": {"word": array("Q", range(1, 31))},
+                       "b": {"word": array("Q", range(1, 31))}}
+        limits = {}
+        with mock.patch.object(generator, "_MAX_ASSOCIATION_FEATURES", 2):
+            result = generator._feature_associations(assignments, {"word": 60}, ["word"], limits)
+        self.assertEqual(result["a"][0]["positive"][0]["features"], ["b"])
+        self.assertEqual(result["a"][0]["positive"][0]["phi"], 1.0)
+        self.assertEqual(result["constant"], [])
+        self.assertEqual(result["rare"], [])
+        self.assertEqual(limits, {})
+        self.assertEqual(generator._association_limit_notice(
+            "constant", assignments["constant"], {"word": (4, {"a", "b"})}, {"word": 60}), "")
+
     def test_reduced_scope_is_reported_and_unselected_features_are_identified(self):
         assignments = {name: {"word": array("Q", range(1, 31))} for name in ("a", "b", "c")}
         limits = {}
@@ -47,8 +63,10 @@ class AssociationBounds(unittest.TestCase):
     def test_full_computation_completes_with_many_features(self):
         nodes = 1500
         assignments = {f"f{i:03}": {"word": array("Q", range(1, nodes + 1))} for i in range(150)}
-        result = generator._feature_associations(assignments, {"word": nodes}, ["word"])
+        result = generator._feature_associations(assignments, {"word": nodes * 2}, ["word"])
         self.assertEqual(set(result), set(assignments))
+        self.assertEqual(result["f000"][0]["positive"][0]["phi"], 1.0)
+        self.assertEqual(result["f149"], [])
 
 
 if __name__ == "__main__":

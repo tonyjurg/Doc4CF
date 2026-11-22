@@ -228,6 +228,23 @@ class ContextPipeline(unittest.TestCase):
         self.assertNotIn("inventory hash", pages["dataset.html"].lower())
         self.assertIn("ai-indicator", pages["dataset.html"])
 
+    def test_loaded_family_provenance_reaches_all_context_pages(self):
+        with TemporaryDirectory() as directory:
+            folder = Path(directory)
+            self.write_artifacts(folder, context.inventory_digest(self.inventory))
+            path = folder / "feature_families.json"
+            artifact = json.loads(path.read_text(encoding="utf-8"))
+            artifact["analysis"] = {**PROVENANCE, "requested_model": "family-request",
+                                    "responding_model": "family-response"}
+            path.write_text(json.dumps(artifact), encoding="utf-8")
+            dataset, families, relationships, analysis = context.load_context_artifacts(folder, self.inventory)
+            review = {"affected_descriptions": [], "processed_descriptions": [], "context_flags": []}
+            pages = context.context_pages(self.inventory, dataset, families, relationships, review, analysis)
+            for name in ("dataset.html", "relationships.html", "audit.html"):
+                with self.subTest(page=name):
+                    self.assertIn("family-response", pages[name])
+            self.assertIn("family-request", pages["audit.html"])
+
     def test_feature_context_hashes_change_with_evidence(self):
         dataset = {**deepcopy(DATASET), "inventory_sha256": "ignored"}
         base = context.feature_context_hashes(self.inventory, dataset, [FAMILY], [RELATIONSHIP], "openai", "m")
