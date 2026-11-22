@@ -6,6 +6,10 @@
   "required": ["inventory_version", "dataset", "corpus_label", "source", "structure", "features"],
   "properties": {
     "inventory_version": {"const": "1.0"},
+    "application": {
+      "description": "Bounded application configuration, static behavior, linked documentation, and source fingerprints.",
+      "type": "object"
+    },
     "dataset": {"type": "object", "additionalProperties": {"type": "string"}},
     "corpus_label": {"type": "string", "minLength": 1},
     "source": {
