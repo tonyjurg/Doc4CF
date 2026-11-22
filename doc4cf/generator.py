@@ -575,8 +575,35 @@ def profile(
     return result
 
 
+_MAX_ASSOCIATION_FEATURES = 60
+_MAX_ASSOCIATION_WORK = 40_000_000
+
+
+def _bounded_association_features(feature_ids: dict[str, Any]) -> dict[str, Any]:
+    """Keep the best-covered features so pair counting stays within a fixed budget.
+
+    Counting co-occurrences costs about ``entries * (features - 1) / 2`` steps, so
+    the work grows with the square of the number of features. Features are kept in
+    order of coverage until either limit is reached.
+    """
+    kept: list[str] = []
+    entries = 0
+    for name in sorted(feature_ids, key=lambda key: (-len(feature_ids[key]), key)):
+        proposed_entries = entries + len(feature_ids[name])
+        if kept and (len(kept) >= _MAX_ASSOCIATION_FEATURES
+                     or proposed_entries * len(kept) > 2 * _MAX_ASSOCIATION_WORK):
+            break
+        kept.append(name)
+        entries = proposed_entries
+    if len(kept) < len(feature_ids):
+        logger.warning("Feature associations compare the %d best-covered of %d features for one node type.",
+                       len(kept), len(feature_ids))
+    return {name: feature_ids[name] for name in kept}
+
+
 def _feature_associations(
     node_assignments: dict[str, dict[str, Any]], node_counts: dict[str, int], order: list[str],
+    limited_types: dict[str, tuple[int, set[str]]] | None = None,
 ) -> dict[str, list[dict[str, Any]]]:
     """Rank binary presence/absence associations between node features.
 
@@ -605,6 +632,12 @@ def _feature_associations(
     for node_type, feature_ids in by_type.items():
         population = node_counts.get(node_type, 0)
         if population == 0:
+            continue
+        total_features = len(feature_ids)
+        feature_ids = _bounded_association_features(feature_ids)
+        if limited_types is not None and len(feature_ids) < total_features:
+            limited_types[node_type] = (total_features, set(feature_ids))
+        if len(feature_ids) < 2:
             continue
         streams = [events(name, feature_ids[name]) for name in sorted(feature_ids)]
         intersections: Counter[tuple[str, str]] = Counter()
@@ -701,6 +734,22 @@ def _feature_associations(
                                              "positive": positive, "inverse": inverse})
 
     return associations
+
+
+def _association_limit_notice(
+    name: str, node_types: dict[str, Any], limited_types: dict[str, tuple[int, set[str]]],
+) -> str:
+    """Explain partial comparisons on the affected feature pages."""
+    notices = []
+    for node_type in node_types:
+        if node_type not in limited_types:
+            continue
+        total, selected = limited_types[node_type]
+        excluded = " This feature was excluded from that comparison." if name not in selected else ""
+        notices.append(f"<p>Association analysis on {e(node_type)} nodes is limited to the "
+                       f"{len(selected):,} best-covered of {total:,} features.{excluded}</p>")
+    return ('<aside class="association-limits"><h2>Association coverage</h2>'
+            + "".join(notices) + "</aside>") if notices else ""
 
 
 def dataset_inventory(
@@ -1249,7 +1298,8 @@ def generate(args: argparse.Namespace) -> None:
     node_assignments: dict[str, dict[str, Any]] = {}
     for n, info in files.items():
         p = profiles[n] = profile(api, n, info, order, node_counts, node_assignments)
-    associations = _feature_associations(node_assignments, node_counts, order)
+    limited_association_types: dict[str, tuple[int, set[str]]] = {}
+    associations = _feature_associations(node_assignments, node_counts, order, limited_association_types)
     for n, info in files.items():
         p = profiles[n]
         kind, meta = info["kind"], info["meta"]
@@ -1350,6 +1400,7 @@ def generate(args: argparse.Namespace) -> None:
                 [(e(json.dumps(v, ensure_ascii=False)), f"{count:,}",
                   f"{count / p['value_count']:.1%}" if p["value_count"] else "—")
                  for v, count in p["frequent"]])
+        body += _association_limit_notice(n, node_assignments.get(n, {}), limited_association_types)
         related = associations.get(n, [])
         if related:
             correlated: dict[str, dict[str, Any]] = {}
