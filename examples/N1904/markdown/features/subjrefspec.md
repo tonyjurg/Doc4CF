@@ -8,6 +8,12 @@
 
 this is XML attribute subjrefspec
 
+## Generated description
+
+subjrefspec is a string\-valued node feature sourced from the XML attribute subjrefspec in the Nestle 1904 Greek New Testament\. Values are populated on phrase, subphrase, and word nodes; unlisted nodes have no recorded value, not a negative class\. Frequent values such as n46003022002 and n66001009002 look like node references, so the feature may encode subject\-reference targets, but its precise semantics are undocumented\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

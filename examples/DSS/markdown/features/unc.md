@@ -6,6 +6,12 @@ uncertain material in various degrees: higher degree is less certain
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature unc records degrees of uncertain material on sign nodes, with higher integer values indicating less certainty\. It uses values 1 through 4, where 4 marks the highest degree of uncertainty\. Populated assignments appear on sign nodes; missing assignments mean no value is recorded rather than a negative classification\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

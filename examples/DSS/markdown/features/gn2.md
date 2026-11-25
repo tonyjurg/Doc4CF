@@ -6,6 +6,12 @@ gender (for part 2) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+gn2 is a node feature on word nodes that records gender for part 2 as a morphology tag\. It uses four string values, including m and f, drawn from Martin Abegg's data files via personal communication\. The feature belongs to the morphology tagging family and may encode grammatical gender distinctions, though the semantics of some values are undocumented\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

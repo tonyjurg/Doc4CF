@@ -6,6 +6,12 @@ person (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature ps records person as a morphology tag on word nodes\. Values include 1 and unknown among other string\-coded options\. Source metadata attributes the data to Martin Abegg's personal communication\. Missing assignments mean no value is recorded, not a negative person class\. Unpopulated word nodes simply lack a value\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

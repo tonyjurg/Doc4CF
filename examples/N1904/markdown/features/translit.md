@@ -8,6 +8,12 @@
 
 transliteration of the word surface text
 
+## Generated description
+
+The translit node feature records the transliteration of the word surface text\. Populated values appear on word, phrase, and subphrase nodes; missing assignments mean no value is recorded, not a negative class\. Frequent values include kai and en\. The feature supplies the translit placeholder in the text\-translit\-plain format alongside trailer, and may overlap in scope with text\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

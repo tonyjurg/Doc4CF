@@ -6,6 +6,12 @@ number (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature nu records number as a morphology tag on word nodes in the Dead Sea Scrolls corpus\. Values are populated on 194,670 word nodes; nodes lacking a value have no recorded assignment rather than a negative class\. Attested values include s and p among others, which may encode singular and plural number, though the complete value mapping is undocumented\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

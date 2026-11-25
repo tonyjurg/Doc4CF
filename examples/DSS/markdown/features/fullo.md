@@ -6,6 +6,12 @@ full transcription (original source) of a word including flags and brackets
 
 Node · UTF-8 · str
 
+## Generated description
+
+fullo is a node feature on word nodes that records the full transcription in the original source, including flags and brackets\. It is used in the text\-source\-extra text format together with after\. Values are strings; sources show 500995 populated word nodes\. Missing assignments mean no value is recorded, not a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

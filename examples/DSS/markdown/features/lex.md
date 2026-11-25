@@ -6,6 +6,12 @@ representation (Unicode) of a lexeme
 
 Node · UTF-8 · str
 
+## Generated description
+
+The lex node feature records the Unicode representation of a lexeme on lex and word nodes in the Dead Sea Scrolls corpus\. sources counts populated nodes by type, so unassigned word nodes have no recorded value rather than a negative class\. The lex display also uses lexe and the bare feature lexo; occ links lexemes to occurrences\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

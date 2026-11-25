@@ -8,6 +8,12 @@
 
 syntactical rule
 
+## Generated description
+
+The rule feature assigns a string\-valued syntactical rule to individual nodes\. Populated values occur on clause, group, phrase, sentence, subphrase, and wg nodes; book, chapter, verse, and word nodes have no recorded values\. It contributes to node labels together with typems, role, and junction \(wg\) or typ, function, rela, typems, and role \(other types\)\. Attested values include DetNP and PrepNp\. Missing assignments mean no value is recorded, not a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

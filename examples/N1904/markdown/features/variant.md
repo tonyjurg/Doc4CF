@@ -8,6 +8,12 @@
 
 this is XML attribute variant
 
+## Generated description
+
+Node feature variant records an XML attribute variant on phrase, subphrase, and word nodes; sources mark populated assignments only, so unlisted nodes have no recorded value\. It is a string feature with two observed values, 1 and 2\. The source description 'this is XML attribute variant' offers no further semantics, so the distinction between 1 and 2 may reflect source XML variation but is unconfirmed\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

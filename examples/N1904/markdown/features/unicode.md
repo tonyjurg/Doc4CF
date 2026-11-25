@@ -8,6 +8,12 @@
 
 word in unicode characters plus material after it
 
+## Generated description
+
+The unicode node feature stores word surface text in Unicode characters plus material after the word\. Populated values appear on phrase, subphrase, and word nodes; sources counts only nodes with recorded values, so absences are not negative assignments\. Frequent values include καὶ and ὁ\. It may represent the primary Greek surface form, but the inventory does not designate unicode as the exclusive text convention among overlapping word\-text features\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

@@ -8,6 +8,12 @@
 
 verbal tense
 
+## Generated description
+
+The tense feature records verbal tense as a string annotation on populated word, phrase, and subphrase nodes in the Greek New Testament \(Nestle 1904\)\. Observed values include aorist and present\. Populated\-node counts cover these three node types; missing assignments mean no value is recorded, not a negative class\. Tense on phrase and subphrase nodes may indicate inherited annotation, but the inventory does not explain this\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

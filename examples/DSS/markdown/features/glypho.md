@@ -6,6 +6,12 @@ representation (original source) of a word or sign
 
 Node · UTF-8 · str
 
+## Generated description
+
+The glypho node feature records the original\-source representation of words and signs in the Dead Sea Scrolls corpus\. Values are observed on sign and word nodes; unpopulated nodes have no recorded value rather than a negative assignment\. It feeds the text\-source\-full format \{glypho\}\{punco\}\{after\} and is part of the transcription feature family\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

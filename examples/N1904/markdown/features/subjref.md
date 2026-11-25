@@ -8,6 +8,12 @@
 
 number of subject referent
 
+## Generated description
+
+The subjref edge feature records links from word nodes to word nodes in the Greek New Testament \(Nestle 1904\)\. Its metadata gloss is “number of subject referent,” but the inventory does not define the linguistic relation or fully specify edge direction, so subject reference is a plausible but unverified interpretation\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

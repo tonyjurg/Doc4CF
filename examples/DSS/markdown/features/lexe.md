@@ -6,6 +6,12 @@ representation (ETCBC transliteration) of a lexeme
 
 Node · UTF-8 · str
 
+## Generated description
+
+The lexe node feature stores an ETCBC transliteration of a lexeme as a string\. Values are observed on lex nodes; populated sources indicate assignments, while absent assignments record no value rather than a negative class\. It belongs to the lexicon feature family with lex, lexo, and occ\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

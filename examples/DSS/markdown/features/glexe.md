@@ -6,6 +6,12 @@ representation (ETCBC transliteration) of a lexeme leaving out non-letters
 
 Node · UTF-8 · str
 
+## Generated description
+
+The glexe node feature stores an ETCBC transliteration of a lexeme with non\-letters omitted as a string\. Populated values occur on lex nodes and word nodes; absent assignments mean no value is recorded, not a negative class\. The feature appears in the lex\-trans\-full text format template together with lang, punce, and after, though runtime consumption is unverified\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

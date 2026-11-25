@@ -6,6 +6,12 @@ gender (for part 3) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature gn3 records gender \(part 3\) as a morphology tag on word nodes\. Its metadata lists string values, including c and f, sourced from Martin Abegg's data files by personal communication\. Missing assignments mean no gender value is recorded rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

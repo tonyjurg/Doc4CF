@@ -6,6 +6,12 @@ edge feature from a lexeme to its occurrences
 
 Edge · UTF-8 · str
 
+## Generated description
+
+The occ edge feature records directed links from lexeme source nodes to word target nodes in the Dead Sea Scrolls corpus, connecting lexemes to their occurrences\. All 10,450 lexeme sources have recorded links; each source connects to 1–54,189 word targets \(median 3\)\. The 470,845 targets are edge endpoints, not unique nodes\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

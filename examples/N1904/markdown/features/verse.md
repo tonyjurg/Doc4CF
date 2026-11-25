@@ -8,6 +8,14 @@
 
 verse number, from ref attribute in xml
 
+## Reviewed description
+
+The verse feature records the verse number within a chapter, derived from the XML ref attribute. On verse nodes it identifies the verse itself; on word nodes it indicates the containing verse. On other populated node types it records the verse where the item begins. A sentence can span several verses, so this annotation does not establish verse containment. Verse numbers can have gaps.
+
+Editorial clarification: [pinned N1904 verse documentation](https://github.com/CenterBLC/N1904/blob/3f53a5a9075cbca5c3001a000a7b004cdee251b6/docs/features/verse.md).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

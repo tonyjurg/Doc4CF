@@ -8,6 +8,12 @@
 
 verbal voice
 
+## Generated description
+
+The voice node feature records verbal voice as a string on word, phrase, and subphrase nodes in the Greek New Testament \(Nestle 1904\)\. Observed values include active and passive; unpopulated nodes have no recorded value rather than a negative class\. It is part of the morphology family and may relate to morph, but that link is inferred and needs review\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

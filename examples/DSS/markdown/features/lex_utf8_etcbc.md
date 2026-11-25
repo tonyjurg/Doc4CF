@@ -6,6 +6,12 @@ The pointed representation of the lexeme of a word
 
 Node · UTF-8 · str
 
+## Generated description
+
+lex\_utf8\_etcbc is a node feature assigning a string value to word nodes, representing the pointed form of each word's lexeme\. The sources inventory records 406,914 populated word nodes; words without a value have no assignment, not a negative class\. Attested frequent values include וְ and לְ\. It belongs to the dss\-additions feature family, sourced from automatic morphological parsing later corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

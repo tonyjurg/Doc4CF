@@ -8,6 +8,12 @@
 
 syntactical type \(on sentence, group, clause or phrase\)
 
+## Generated description
+
+The node feature typ records syntactical type on clause, group, phrase, subphrase, and wg nodes in the Greek New Testament \(Nestle 1904\)\. Missing assignments mean no value is recorded, not a negative class\. Example values include NP and PP\. Metadata also lists sentence nodes, but observed sources do not include sentence, creating a coverage discrepancy\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

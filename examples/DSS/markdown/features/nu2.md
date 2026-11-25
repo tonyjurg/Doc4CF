@@ -6,6 +6,12 @@ number (for part 2) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+nu2 is a node feature on word nodes in the Dead Sea Scrolls corpus, recording morphological number for part 2 within the morphology tagging family\. It carries string values such as p and s, sourced from Martin Abegg's data files via personal communication\. Populated nodes are counted by type; missing assignments indicate no recorded value rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

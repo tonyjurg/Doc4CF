@@ -8,6 +8,12 @@
 
 the text of a word
 
+## Generated description
+
+The text feature stores the surface text of a word as a string on word, phrase, and subphrase nodes\. It supports the default text\-orig\-full display format \(\{before\}\{text\}\{after\}\)\. Values such as καὶ and ὁ are Greek word forms; missing assignments mean no value is recorded, not a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

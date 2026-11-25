@@ -392,6 +392,51 @@ class ContextProviderPaths(unittest.TestCase):
         self.assertEqual(result["data"], DATASET)
         self.assertEqual(request.call_count, 2)
 
+    def test_nemotron_context_budget_keeps_existing_cache_identity(self):
+        cases = [
+            ("dataset", DATASET, context.validate_dataset_context),
+            ("families", {"families": [FAMILY], "relationships": [RELATIONSHIP]},
+             lambda value: context.validate_family_context(value, {"word", "lemma"})),
+            ("feature-descriptions", FEATURE_RESPONSE,
+             lambda value: context.validate_feature_response(value, {"word", "lemma"}, {"word": {"logos"}})),
+        ]
+        for stage, data, validator in cases:
+            with self.subTest(stage=stage), TemporaryDirectory() as directory, \
+                    patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}), \
+                    patch.object(context, "request_with_completion_retry", return_value=self.reply(data)) as request:
+                cache = Path(directory)
+                result = context._analysis_record(
+                    "system", {"input": "evidence"}, "openrouter", "nvidia/nemotron-3.5-super-vl:free", cache,
+                    stage, validator,
+                )
+                sent = json.loads(request.call_args.args[0].data)
+                self.assertEqual(sent["max_tokens"], 24000 if stage == "families" else 12000)
+                sent["max_tokens"] = 6000
+                legacy_payload = json.dumps(sent, ensure_ascii=False)
+                key = context.hashlib.sha256((context.PROMPT_VERSION + "\0" + legacy_payload).encode()).hexdigest()
+                self.assertTrue((cache / "context/openrouter" / stage / f"{key}.json").is_file())
+                request.reset_mock()
+                cached = context._analysis_record(
+                    "system", {"input": "evidence"}, "openrouter", "nvidia/nemotron-3.5-super-vl:free", cache,
+                    stage, validator,
+                )
+                request.assert_not_called()
+                self.assertEqual(cached, result)
+
+    def test_other_models_keep_the_compact_allowance(self):
+        cases = [
+            ("test/other:free", "dataset", DATASET, context.validate_dataset_context),
+            ("test/other:free", "feature-descriptions", FEATURE_RESPONSE,
+             lambda value: context.validate_feature_response(value, {"word", "lemma"}, {"word": {"logos"}})),
+        ]
+        for model, stage, data, validator in cases:
+            with self.subTest(model=model, stage=stage), TemporaryDirectory() as directory, \
+                    patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}), \
+                    patch.object(context, "request_with_completion_retry", return_value=self.reply(data)) as request:
+                context._analysis_record("system", {"input": "evidence"}, "openrouter", model,
+                                         Path(directory), stage, validator)
+                self.assertEqual(json.loads(request.call_args.args[0].data)["max_tokens"], 6000)
+
 
 if __name__ == "__main__":
     unittest.main()

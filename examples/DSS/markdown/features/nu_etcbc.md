@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature nu\_etcbc assigns string values to word nodes in the Dead Sea Scrolls corpus\. Values include sg and pl among five distinct values; these may encode grammatical number\. Missing assignments mean no value is recorded, not a negative class\. The feature belongs to DSS additions based on BHSA and machine learning\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

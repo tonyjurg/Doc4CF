@@ -6,6 +6,12 @@ The complete morphological parsing of a word in the BHSA convention.
 
 Node · UTF-8 · str
 
+## Generated description
+
+morph\_etcbc is a node feature on word nodes\. It encodes the complete morphological parsing of a word in the BHSA convention as a string\. The metadata describes the values as automatically generated morphological parsing corrected by Thijs Amersfoort, licensed CC\-BY\-NC\. Concrete values include "W" and "H"\. Missing assignments mean no value is recorded, not a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

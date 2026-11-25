@@ -6,6 +6,12 @@ part of speech (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The sp node feature records part of speech as a morphology tag on word nodes\. Populated assignments appear on word nodes; nodes without a value have no recorded assignment rather than a negative class\. Attested values include verb and subs\. The source description identifies it as a part\-of\-speech morphology tag from Martin Abegg's data files\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

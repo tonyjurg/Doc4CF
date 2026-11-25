@@ -1,0 +1,2995 @@
+{
+  "inventory_sha256": "15e81fe666b9e61402920ef2d8237df36b096ba83b4b004addd977d20d8037a9",
+  "affected_descriptions": [
+    {
+      "feature": "glypho",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "gn",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "gn2",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "gn3",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "gn_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "halfverse",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "intl",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lang",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lang_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lex",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lex_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lex_utf8_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lexe",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "lexo",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "line",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "md",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "merr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "morph_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "morpho",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "note_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "nr",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "nu",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "nu2",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "nu3",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "nu_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "occ",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "oslots",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "otext",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "otype",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "ps",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "ps2",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "ps3",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "ps_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "punc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "punce",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "punco",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "rec",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "rem",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "script",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "scroll",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "sim",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "sp",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "sp_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "srcLn",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "st",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "type",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "unc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "uvf_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "vac",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "verse",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "vs",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "vs_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "vt",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    },
+    {
+      "feature": "vt_etcbc",
+      "reasons": [
+        "No previously applied contextual description"
+      ]
+    }
+  ],
+  "processed_descriptions": [
+    "after",
+    "alt",
+    "biblical",
+    "book",
+    "book_etcbc",
+    "chapter",
+    "cl",
+    "cl2",
+    "cor",
+    "fragment",
+    "full",
+    "fulle",
+    "fullo",
+    "g_cons",
+    "g_lex_etcbc",
+    "g_nme_etcbc",
+    "g_pfm_etcbc",
+    "g_prs_etcbc",
+    "g_vbe_etcbc",
+    "g_vbs_etcbc",
+    "glex",
+    "glexe",
+    "glexo",
+    "glyph",
+    "glyphe",
+    "glypho",
+    "gn",
+    "gn2",
+    "gn3",
+    "gn_etcbc",
+    "halfverse",
+    "intl",
+    "lang",
+    "lang_etcbc",
+    "lex",
+    "lex_etcbc",
+    "lex_utf8_etcbc",
+    "lexe",
+    "lexo",
+    "line",
+    "md",
+    "merr",
+    "morph_etcbc",
+    "morpho",
+    "note_etcbc",
+    "nr",
+    "nu",
+    "nu2",
+    "nu3",
+    "nu_etcbc",
+    "occ",
+    "oslots",
+    "otext",
+    "otype",
+    "ps",
+    "ps2",
+    "ps3",
+    "ps_etcbc",
+    "punc",
+    "punce",
+    "punco",
+    "rec",
+    "rem",
+    "script",
+    "scroll",
+    "sim",
+    "sp",
+    "sp_etcbc",
+    "srcLn",
+    "st",
+    "type",
+    "unc",
+    "uvf_etcbc",
+    "vac"
+  ],
+  "context_flags": [
+    {
+      "feature": "after",
+      "flags": [
+        {
+          "issue": "Metadata describes after as space behind the word, but sources populate both word and sign nodes.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.after.metadata.description",
+            "features.after.sources"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "biblical",
+      "flags": [
+        {
+          "issue": "typeDisplay configures biblical on scroll, line, and fragment while the corpus includes non-biblical scrolls; coverage of non-biblical material by this feature is unclear from configuration alone",
+          "status": "missing_evidence",
+          "evidence": [
+            "configuration.typeDisplay.scroll.features",
+            "configuration.typeDisplay.line.features",
+            "configuration.typeDisplay.fragment.features"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "book_etcbc",
+      "flags": [
+        {
+          "issue": "feature family needs review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.needs_review"
+          ]
+        },
+        {
+          "issue": "empty book_etcbc value semantics undefined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.book_etcbc.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "chapter",
+      "flags": [
+        {
+          "issue": "scope of chapter labels across scrolls and non-biblical material",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.chapter.metadata",
+            "context ambiguity about non-biblical scroll coverage by typeDisplay features"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "cor",
+      "flags": [
+        {
+          "issue": "cor populated nodes are attested only for sign type",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.cor.sources lists only sign; no values are recorded for other node types"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "full",
+      "flags": [
+        {
+          "issue": "Absolute feature documentation URL cannot be resolved because docBase is undefined.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs.featureBase",
+            "context.ambiguities"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "fulle",
+      "flags": [
+        {
+          "issue": "Feature application links mark fulle as used in a text format, but the inventory does not show how the application consumes these links or which are active at runtime.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.fulle.text_formats",
+            "features.otext.metadata.fmt:text-trans-extra"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "g_cons",
+      "flags": [
+        {
+          "issue": "metadata description mentions word or sign but sources list only word nodes",
+          "status": "inconsistency",
+          "evidence": [
+            "features.g_cons.metadata.description",
+            "features.g_cons.sources"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "g_nme_etcbc",
+      "flags": [
+        {
+          "issue": "Feature family dss-additions is marked for review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "g_pfm_etcbc",
+      "flags": [
+        {
+          "issue": "sparse feature coverage on word nodes",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.g_pfm_etcbc.sources reports 4033 populated word nodes while structure.node_types_in_corpus_order lists 500995 word nodes; no documentation explains whether unpopulated nodes lack a preformative or lack a parse."
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "g_prs_etcbc",
+      "flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "g_vbs_etcbc",
+      "flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.id dss-additions",
+            "feature_family.status needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "glex",
+      "flags": [
+        {
+          "issue": "glex metadata states non-letters are omitted, yet frequent values contain vowel points and diacritics",
+          "status": "inconsistency",
+          "evidence": [
+            "features.glex.metadata.description",
+            "features.glex.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "glexe",
+      "flags": [
+        {
+          "issue": "Application consumption of glexe through configured text formats is not explicitly verified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glexe.text_formats",
+            "features.otext.metadata.fmt:lex-trans-full"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "glexo",
+      "flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "glyph",
+      "flags": [
+        {
+          "issue": "Application consumption of glyph text-format links is unverified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glyph.text_formats"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "glypho",
+      "flags": [
+        {
+          "issue": "Runtime consumption of glypho in text-source-full is unverified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glypho.text_formats marks uses_this_feature: true, but no runtime wiring or active-format evidence is provided"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "gn2",
+      "flags": [
+        {
+          "issue": "The part-2-variant relationship between gn and gn2 is inferred rather than explicitly configured.",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships gn->gn2 part-2-variant status inferred"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "gn3",
+      "flags": [
+        {
+          "issue": "semantic mapping of values c, f, m and meaning of 'part 3'",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.gn3.metadata.description",
+            "features.gn3.metadata.values"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "gn_etcbc",
+      "flags": [
+        {
+          "issue": "gn_etcbc semantic interpretation and relationship to gn",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships marks gn to gn_etcbc as parallel-scheme with status inferred",
+            "feature family dss-additions is marked needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lang",
+      "flags": [
+        {
+          "issue": "lang metadata records language only if not Hebrew, while lang_etcbc explicitly includes Hebrew; the Hebrew representation as absent versus explicit is unreconciled.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lang.metadata",
+            "features.lang_etcbc.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lang_etcbc",
+      "flags": [
+        {
+          "issue": "lang metadata says language is recorded only if not Hebrew, while lang_etcbc explicitly includes Hebrew",
+          "status": "contradiction",
+          "evidence": [
+            "features.lang.metadata",
+            "features.lang_etcbc.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lex",
+      "flags": [
+        {
+          "issue": "lex_etcbc parallel scheme",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lex.metadata",
+            "features.lex_etcbc.metadata"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lex_etcbc",
+      "flags": [
+        {
+          "issue": "The dss-additions feature family and the inferred lex/lex_etcbc parallel relationship lack explicit verification.",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_relationships[0]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lexe",
+      "flags": [
+        {
+          "issue": "The lexe source inventory lists node types in addition to lex, but the authoritative description only defines the value as a lexeme representation without explaining assignments on those node types",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.lexe.sources",
+            "features.lexe.feature_metadata.description"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "lexo",
+      "flags": [
+        {
+          "issue": "Assignment mechanism for lexo on word nodes versus lex nodes is undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.lexo.sources shows lex and word populated without an assignment rule"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "line",
+      "flags": [
+        {
+          "issue": "typeDisplay.line.features uses feature biblical, but the corpus includes non-biblical scrolls; coverage of non-biblical material by biblical marking on line display is unclear from configuration alone.",
+          "status": "inconsistency",
+          "evidence": [
+            "application.configuration.typeDisplay.line.features",
+            "context.ambiguities"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "merr",
+      "flags": [
+        {
+          "issue": "Feature described as recording parsing errors but its sole value resembles a morphology tag",
+          "status": "inconsistency",
+          "evidence": [
+            "features.merr.metadata.description",
+            "features.merr.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "nr",
+      "flags": [
+        {
+          "issue": "Feature metadata does not define the semantic meaning of nr values; only the corpus-level description is present.",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.nr.metadata.description",
+            "application.configuration.typeDisplay.clause.label",
+            "application.configuration.typeDisplay.phrase.label"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "nu2",
+      "flags": [
+        {
+          "issue": "context.needs_review is true while feature_family.needs_review is false",
+          "status": "inconsistency",
+          "evidence": [
+            "context.needs_review",
+            "feature_family.needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "nu_etcbc",
+      "flags": [
+        {
+          "issue": "feature review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "occ",
+      "flags": [
+        {
+          "issue": "occ valueType is str with empty frequent inventory despite populated sources and targets",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.occ.frequent",
+            "features.occ.sources",
+            "features.occ.targets"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "otext",
+      "flags": [
+        {
+          "issue": "docBase undefined so absolute feature documentation URL cannot be determined",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.dataset.ambiguities: {docBase} in application.configuration.docs.featureBase is undefined"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "ps",
+      "flags": [
+        {
+          "issue": "Feature ps metadata lists \"unknown\" as a recorded value, while application dataDisplay treats \"unknown\" as a none value.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.ps.metadata.values",
+            "application.configuration.dataDisplay.noneValues"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "ps2",
+      "flags": [
+        {
+          "issue": "Value-to-person mapping undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_metadata.values lists 1, 2, 3 without defining their person categories"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "ps3",
+      "flags": [
+        {
+          "issue": "value semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.ps3.metadata.values lists 1, 2, 3 but does not define which value corresponds to which person category"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "ps_etcbc",
+      "flags": [
+        {
+          "issue": "value semantics missing",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.ps_etcbc.metadata lacks a values or description inventory for NA, p1, p2, p3, or unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "punc",
+      "flags": [
+        {
+          "issue": "Absolute feature documentation URL cannot be determined because docBase is undefined",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs (docBase, featureBase)",
+            "context.ambiguities[0]"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "punce",
+      "flags": [
+        {
+          "issue": "Semantic meaning of punce values \"00\" and \"0000\" is not explicitly defined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.punce.metadata.description",
+            "features.punce.frequent"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "punco",
+      "flags": [
+        {
+          "issue": "Text-format runtime dispatch",
+          "status": "inconsistency",
+          "evidence": [
+            "application.feature_application_links marks punco uses_this_feature: true, but the inventory does not show how the application consumes these links or which are active at runtime"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "script",
+      "flags": [
+        {
+          "issue": "Writing system hbo is configured while script records only non-Hebrew scripts; whether hbo describes only the primary writing system is unstated.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.writing",
+            "features.script.metadata",
+            "dataset_context.ambiguities"
+          ]
+        },
+        {
+          "issue": "lang metadata records language only if not Hebrew while lang_etcbc explicitly includes Hebrew; the absent-versus-explicit treatment of Hebrew is not reconciled with script.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lang.metadata",
+            "features.script.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "scroll",
+      "flags": [
+        {
+          "issue": "typeDisplay marks scroll, line, and fragment features as biblical although the corpus includes non-biblical scrolls",
+          "status": "inconsistency",
+          "evidence": [
+            "application.configuration.typeDisplay.scroll.features",
+            "corpus described as biblical and non-biblical scrolls"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "sp",
+      "flags": [
+        {
+          "issue": "The semantics of the 'unknown' value are undocumented; it may indicate missing data rather than a linguistic category.",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.sp.metadata.values lists 'unknown' without a gloss"
+          ]
+        },
+        {
+          "issue": "The parallel-scheme relationship between sp and sp_etcbc is inferred, not explicitly wired in configuration.",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_relationships source_feature sp target_feature sp_etcbc status inferred needs_review true"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "sp_etcbc",
+      "flags": [
+        {
+          "issue": "feature family maturity",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_family.status"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "srcLn",
+      "flags": [
+        {
+          "issue": "Absolute feature documentation URL undetermined",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs.featureBase references undefined {docBase}"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "st",
+      "flags": [
+        {
+          "issue": "Value semantics for st are undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.st.metadata describes st as 'state (morphology tag)' but does not define individual values"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "type",
+      "flags": [
+        {
+          "issue": "Feature description limits annotation to sign or cluster while sources include word nodes",
+          "status": "inconsistency",
+          "evidence": [
+            "features.type.description",
+            "features.type.sources"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "uvf_etcbc",
+      "flags": [
+        {
+          "issue": "Feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ]
+    }
+  ],
+  "feature_analysis": {
+    "after": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether the single space value denotes all interword spacing or only explicit trailing space after a node is not defined by the metadata."
+      ],
+      "context_flags": [
+        {
+          "issue": "Metadata describes after as space behind the word, but sources populate both word and sign nodes.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.after.metadata.description",
+            "features.after.sources"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f40e2c517688d8f3eced8b44248129eaa90510a4d8939e36e6a31e70588f69f7",
+        "feature_evidence_sha256": "88d4d5e308450f72cc35217bf022c2cf51879f581c8ce1e1391a68f6fea6fef2",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "alt": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether value 1 carries any further semantic distinction beyond the label 'alternative reading' is not defined in the feature metadata."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "aba2f06145b44899bc80d7b4eecbabb90616c056ec61a6ec8e8e827bb9142e33",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "biblical": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The remark in features.biblical.metadata suggests value 2 on lines may indicate reconstruction when nonbiblical material is identical or virtually absent, but the exact conditions are not fully resolved.",
+        "Coverage of non-biblical scroll material by the biblical feature on scroll, line, and fragment nodes is unclear from configuration alone."
+      ],
+      "context_flags": [
+        {
+          "issue": "typeDisplay configures biblical on scroll, line, and fragment while the corpus includes non-biblical scrolls; coverage of non-biblical material by this feature is unclear from configuration alone",
+          "status": "missing_evidence",
+          "evidence": [
+            "configuration.typeDisplay.scroll.features",
+            "configuration.typeDisplay.line.features",
+            "configuration.typeDisplay.fragment.features"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "be34533868b307c34d8fae90d60b27b4599b7e282d0cefce774abb9b1f26b459",
+        "feature_evidence_sha256": "e8376eaa176836362d08d954fa96b61b772ca385998d035ad74b78fedcc8a870",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "book": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The source is listed as personal communication, so the inventory does not document the exact rules for assigning acronyms to fragmentary or multi-book words."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "8f2440ff2404b8844d20cdaf16afa71680218892455a408be58dfd47a5077dcb",
+        "feature_evidence_sha256": "fd338034595a606b4b7fd4dcb19e1eab39f33e2f6175b7e3f042482ae9b56b90",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "book_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The feature family is flagged needs_review; the meaning of the empty value (no book assignment versus unknown) is not defined in the supplied metadata; the parallel-scheme link to feature book is inferred rather than explicitly configured."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature family needs review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.needs_review"
+          ]
+        },
+        {
+          "issue": "empty book_etcbc value semantics undefined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.book_etcbc.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "c33e3a16345a6d2440d3b779d7834139a3150cad34ab21a39d8f414b5b899ba5",
+        "feature_evidence_sha256": "419bf4e5c159bd5bb2ec7864b840d4362bed9145736426c04a950e90af6f48d8",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "chapter": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether chapter labels are unique across scrolls",
+        "How non-biblical material is chaptered",
+        "Whether every word node receives a value"
+      ],
+      "context_flags": [
+        {
+          "issue": "scope of chapter labels across scrolls and non-biblical material",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.chapter.metadata",
+            "context ambiguity about non-biblical scroll coverage by typeDisplay features"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "f873cdd36d37e0cfb7f19ca5ac21a6605dfe4faa0704e0c2fa536e8f0e98c65a",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "cl": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata labels cl as a class/morphology tag but does not fully specify whether each value denotes a single part-of-speech class or a combined morphological category."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0a16925824a2fc2dd1e22f35280e9246f1d57cb411f4153b89cba472ced6b408",
+        "feature_evidence_sha256": "88ca26c2218d750fcf83c013d6fcb8a7fc545969dbd7cf1f04bb8c9f4b7ab1d1",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "cl2": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The source description 'class (for part 2)' does not define what 'part 2' denotes.",
+        "The semantic meanings of values d and n are not provided in the evidence."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "970d7399eeb4d2d2ba43ec9c6191adf8d13cf701d2f99142697cb65ff10508d1",
+        "feature_evidence_sha256": "0cb98ec26eca8ab8deb0e7bb6bc279f273d699164c68349d31c9a2e8291dc6e1",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "cor": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether value 3 (ancient supralinear) represents an editorial correction equivalent to values 1 and 2 is not explicitly resolved in the metadata."
+      ],
+      "context_flags": [
+        {
+          "issue": "cor populated nodes are attested only for sign type",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.cor.sources lists only sign; no values are recorded for other node types"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "228efd508c22ead3b53bbb7a204129f6b2fd2716e96b5f4351a7cb413a002de5",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "fragment": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "It is unclear why line nodes carry fragment values or whether this reflects inheritance; the meaning of numeric distinct values such as \"1\" and \"2\" alongside alphanumeric labels is undocumented."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "7bcb50b6b242d8cd333d878457c9d88b1a049fb4da993a2c6085edc955e3cdbc",
+        "feature_evidence_sha256": "8796fe5ddfe5c0bd72e51e8a37eabaff8c91cbcdc398b9d9eaa129afe7cda0b9",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "full": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime wiring between the text-orig-extra format method and its Python formatter is suggested by naming but not explicitly verified; the absolute documentation URL is unresolved because docBase is undefined."
+      ],
+      "context_flags": [
+        {
+          "issue": "Absolute feature documentation URL cannot be resolved because docBase is undefined.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs.featureBase",
+            "context.ambiguities"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f1ef6c25672325c59aeac1e9a49bb6a0deeaa7d89f21d5092ab425a88acd354f",
+        "feature_evidence_sha256": "6acb41246fdff1b616fa26ec07a457c4d33fcdd1b47ed2cfdee6c81f736e072b",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "fulle": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime wiring of fmt:text-trans-extra to Python formatter functions is suggested by naming but not explicitly configured.",
+        "The interpretive meaning of values such as \" 0 \" and \"W\" is not stated in feature metadata."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature application links mark fulle as used in a text format, but the inventory does not show how the application consumes these links or which are active at runtime.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.fulle.text_formats",
+            "features.otext.metadata.fmt:text-trans-extra"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "38b30e1d5d51ea73964ca68bdb3724624cae495ac7e193428fb84c9ee41f9994",
+        "feature_evidence_sha256": "96cf04a63e7b041cd250f389edac43419f3445ec0d37327ee6edd2ce19161028",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "fullo": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime wiring of the text-source-extra format to Python layout functions is suggested by naming but not explicitly verified; the inferred transcription-variant relationship between fullo and fulle is not explicitly documented."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "7ceea34b339163681cf6c5e927cdbbb7c1a67b1521bacb9932c87d6189e4aa2a",
+        "feature_evidence_sha256": "90c862da0c48680b4c23c1854d7f071879e4fae7494a9a84fd301198028c6d5f",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_cons": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "It is unresolved whether g_cons applies to sign nodes, since metadata says 'word or sign' but sources list only word nodes; missing assignments mean no value is recorded, not a negative class."
+      ],
+      "context_flags": [
+        {
+          "issue": "metadata description mentions word or sign but sources list only word nodes",
+          "status": "inconsistency",
+          "evidence": [
+            "features.g_cons.metadata.description",
+            "features.g_cons.sources"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "a7d23116b55e23b3debdad03cac4d65eafddf27d74d4e8584ed9068c2d8f3cb4",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_lex_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The specific BHSA transliteration scheme is not defined in the feature metadata, and the scope of the correction by Thijs Amersfoort is unspecified."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "610d09581ea535c9eb072cb28146d5d26bd2cb479fe68036fb1ec5fe1dec67b9",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_nme_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata credits automatic morphological parsing corrected by Thijs Amersfoort, but the extent of correction is unspecified.",
+        "Whether the empty string denotes absence of a nominal ending or missing data is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature family dss-additions is marked for review",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "fb4503827396f2c0ce10796742b8bb9cb8223fb8f323ef2f33f02a4f132d61cc",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_pfm_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Absent values on unpopulated word nodes may mean no preformative or no parse; documentation does not clarify.",
+        "Nine distinct values exist, but only frequent exemplars are listed; rare values are not enumerated."
+      ],
+      "context_flags": [
+        {
+          "issue": "sparse feature coverage on word nodes",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.g_pfm_etcbc.sources reports 4033 populated word nodes while structure.node_types_in_corpus_order lists 500995 word nodes; no documentation explains whether unpopulated nodes lack a preformative or lack a parse."
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "3b54059d7952c856900db15494f6d5dea3ee74b10f8b454119a0665d3f472616",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_prs_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The meaning of value NA is not defined in the supplied metadata; values derive from automatic morphological parsing with manual correction, so residual errors may remain."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "719c90b89bcfddce20079bee8fac027cff187c205b7c22d122886f7cdb503b98",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_vbe_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The dss-additions family is marked needs_review; the source indicates automatic generation with correction, but the scope of manual correction is unspecified."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "061ba5409d6c02fa9798355236b64633a70a89e8b3253ee6f076b0fbd4ed6c5d",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "g_vbs_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether all populated word nodes genuinely encode verb root formations as stated, or whether some values reflect automatic parsing artifacts; whether unpopulated word nodes are non-verbs or simply lack assignments."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.id dss-additions",
+            "feature_family.status needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "08896ed8bd09a16f405e0c82706bfc9f677c06f9d5674221da8463416fade21f",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glex": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Metadata states glex omits non-letters, but frequent values such as וְ and יהוה contain vowel points and diacritics; whether these count as letters or the rule varies by script is unresolved.",
+        "Interpreting glex as a normalized lexical form across Hebrew and Aramaic is suggested by the description and values but not explicitly confirmed by metadata."
+      ],
+      "context_flags": [
+        {
+          "issue": "glex metadata states non-letters are omitted, yet frequent values contain vowel points and diacritics",
+          "status": "inconsistency",
+          "evidence": [
+            "features.glex.metadata.description",
+            "features.glex.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "7893e4d8ff6d7ab0f69189a8152cd1bc09170e4883a2cd5ceaac8393c1951812",
+        "feature_evidence_sha256": "42c21f514174dea7404666880d6f124af2bc3385f3f4681fad023e12a43a2ff0",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glexe": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The transcription-variant relationships among glex, glexe, and glexo are inferred from metadata proximity rather than explicitly asserted.",
+        "Whether the lex-trans-full format and glexe are active at runtime is not verified by the inventory."
+      ],
+      "context_flags": [
+        {
+          "issue": "Application consumption of glexe through configured text formats is not explicitly verified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glexe.text_formats",
+            "features.otext.metadata.fmt:lex-trans-full"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "7a5e1c9f24ecfbcfd29865ed551ea3d88bec77552bcf67f35589ab5320cbc0d1",
+        "feature_evidence_sha256": "7126a738da11fbc7ef5695adff99535785d6ec904e1978aa3e74910dab3d42a2",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glexo": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime consumption of glexo through feature_application_links is unverified; the feature family is marked needs_review, so coverage or metadata may change."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "c333ede03d383c582aa005af3652d148547b1a8b46543dbe1ace462b84a357ee",
+        "feature_evidence_sha256": "faadefc870638cce7c366a5dceedeb0c40a5bef798bb2e6d13d7f0a38a83b46b",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glyph": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime consumption of the glyph text-format link is unverified; the absolute feature documentation URL cannot be determined because docBase is undefined."
+      ],
+      "context_flags": [
+        {
+          "issue": "Application consumption of glyph text-format links is unverified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glyph.text_formats"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f72e6bd548c94f60be426abb797a6a7ea4176e92b5c14170856771d6ab1a9dd0",
+        "feature_evidence_sha256": "193f680358ae9d6b814c590b03364dd5de512005b0d6fe18aa6e8b8e82fe113e",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glyphe": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The empty string appears among frequent glyphe values; it is unclear whether it denotes an absent transcription or an actual empty transcription.",
+        "The transcription-variant links from glyph to glyphe and glyphe to glypho are inferred, not explicitly verified."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "2e65e5f43f5fe73b01674f5280f765aabd4b6bf12abbb73687cafc0a1c8b44ba",
+        "feature_evidence_sha256": "10ada40c471cc9130f982c9c6369f6931f19c3b59be213b099293e2b6d14b1bb",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "glypho": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime activation of text-source-full and consumption of feature_application_links for glypho are unverified; editorial criteria distinguishing 'original source' from other transcription layers are not documented."
+      ],
+      "context_flags": [
+        {
+          "issue": "Runtime consumption of glypho in text-source-full is unverified",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.feature_application_links.glypho.text_formats marks uses_this_feature: true, but no runtime wiring or active-format evidence is provided"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "07491c774af53ceb3b6abf265731dde3fff68352126de4c4cabc68cac04a0ad7",
+        "feature_evidence_sha256": "7ab51500f07d613e20a1d435545dab5ae71bc7b890cf8c7f0226a7b7e45c6dd7",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "gn": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The supplied evidence does not define the specific gender categories represented by codes b, c, f, m, or unknown; their semantic mapping is inferred only from the feature label."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "b3ee7c1b2ff31a546013159944ecea47b9427459d8ef899b3880a3dbd8eee0f0",
+        "feature_evidence_sha256": "18dd9d81d3f763007029ac0beaecb150e7609b11224efd9ecfd20e5d4603d1b2",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "gn2": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic meanings of individual values are not documented.",
+        "Whether unknown is treated as a none value under dataDisplay rules for gn2 is unverified."
+      ],
+      "context_flags": [
+        {
+          "issue": "The part-2-variant relationship between gn and gn2 is inferred rather than explicitly configured.",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships gn->gn2 part-2-variant status inferred"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "fb70dfd3006f6c301532a0e7895c6cfe02a1026238ca8811b2e45d37c105b4cb",
+        "feature_evidence_sha256": "fac73e489b6c45ae81b243a59ee6f7e1aec7ee1cddad0f013574ee2185468a38",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "gn3": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata does not define the semantic meaning of c, f, or m, and 'part 3' is unexplained."
+      ],
+      "context_flags": [
+        {
+          "issue": "semantic mapping of values c, f, m and meaning of 'part 3'",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.gn3.metadata.description",
+            "features.gn3.metadata.values"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "8cda8180e7259695a73e7a6e88aa5f86663317eccf54e3f2c03eb811b27e96bc",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "gn_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether gn_etcbc encodes grammatical gender is undocumented; the m/f values and inferred parallel to gn only suggest it. The meanings of NA, unknown, and empty-string values are also not documented."
+      ],
+      "context_flags": [
+        {
+          "issue": "gn_etcbc semantic interpretation and relationship to gn",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_relationships marks gn to gn_etcbc as parallel-scheme with status inferred",
+            "feature family dss-additions is marked needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "43911794caa903bdccb83e6b54ceaf9198c31698fde1f21f2c9089a03e7860a8",
+        "feature_evidence_sha256": "cd8c8d1bce9c576cbcdef66a952838ce4b2f86e4ddb4e34879e952eebc832299",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "halfverse": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic mapping of \"a\" and \"b\" to first and second half-verse positions is not explicitly confirmed in the metadata."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "a75396d765e74fc6b7657e5175c25f381d2b8331cb6f616f941ae5b37a62769e",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "intl": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic distinction between values 1 and 2 is not documented beyond \"sequence number of the interlinear line.\""
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "443a250807a079b20e36c82076356690c7736ff9a79907ad111fe1792663932a",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lang": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether an absent lang value represents Hebrew explicitly or simply no recorded language, since lang excludes Hebrew while lang_etcbc includes it."
+      ],
+      "context_flags": [
+        {
+          "issue": "lang metadata records language only if not Hebrew, while lang_etcbc explicitly includes Hebrew; the Hebrew representation as absent versus explicit is unreconciled.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lang.metadata",
+            "features.lang_etcbc.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "2d1567318ab3eb1ee7ad5d03936a324b1d25ac7123eff117765a38f2a5693168",
+        "feature_evidence_sha256": "81e7f5152a7dc300a92d54b3a627583dc440c55ee4f19ef5b45e4619c57bb8c6",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lang_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether explicit Hebrew values in lang_etcbc conflict with lang metadata stating language is recorded only if not Hebrew; the representation of Hebrew as absent value versus explicit value is unreconciled."
+      ],
+      "context_flags": [
+        {
+          "issue": "lang metadata says language is recorded only if not Hebrew, while lang_etcbc explicitly includes Hebrew",
+          "status": "contradiction",
+          "evidence": [
+            "features.lang.metadata",
+            "features.lang_etcbc.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "8eb44194ba5a5e9181a77bd4d1a65304ab5f6ca3a953a5ccd7e5307d94fd617f",
+        "feature_evidence_sha256": "d89f34d018bfdfac3d6caf63ac8030a262adad7968458097f71da3d5faef67c3",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lex": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether all word nodes are expected to carry a lex value is unresolved; sources records only populated nodes.",
+        "The parallel lexeme scheme lex_etcbc is inferred from metadata, not explicitly wired."
+      ],
+      "context_flags": [
+        {
+          "issue": "lex_etcbc parallel scheme",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lex.metadata",
+            "features.lex_etcbc.metadata"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "987487d59c0e0caf99ac36b38558a8c1e5cd25907553f2fdd796810a3d9eaaa4",
+        "feature_evidence_sha256": "c11a149481b8b09da9a0a1cf605642da866ab63da13373167a5416fa977c3b19",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lex_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The lex-to-lex_etcbc relationship is inferred as parallel-scheme from metadata rather than explicitly configured; the empty string occurs among distinct values but is not listed in dataDisplay noneValues, so its status as absence versus a valid transliteration is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "The dss-additions feature family and the inferred lex/lex_etcbc parallel relationship lack explicit verification.",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_relationships[0]"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "009d2ef57ac3237975c4cad4f7567570bc3af91ecd17b2a967a8ac56d8ecd592",
+        "feature_evidence_sha256": "2f924b75c719a2630f4d2d9379b3afd94b067dc0fbad7ac413e2333a55fa59ea",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lex_utf8_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether populated word nodes cover all word nodes with pointable lexemes is unstated.",
+        "The metadata date 2026-11-04 does not by itself establish data currency."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "b17db8a2ca49b840f9b521e279618e5a2c2903b63b2dbbed2c2251cbfd4eb6cf",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lexe": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic role of lexe on node types other than lex is not explicitly defined; the sources inventory does not confirm how values apply there."
+      ],
+      "context_flags": [
+        {
+          "issue": "The lexe source inventory lists node types in addition to lex, but the authoritative description only defines the value as a lexeme representation without explaining assignments on those node types",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.lexe.sources",
+            "features.lexe.feature_metadata.description"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "e85be3bf876273657532583227b81f2e736fbf9d9a8164ca805ca1a8fabb8601",
+        "feature_evidence_sha256": "c455c7d546067a57369afcdae02e3c147a10f083173b105109458e8eabbd5c14",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "lexo": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "It is unclear whether lexo values on word nodes are independently assigned or propagated from linked lex nodes; the sources inventory shows both node types populated but does not document the assignment mechanism.",
+        "The precise semantic interpretation of individual string values beyond 'original-source representation' is not explicitly documented."
+      ],
+      "context_flags": [
+        {
+          "issue": "Assignment mechanism for lexo on word nodes versus lex nodes is undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.lexo.sources shows lex and word populated without an assignment rule"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4d85d4ff1995b33a7392de8d18cde5a1420f27d06b3882f712a46432b9ef1883",
+        "feature_evidence_sha256": "a9c6639d0c2fbc664740d636fe55052c03315ff0ec5e4864a7293e222e1cddc0",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "line": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether line labels restart within each fragment or continue across a scroll is not stated.",
+        "The semantic scope of missing values beyond unrecorded labels is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "typeDisplay.line.features uses feature biblical, but the corpus includes non-biblical scrolls; coverage of non-biblical material by biblical marking on line display is unclear from configuration alone.",
+          "status": "inconsistency",
+          "evidence": [
+            "application.configuration.typeDisplay.line.features",
+            "context.ambiguities"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "2c6639f0574d90de144183ce4caf9a61949abd0c65a943cee3d3dd09f88048a2",
+        "feature_evidence_sha256": "678b210cb412216d8b6cc38ae8bfdc330983f97907bec9e432878deed63157f0",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "md": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The abbreviations coho, cons, and juss may denote cohortative, consecutive, and jussive moods, but the metadata does not explicitly expand them.",
+        "The meaning of unknown is undefined; it may mark unmapped or unanalyzed forms.",
+        "Source provenance is personal communication, which may limit independent verification."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "6e32b1c3452a36a1e607ab91f27a52d0dd19b08b69734aa19d088a2b26077b37",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "merr": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether vnPfpa denotes a systematic parsing-error category or a one-off tag failure is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature described as recording parsing errors but its sole value resembles a morphology tag",
+          "status": "inconsistency",
+          "evidence": [
+            "features.merr.metadata.description",
+            "features.merr.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "5a5ad34a2aa3920cdf8d2d8959d3c11257eed6bf6b3960b3644819100cea2960",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "morph_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The precise morphological meaning of individual string values such as \"W\" and \"H\" is not defined in the supplied evidence; interpretation of specific codes remains uncertain."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "d690b1d2177a9027bf613c487b39dade5cdb9b264cd92c9d174cd74ee772f3fe",
+        "feature_evidence_sha256": "bedda33b23302a363671fd658bbd98aba9f226485cc23824de7ac0cf6aa4c3ce",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "morpho": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The supplied metadata does not define the semantics of individual values such as Pc or np beyond the general label morphological tag.",
+        "The value 0 occurs in the inventory but is unexplained.",
+        "The morpho–morph_etcbc relationship is inferred, not verified."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "db02f657c057c4b277dca8af996cb3cd14d4a1aed6e0f019a006009988c6b244",
+        "feature_evidence_sha256": "eb6d2d3dbea75d497dbba972fa16ba708585feff967eb34f1188c8dcc98fb680",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "note_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata does not state which scrolls or sections the populated word nodes belong to, nor whether the notes cover only morphological uncertainty or also scribal observations."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "9953a1710eaf44ced517892e4e820317394ea8bb50d9adfc6e26837b14087fc3",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "nr": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata description is generic and does not explicitly define what nr values represent; sequential numbering is suggested by the {nr} label and values 1 and 12 but not proven. It is unclear whether nr values are unique per phrase or shared across clause and phrase nodes."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature metadata does not define the semantic meaning of nr values; only the corpus-level description is present.",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.nr.metadata.description",
+            "application.configuration.typeDisplay.clause.label",
+            "application.configuration.typeDisplay.phrase.label"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "59b2811a7a0fb0a0927c8eb463010ec9f23d24dbd59cd17ee2917ea08805cbeb",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "nu": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The grammatical categories represented by d and unknown are undocumented; d may denote dual or another category, and unknown may mark missing analysis or a genuine value."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "3cf3345226d4d40be454d036afcaa0b99c17148a95b1981f47e778123c85eb69",
+        "feature_evidence_sha256": "f0c66e0bd806d81b1af85bf9aab692c12cbaabc0ac0a52f9258fc88ebfb87014",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "nu2": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The supplied evidence does not define 'part 2' or distinguish p from s; whether unknown denotes a genuine category or missing data is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "context.needs_review is true while feature_family.needs_review is false",
+          "status": "inconsistency",
+          "evidence": [
+            "context.needs_review",
+            "feature_family.needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "d6f14da8b45451e75832b34419ed5077fcbc0745a02c5d52255464c985221bc3",
+        "feature_evidence_sha256": "49079e311768e9942152f22b4d568e773a407b7143b113eac3648c536daa7523",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "nu3": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic meaning of 's' is not explicitly defined; it may indicate singular number but this interpretation is unsupported by explicit inventory documentation."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "2a1f3bd36dfe22544ce7160448b0075426394b7937c13bd9817666a265a48670",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "nu_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The interpretation of sg and pl as grammatical number is suggested by the value set but not explicitly defined in feature metadata; the feature family is marked needs_review."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "3eba156cb8f58819ee695663d1cb8389fda4847781e795ac0484c25557dad16b",
+        "feature_evidence_sha256": "71883adb36d6f2d5ec2febbc5a47dcb098c2a48ccf2fd64e98988fc440d3f0e2",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "occ": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether occ edges carry meaningful string values is unresolved; valueType is str but no frequent values are inventoried.",
+        "It is unclear how many unique word nodes are targeted because targets counts edge endpoints, not unique nodes."
+      ],
+      "context_flags": [
+        {
+          "issue": "occ valueType is str with empty frequent inventory despite populated sources and targets",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.occ.frequent",
+            "features.occ.sources",
+            "features.occ.targets"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "797c4638fd06672282f357f5fd89327019e2b5653c1eb1dd40281e26868e2640",
+        "feature_evidence_sha256": "fa5a9d8243e3e6d4097134f809965ed4ced761996cc55669fc6dbc00a08a39bb",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "5838dd125a3a74df7f213412cab02926b9a744ef0b584949d9fd95273577b471"
+      }
+    },
+    "oslots": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The inventory lists oslots source and target node types and edge counts but does not state whether edges preserve textual order within a covered span."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0225defe619af205acdc86697476abcc6e885407e20781655a485aeab586161f",
+        "feature_evidence_sha256": "cb17472d53d93964ff56264bbc63b1f3bac27f6909dd0d4dba728ded7e5319cf",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "95d3742387eb8d0ee1429370efa1b503bed8906965e0e40a908c2f3d7d36775b"
+      }
+    },
+    "otext": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The link between configured text-format methods and Python functions is suggested by naming but not explicitly wired; runtime dispatch is unverified.",
+        "docBase is undefined, so the absolute feature documentation URL cannot be determined."
+      ],
+      "context_flags": [
+        {
+          "issue": "docBase undefined so absolute feature documentation URL cannot be determined",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.dataset.ambiguities: {docBase} in application.configuration.docs.featureBase is undefined"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1b287954b128e0132a4eb2b9fc4806866b765e409aa2af6076cd66863da03ab9",
+        "feature_evidence_sha256": "1eefa701694557a0c8194f3612099565e95ba0a32160925022c46d6fa7a78add",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "06213893d559504a82f92c1b8fa3febd980d7586333b9ec6f8f025b8cb8a779a"
+      }
+    },
+    "otype": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The linguistic or semantic role of each node-type label is not established by the label alone."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "de0b1f76c6f0e45e354efa1c71966a3c07a4c0db4dd56af1042c38bcb289b295",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "441f4d4a62d73285c11f112a0d49e5fc59199576b1333a6e8c7535af3d6d56a4"
+      }
+    },
+    "ps": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The mapping of numeric codes such as 1 to specific grammatical persons is not explicitly defined in the supplied metadata; the person interpretation relies on the feature label."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature ps metadata lists \"unknown\" as a recorded value, while application dataDisplay treats \"unknown\" as a none value.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.ps.metadata.values",
+            "application.configuration.dataDisplay.noneValues"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "c64b29f7e79dd28750490d49f392b4dc39957b96bff338d900d769f241947178",
+        "feature_evidence_sha256": "ad35a8268a3825633db38c19d322483755da8e0600c6c20e9d02790d1707971c",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "ps2": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The mapping of string values 1, 2, and 3 to specific person categories is not explicitly defined in the inventory, so interpreting them as first, second, or third person is inferred rather than proven."
+      ],
+      "context_flags": [
+        {
+          "issue": "Value-to-person mapping undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_metadata.values lists 1, 2, 3 without defining their person categories"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f92cc47c7f2cea1dce2409dfcbe4f4823d43f8b6f3905984e06d4d825d1b87be",
+        "feature_evidence_sha256": "958367e8760526de44e29c68ef2494acc5be5ae7c9a4c7773e52b867a7a75178",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "ps3": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The mapping of values 1, 2, and 3 to specific person categories is not documented; per-value source counts are not provided beyond the distinct total."
+      ],
+      "context_flags": [
+        {
+          "issue": "value semantics",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.ps3.metadata.values lists 1, 2, 3 but does not define which value corresponds to which person category"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "8c32c5215413d7200b148a2ff3887971a9546cc3cfedfaab888fe4fa214bb0b0",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "ps_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic meaning of ps_etcbc values is not defined in the supplied metadata; the parallel-scheme link to ps is inferred rather than explicitly configured."
+      ],
+      "context_flags": [
+        {
+          "issue": "value semantics missing",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.ps_etcbc.metadata lacks a values or description inventory for NA, p1, p2, p3, or unknown"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "d65f77adcda90e120a757fcc7830acc8fa4fe1e26d5e57342989552b456f6da3",
+        "feature_evidence_sha256": "5187a2126061dceeafcb5cc9f92dd7a46eb90fa5d0bdcbff6bee9783ddc8e9f3",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "punc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime dispatch from text-orig-full to Python display functions is suggested by naming but not explicitly wired or verified in configuration."
+      ],
+      "context_flags": [
+        {
+          "issue": "Absolute feature documentation URL cannot be determined because docBase is undefined",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs (docBase, featureBase)",
+            "context.ambiguities[0]"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "ad4008eed98a3cc88e5a15173c5cfb41dcb6e85fffbae68e3aab300c8824705b",
+        "feature_evidence_sha256": "9845549e952d76c7f1b8af6180db977fad56a83ff5931aa992afcf9e6b36569a",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "punce": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The semantic meaning of values \"00\" and \"0000\" is not explicitly defined in the supplied feature metadata; interpretation as punctuation markers is inferred from the feature description.",
+        "Runtime wiring of fmt:lex-trans-full to Python formatting functions is suggested by naming but not explicitly verified."
+      ],
+      "context_flags": [
+        {
+          "issue": "Semantic meaning of punce values \"00\" and \"0000\" is not explicitly defined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.punce.metadata.description",
+            "features.punce.frequent"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4be5e8c5cc1b4acd6186699898f2f95a5369023b2944554af1c97779ef0e6990",
+        "feature_evidence_sha256": "067c76549a750d744b1ba523412202862d906adc5699b4791c8df50b8a06a762",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "punco": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Runtime consumption of punco in configured text formats is suggested by naming but not explicitly wired; the editorial scope of \"original source\" is not further defined."
+      ],
+      "context_flags": [
+        {
+          "issue": "Text-format runtime dispatch",
+          "status": "inconsistency",
+          "evidence": [
+            "application.feature_application_links marks punco uses_this_feature: true, but the inventory does not show how the application consumes these links or which are active at runtime"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "68e02d66e0783e9ffff52b05193432042a4fd366d950bb04710f001a72a6d9e6",
+        "feature_evidence_sha256": "545784fddc9daabe6153baf932c34fc237878850f7df87a88069854a8fff5527",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "rec": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether unpopulated sign nodes are unreconstructed or simply unannotated; metadata attests only value 1."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "ef4021e976bf9a0314ae3f5c4351cf36f0b65fd010c8047b07199ad3790fda21",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "rem": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether \"removed\" denotes textual omission, physical deletion, or another editorial action is not specified in the feature metadata."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "41b25847587cd5325081f2dabf3d3b452630868c943947e2fa80fa2c73de8859",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "script": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether hbo denotes only the primary writing system is unstated, so script values may not capture all writing-system variation.",
+        "Hebrew is excluded by the source description while lang_etcbc explicitly includes Hebrew; absent-versus-explicit representation is not reconciled.",
+        "Co-occurrence with lang on word and sign nodes is inferred from naming and metadata, not explicitly wired in configuration."
+      ],
+      "context_flags": [
+        {
+          "issue": "Writing system hbo is configured while script records only non-Hebrew scripts; whether hbo describes only the primary writing system is unstated.",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.writing",
+            "features.script.metadata",
+            "dataset_context.ambiguities"
+          ]
+        },
+        {
+          "issue": "lang metadata records language only if not Hebrew while lang_etcbc explicitly includes Hebrew; the absent-versus-explicit treatment of Hebrew is not reconciled with script.",
+          "status": "inconsistency",
+          "evidence": [
+            "features.lang.metadata",
+            "features.script.metadata",
+            "dataset_context.ambiguities"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "fc452524ada29233955e207adde52f88ada3b856d2c930d05a03ab392898eb5d",
+        "feature_evidence_sha256": "5b01d745a49529f2b16f99b716ff6175cc4923dac81dedd7d3095b9f433f5935",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "scroll": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Some scroll acronyms are shared by multiple scroll nodes; the reason is undocumented.",
+        "Whether scroll values adequately represent non-biblical material is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "typeDisplay marks scroll, line, and fragment features as biblical although the corpus includes non-biblical scrolls",
+          "status": "inconsistency",
+          "evidence": [
+            "application.configuration.typeDisplay.scroll.features",
+            "corpus described as biblical and non-biblical scrolls"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "e92c9ebe53970cb67ae528222c6e8078924d529c41432d6443d6b0bf22d2f46d",
+        "feature_evidence_sha256": "0951dd7132a452c882864d2c3ded74e0eb2051cf7dccda18a9ab63947da2c5e2",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "sim": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether sim edges are symmetric in meaning despite being directed, and what the 38 distinct values represent beyond the frequent values shown."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "79804e9f7068a70860e06aad162a7b7ec1c8ecf028545710c776bc3457b2cd9b",
+        "feature_evidence_sha256": "4e104084e5f18a8ee9de353139283c629f6bfcca7d9b7de8851f1c6031266d8c",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "5838dd125a3a74df7f213412cab02926b9a744ef0b584949d9fd95273577b471"
+      }
+    },
+    "sp": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether 'unknown' denotes a genuine part-of-speech category or missing data is not stated.",
+        "The inferred parallel scheme with sp_etcbc lacks explicit configuration confirmation."
+      ],
+      "context_flags": [
+        {
+          "issue": "The semantics of the 'unknown' value are undocumented; it may indicate missing data rather than a linguistic category.",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.sp.metadata.values lists 'unknown' without a gloss"
+          ]
+        },
+        {
+          "issue": "The parallel-scheme relationship between sp and sp_etcbc is inferred, not explicitly wired in configuration.",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_relationships source_feature sp target_feature sp_etcbc status inferred needs_review true"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "90935586a3f33bac535dc4fab630f99630badc21629f6f640d038938ac286c23",
+        "feature_evidence_sha256": "c6992647c01fd765c17f2ef93e863c8d302b47fb89a34ee22dd7264b51801407",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "sp_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The empty string value is frequent but its meaning is unresolved; it may represent untagged words or a distinct category.",
+        "The dss-additions family is marked needs_review, so feature maturity is unverified."
+      ],
+      "context_flags": [
+        {
+          "issue": "feature family maturity",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_family.status"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "90a3c6f49e8e37a1dacf6e7eb20e85ce1fc78817cbc45acd550892dc9181c1f0",
+        "feature_evidence_sha256": "f9ee057f86ce73ec5d67a8d8863d8cf64350610e7e01e9fda4ebafb667227250",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "srcLn": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The absolute feature documentation URL cannot be resolved because {docBase} is undefined in application.configuration.docs.featureBase."
+      ],
+      "context_flags": [
+        {
+          "issue": "Absolute feature documentation URL undetermined",
+          "status": "missing_evidence",
+          "evidence": [
+            "application.configuration.docs.featureBase references undefined {docBase}"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "022b23a7aae83f208b3bc353307661eb1e1b00d9c46af54439b7d60f87ddb403",
+        "feature_evidence_sha256": "da88c8e51150f80677e3af9b554ba05bfdbafafc62b854ed431d696785fa10fe",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "st": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The precise linguistic meaning of values a, c, d, and unknown is not defined in the supplied metadata; only the label 'state (morphology tag)' is given."
+      ],
+      "context_flags": [
+        {
+          "issue": "Value semantics for st are undocumented",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.st.metadata describes st as 'state (morphology tag)' but does not define individual values"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "0c96b2cecd93002f71dd674f7667d07e5fe3f4885412b759a68f06e73959ed95",
+        "feature_evidence_sha256": "3ace91329cde8495427df38c943d93084f5b43559ebfb732970ef0ddab686f8e",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "type": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The source description says 'type of sign or cluster' but sources also list word nodes, so it is unclear whether word values share the same annotation semantics."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature description limits annotation to sign or cluster while sources include word nodes",
+          "status": "inconsistency",
+          "evidence": [
+            "features.type.description",
+            "features.type.sources"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "7bf4dc679b6a07ec7885911a8b58edd514deee3024a674e6b76427d8f9d31717",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "unc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata states that higher values indicate less certainty but does not define the specific meaning of each integer level; sources list only sign nodes, so population on word nodes is unconfirmed."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "63a08ac554aaaf105863a12f73b4bbfafb976c92764af3b6b19ca24b7500a07b",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "uvf_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The meaning of the empty string value is not explicitly defined in metadata.",
+        "Whether uvf_etcbc is expected on all word nodes or only those with univalent final consonants is unresolved."
+      ],
+      "context_flags": [
+        {
+          "issue": "Feature family review status",
+          "status": "missing_evidence",
+          "evidence": [
+            "feature_family.status",
+            "feature_family.needs_review"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "f801615d2444523f0de9028aea1d1379cf1d7bb67a81e3fef4336932cb917d79",
+        "feature_evidence_sha256": "1cf840bbda49224651615139d187c3b389144006267bf9860ff4456beb813d0c",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "vac": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The metadata does not specify whether vac marks inter-word gaps, marginal space, or other unwritten areas."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
+        "feature_evidence_sha256": "afd8ece5f8fa162c8fbb42d02964794c70314f146cc4bbd2403f118ad06ae8ac",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    }
+  }
+}

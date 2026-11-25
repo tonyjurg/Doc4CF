@@ -8,6 +8,12 @@
 
 morphological type \(on word\), syntactical type \(on sentence, group, clause, phrase or wg\)
 
+## Generated description
+
+typems is a node\-level string feature assigning morphological type on word nodes and syntactical type on clause, group, phrase, sentence, subphrase, and wg nodes\. Values are populated on those seven node types; missing assignments record no value rather than a negative class\. Attested values such as common and modifier\-scope may indicate word class or syntactic scope categories\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

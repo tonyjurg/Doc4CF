@@ -8,6 +8,12 @@
 
 translation of the word surface text according to the Berean Interlinear Bible
 
+## Generated description
+
+The trans feature records English translations of word surface text from the Berean Interlinear Bible\. Values are observed on word, phrase, and subphrase nodes, with valueType str\. Frequent values include “the” and “and”\. Because assignments appear on phrase and subphrase nodes as well as words, translations may extend beyond individual word surfaces\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

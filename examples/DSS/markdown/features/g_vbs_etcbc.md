@@ -6,6 +6,12 @@ The consonantal representation of the root formation of a verb in BHSA translite
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_vbs\_etcbc records, on word nodes, the consonantal representation of a verb's root formation in BHSA transliteration\. Populated nodes carry string values; missing assignments mean no value is recorded, not a negative class\. Attested values include H and N\. The feature belongs to the dss\-additions family and derives from automatic morphological parsing corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

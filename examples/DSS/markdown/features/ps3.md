@@ -6,6 +6,12 @@ person (for part 3) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature ps3 records person \(for part 3\) as a morphology tag on word nodes in the Dead Sea Scrolls corpus\. Missing assignments mean no value is recorded, not a negative class\. Attested values include 1 and 2 among three distinct values\. It may encode grammatical person for morphological analysis, but the value to category mapping is not stated in the metadata\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ type of sign or cluster
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature type stores 'type of sign or cluster' as a string on cluster, sign, and word nodes; populated assignments are counted per node type, and missing values indicate no recorded annotation rather than a negative class\. Metadata identifies Martin Abegg's data files as the source, with 20 distinct values including cons and glyph\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

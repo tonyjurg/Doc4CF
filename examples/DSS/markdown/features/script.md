@@ -6,6 +6,12 @@ script in which the word or sign is written if it is not Hebrew
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature script records the writing system of word and sign nodes when it is not Hebrew, using the values paleohebrew and greekcapital\. Populated nodes appear on sign and word types; absent assignments mean no value is recorded rather than a negative class\. The metadata defines the annotation as script used if the writing system is not Hebrew\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ The consonantal representation of a word or sign in BHSA transliteration.
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_cons records a consonantal representation in BHSA transliteration for word nodes, with values populated on 56,931 word nodes and no targets\. Its metadata describes the annotation as the consonantal representation of a word or sign in BHSA transliteration, value type str, and 8,971 distinct values; examples include W and L\. The source credits automatic morphological parsing corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

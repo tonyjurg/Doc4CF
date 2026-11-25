@@ -6,6 +6,12 @@ The consonantal representation of the pronominal suffix of a word in BHSA transl
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_prs\_etcbc records the consonantal representation of a word's pronominal suffix in BHSA transliteration on word nodes\. Missing assignments mean no value is recorded, not a negative class\. Frequent values include NA and W\. It belongs to the dss\-additions family and is licensed CC\-BY\-NC\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

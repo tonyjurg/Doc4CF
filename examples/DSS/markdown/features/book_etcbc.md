@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA
 
 Node · UTF-8 · str
 
+## Generated description
+
+book\_etcbc is a node feature in the dss\-additions family that records ETCBC\-based book names for Dead Sea Scrolls material\. Values are populated on clause, cluster, fragment, lex, line, phrase, scroll, sign, and word nodes; sources counts populated nodes per type, and missing assignments mean no value rather than a negative class\. Concrete values include "Isaiah" and the empty string\. The feature carries a CC\-BY\-NC 4\.0 license and was written by Text\-Fabric in 2022\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

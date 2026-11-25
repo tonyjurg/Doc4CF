@@ -8,6 +8,12 @@
 
 strong number
 
+## Generated description
+
+The strong feature is a node\-level integer annotation recording Strong's concordance numbers\. Values are observed on word, phrase, and subphrase nodes; sources count populated nodes by type, so missing assignments mean no value is recorded rather than a negative class\. It may represent a lexical identifier linking Greek word forms to Strong's Greek dictionary entries, supported by metadata describing it as a strong number with int value type\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

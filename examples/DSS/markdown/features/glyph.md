@@ -6,6 +6,12 @@ representation (Unicode) of a word or sign
 
 Node · UTF-8 · str
 
+## Generated description
+
+The glyph feature is a node\-level transcription feature in the Dead Sea Scrolls corpus that records the Unicode representation of a word or sign\. Values are observed on word nodes and sign nodes, where missing assignments mean no value is recorded rather than a negative class\. It feeds the text\-orig\-full format template \{glyph\}\{punc\}\{after\}\. Frequent values include Hebrew letters such as ו and י\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ The part of speech (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The sp\_etcbc feature records part\-of\-speech morphology tags as string values on word nodes in the Dead Sea Scrolls Text\-Fabric corpus\. Populated nodes carry values such as verb or subs; missing assignments mean no tag is recorded, not a negative class\. The source is automatic morphological parsing corrected by Thijs Amersfoort under the dss\-additions family\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

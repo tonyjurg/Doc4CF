@@ -4,7 +4,9 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from doc4cf import generator as g
-from scripts.apply_n1904_editorial_notes import DESCRIPTION, SOURCE, apply_notes
+from scripts.apply_n1904_editorial_notes import (
+    DESCRIPTION, SOURCE, VERSE_DESCRIPTION, VERSE_SOURCE, apply_notes,
+)
 
 
 class EditorialNotes(unittest.TestCase):
@@ -56,6 +58,36 @@ class EditorialNotes(unittest.TestCase):
             self.build(output, False, corpus="Other corpus")
             with self.assertRaises(ValueError):
                 apply_notes(output)
+
+    def test_verse_clarification_preserves_source_and_provenance(self):
+        for enriched in (False, True):
+            with self.subTest(enriched=enriched), TemporaryDirectory() as temporary:
+                output = Path(temporary)
+                self.build(output, enriched)
+                badge = g.ai_indicator("OpenRouter", "requested", "actual-model", "Generated interpretation")
+                inferred = (f'<section class="inferred-description"><h2>Description {badge}</h2>'
+                            '<p>Verse nodes and their descendants.</p></section>') if enriched else ""
+                metadata = '<details><summary>Source metadata</summary><p>Original XML ref description</p></details>'
+                g.write_page(output, "features/verse.html", "verse.tf", inferred + metadata,
+                             "Greek New Testament (Nestle 1904)")
+                g.write_markdown_feature(
+                    output / "markdown", "verse", "node", "UTF-8", "int", "Original XML ref description",
+                    "Verse nodes and their descendants.", {"sentence": 2}, {"sentence": 1.0}, [(1, 2)],
+                    2, [], {}, {"provider": "OpenRouter", "model": "actual-model"} if enriched else None,
+                    {"description": "Original XML ref description"})
+                apply_notes(output)
+                html = (output / "features/verse.html").read_text(encoding="utf-8")
+                markdown = (output / "markdown/features/verse.md").read_text(encoding="utf-8")
+                for text in (html, markdown):
+                    self.assertIn(VERSE_DESCRIPTION, text)
+                    self.assertIn(VERSE_SOURCE, text)
+                    self.assertIn("Original XML ref description", text)
+                    self.assertNotIn("their descendants", text)
+                if enriched:
+                    self.assertIn("actual-model", html)
+                before = {p: p.read_bytes() for p in output.rglob("*") if p.is_file()}
+                apply_notes(output)
+                self.assertEqual(before, {p: p.read_bytes() for p in before})
 
 
 if __name__ == "__main__":

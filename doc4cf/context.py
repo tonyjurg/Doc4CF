@@ -112,9 +112,10 @@ def _object_response(provider, reply):
 def _analysis_record(system, user_data, provider, model, cache, stage, validator):
     """Request, validate, and cache one context-analysis stage.
 
-    The cache key includes the prompt version and full request. Responses are
-    validated locally even when the provider accepts the JSON Schema; invalid
-    but parseable responses receive at most two correction requests.
+    The cache key includes the prompt version and original request. Transport
+    output allowances can grow without invalidating completed responses.
+    Responses are validated locally even when the provider accepts the JSON
+    Schema; invalid but parseable responses receive at most two corrections.
     """
     label = PROVIDERS[provider][0]
     messages = [
@@ -142,6 +143,14 @@ def _analysis_record(system, user_data, provider, model, cache, stage, validator
         if isinstance(cached, dict) and isinstance(cached.get("data"), dict):
             validator(cached["data"])
             return cached
+    if (provider == "openrouter" and model == "nvidia/nemotron-3.5-super-vl:free"
+            and stage in ("dataset", "families", "feature-descriptions")):
+        # Structured JSON plus Nemotron reasoning can exceed 6k tokens.
+        # Enlarge the transport allowance before the first request, as the
+        # truncation retry would do. Keep the original cache identity so valid
+        # responses produced with the prior allowance are still reusable.
+        request_data["max_tokens"] = 24000 if stage == "families" else 12000
+        payload = json.dumps(request_data, ensure_ascii=False).encode("utf-8")
     request = build_provider_request(provider, payload, "--analyze-context")
     try:
         reply = request_with_completion_retry(request)

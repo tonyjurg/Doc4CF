@@ -6,6 +6,14 @@ Notes by Thijs Amersfoort (11Q19, 1Qisaa) and Saulo de Oliveira Cantanhêde (1Qp
 
 Node · UTF-8 · str
 
+## Reviewed description
+
+The note_etcbc feature stores editorial notes on word nodes. The source description attributes the notes to Thijs Amersfoort for 11Q19 and 1Qisaa, and Saulo de Oliveira Cantanhêde for 1QpHab, during morphological parsing. Values such as Afgebroken and Weer afgebroken are free-text comments. Missing assignments indicate that no note is recorded.
+
+Editorial clarification: [pinned DSS note_etcbc feature header](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/note_etcbc.tf).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

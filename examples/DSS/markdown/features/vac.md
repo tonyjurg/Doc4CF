@@ -6,6 +6,12 @@ empty, unwritten space
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature vac marks empty, unwritten space on sign nodes in the Dead Sea Scrolls Text\-Fabric corpus\. It is an integer feature with a single attested value, 1, recorded on sign nodes; sources count populated nodes only, so unassigned sign nodes have no recorded value rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

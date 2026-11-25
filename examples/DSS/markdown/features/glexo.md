@@ -6,6 +6,12 @@ representation (original source) of a lexeme leaving out non-letters
 
 Node · UTF-8 · str
 
+## Generated description
+
+glexo is a node feature in the Dead Sea Scrolls corpus \(acronym dss\) storing the original\-source representation of a lexeme with non\-letters removed\. Values are populated on lex and word nodes, including forms such as 'w◊' and 'yhwh'; missing assignments indicate no recorded value, not a negative class\. It is used in the lex\-source\-full text format with punco\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

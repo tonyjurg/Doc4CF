@@ -8,6 +8,12 @@
 
 word in unicode characters without accents and diacritical markers
 
+## Generated description
+
+The unaccent node feature assigns a Unicode string to word, phrase, and subphrase nodes, representing word surface text with accents and diacritical markers removed\. Populated node types are word, phrase, and subphrase; missing assignments mean no value is recorded\. Example values include και and ο\. The feature is used in the text\-unaccent\-plain display format together with trailer\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

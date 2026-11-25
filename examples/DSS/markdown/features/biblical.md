@@ -6,6 +6,12 @@ whether we are in biblical material or not
 
 Node · UTF-8 · int
 
+## Generated description
+
+The biblical node feature classifies Dead Sea Scrolls nodes as biblical material \(value 1\) or biblical material that also has nonbiblical material \(value 2\)\. Values are observed on scroll, fragment, line, cluster, and word nodes\. For lines, value 2 may mark reconstruction where biblical material substitutes for nearly absent or identical nonbiblical material\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

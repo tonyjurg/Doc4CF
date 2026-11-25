@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature nr assigns a string label to clause and phrase nodes in the Dead Sea Scrolls corpus\. Clause and phrase displays label nodes with \{nr\}\. Observed values include 1 and 12; missing assignments mean no value is recorded rather than a negative class\. The value type is string\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

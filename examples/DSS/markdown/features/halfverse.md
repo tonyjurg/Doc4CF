@@ -6,6 +6,12 @@ label of the half-verse in which the word occurs
 
 Node · UTF-8 · str
 
+## Generated description
+
+The halfverse feature is a node\-level annotation on word nodes in the Dead Sea Scrolls corpus, recording the half\-verse label in which each word occurs\. Missing assignments mean no value is recorded rather than a negative class\. The two attested values are "a" and "b", likely denoting first and second half\-verse positions, though this interpretation is not explicitly confirmed\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

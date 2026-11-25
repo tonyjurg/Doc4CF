@@ -6,6 +6,12 @@ language of a word or sign, only if it is not Hebrew
 
 Node · UTF-8 · str
 
+## Generated description
+
+The lang node feature annotates word and sign nodes with language only when it is not Hebrew\. Two values are attested: g \(Greek\) and a \(Aramaic\)\. Hebrew words and signs carry no lang value; absence means no value is recorded rather than a negative class\. Values are observed on word and sign nodes\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

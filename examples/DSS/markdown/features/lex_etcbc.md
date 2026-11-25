@@ -6,6 +6,12 @@ The consonantal representation of the lexeme of a word occurrence in BHSA transl
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature lex\_etcbc records the consonantal representation of a word's lexeme in BHSA transliteration\. Values are populated on word nodes; missing assignments mean no value is recorded, not a negative class\. The source description identifies the annotation as automatic morphological parsing corrected by Thijs Amersfoort, released under CC\-BY\-NC\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

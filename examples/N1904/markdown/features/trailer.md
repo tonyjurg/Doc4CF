@@ -8,6 +8,12 @@
 
 material after the end of the word \(excluding critical signs\)
 
+## Generated description
+
+The trailer feature records material after the end of a word, excluding critical signs, on word, phrase, and subphrase nodes where values are populated\. Observed values include " " and ", "\. It feeds text\-display templates such as text\-orig\-plain\. Its boundary with punctuation and after is not cross\-verified, so the distinction may be inconsistent\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

@@ -6,6 +6,14 @@ trailing punctuation (original source) of a word
 
 Node · UTF-8 · str
 
+## Reviewed description
+
+The punco feature records trailing punctuation in the original-source rendering on word nodes. The declared templates pair it with glypho in text-source-full, glexo in lex-source-full, and morpho in morph-source-full; each also uses after. Observed values include . and ±. Missing assignments mean no punctuation value is recorded.
+
+Editorial clarification: [pinned DSS punco feature header](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/punco.tf); [pinned DSS text formats](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/otext.tf).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ similarity between lines, as a percentage of the common material wrt the combine
 
 Edge · UTF-8 · int
 
+## Generated description
+
+The sim feature records directed similarity edges from line nodes to line nodes in the Dead Sea Scrolls corpus\. Edge values are integer percentages measuring shared material against combined material, with frequent values including 60 and 100\. Edge direction runs from source line to target line\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

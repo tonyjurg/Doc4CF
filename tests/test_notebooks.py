@@ -59,13 +59,15 @@ class NotebookConsistency(unittest.TestCase):
 
 
 class N1904BuildModes(unittest.TestCase):
+    notebook_name = "N1904"
+
     def run_build(self, temporary, use_llm, context_pages=True, quota=False):
         folder = Path(temporary)
         corpus = folder / "corpus"
         corpus.mkdir()
         for name in ("word", "lemma"):
             (corpus / f"{name}.tf").write_text("@node\n@valueType=str\n\nx\n", encoding="utf-8")
-        notebook = json.loads((ROOT / "notebooks" / "generate_N1904.ipynb").read_text(encoding="utf-8"))
+        notebook = json.loads((ROOT / "notebooks" / f"generate_{self.notebook_name}.ipynb").read_text(encoding="utf-8"))
         source = "".join(notebook["cells"][12]["source"])
         import shutil
         import subprocess
@@ -87,9 +89,12 @@ class N1904BuildModes(unittest.TestCase):
                 patch.object(context, "contextual_description_record", side_effect=error) as describe, \
                 patch.object(subprocess, "run", return_value=response) as run, \
                 patch.object(shutil, "copyfile"), patch("builtins.print"):
-            exec(compile(source, "N1904:build", "exec"), namespace)  # noqa: S102 - exercise the repository's notebook cell
-        self.assertEqual(run.call_count, 2)
-        self.assertTrue(run.call_args_list[1].args[0][1].endswith("apply_n1904_editorial_notes.py"))
+            exec(compile(source, f"{self.notebook_name}:build", "exec"), namespace)  # noqa: S102 - exercise the repository's notebook cell
+        self.assertEqual(run.call_count, 2 if self.notebook_name == "N1904" or use_llm else 1)
+        if self.notebook_name == "N1904":
+            self.assertTrue(run.call_args_list[1].args[0][1].endswith("apply_n1904_editorial_notes.py"))
+        elif use_llm:
+            self.assertTrue(run.call_args_list[1].args[0][1].endswith("apply_dss_context_notes.py"))
         return namespace, run.call_args_list[0].args[0], describe
 
     def test_offline_build_exports_markdown_without_model_calls(self):
@@ -117,6 +122,10 @@ class N1904BuildModes(unittest.TestCase):
             self.assertNotIn("--model", command)
             self.assertEqual("--context-dir" in command, enabled)
             self.assertEqual("--context-pages" in command, enabled)
+
+
+class DSSBuildModes(N1904BuildModes):
+    notebook_name = "DSS"
 
 
 if __name__ == "__main__":

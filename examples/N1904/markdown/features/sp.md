@@ -8,6 +8,12 @@
 
 part\-of\-speach
 
+## Generated description
+
+The sp feature records part\-of\-speech annotations on word, phrase, and subphrase nodes in the Greek New Testament \(Nestle 1904\) corpus\. Missing assignments mean no value is recorded, not a negative class\. Example values include subs and verb\. It belongs to the Grammatical Morphology family and may encode part\-of\-speech categories across phrasal and word nodes, though its distinction from cls, typ, and typems is undocumented\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes |

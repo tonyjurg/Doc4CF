@@ -6,6 +6,12 @@ the line number of the word in the source data file
 
 Node · UTF-8 · int
 
+## Generated description
+
+srcLn is a node feature recording the line number of each word in Martin Abegg's source data files\. Values are observed on word nodes; missing assignments indicate no recorded value, not a negative class\. The value type is int, and the feature supplies line numbers in word\-type display\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

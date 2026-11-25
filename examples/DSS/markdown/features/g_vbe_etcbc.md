@@ -6,6 +6,12 @@ The consonantal representation of the verbal ending of a word in BHSA transliter
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_vbe\_etcbc records the consonantal representation of a word's verbal ending in BHSA transliteration\. Values are assigned to word nodes; missing assignments indicate no recorded value rather than a negative class\. It belongs to the dss\-additions family, uses string values, and includes forms such as W and TH\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |
