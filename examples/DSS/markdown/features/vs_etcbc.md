@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Generated description
+
+vs\_etcbc is a node feature on word nodes in the Dead Sea Scrolls corpus, part of the dss\-additions family derived from BHSA and machine learning\. It likely records string verbal\-stem values such as qal and piel; words without a value have no assignment recorded rather than a negative class\. Created by Martin G\. Abegg, Martijn Naaijer, and ETCBC \(2020\), converted by Martijn Naaijer and Dirk Roorda from Naaijer's data files under CC\-BY\-NC\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

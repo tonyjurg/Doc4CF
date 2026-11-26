@@ -37,7 +37,7 @@ The `context_manifest.json` and `context_review.json` outputs make the inputs an
 
 ## Current examples
 
-The checked-in sites include AI-assisted feature descriptions alongside deterministic corpus measurements: N1904 has 61 of 61, DSS has 74 of 79, and Old Babylonian has 66 of 67, with `volume` remaining deterministic. N1904 and DSS include complete Markdown companions. DSS stopped at the daily free-model quota; completed responses remain cached for resumption. See the [example methods comparison](example-methods.html) for measured coverage and the inference layers visible in each site. The checked-in sites do not require a model key or network access to browse.
+The checked-in sites include AI-assisted feature descriptions alongside deterministic corpus measurements: N1904 has 61 of 61, DSS has 79 of 79, and Old Babylonian has 66 of 67, with `volume` remaining deterministic. N1904 and DSS include complete Markdown companions. See the [example methods comparison](example-methods.html) for measured coverage and the inference layers visible in each site. The checked-in sites do not require a model key or network access to browse.
 
 The three notebooks under `notebooks/` are the runnable workflows for rebuilding examples from their pinned upstream corpus revisions. Their current settings determine whether a run is offline, context-only, or enriched with per-feature model descriptions.
 

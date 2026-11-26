@@ -666,6 +666,51 @@
       "model": "nvidia/nemotron-3.5-super-vl:free",
       "evidence_mode": "compact",
       "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+    },
+    "verse": {
+      "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+      "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+      "feature_evidence_sha256": "c1074e4a5be933c95ecb78b50d47d42fd1fff700d7835c31749a2df8b03c2d87",
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "evidence_mode": "compact",
+      "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+    },
+    "vs": {
+      "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+      "feature_context_sha256": "60bbc1e8d2f3411acb3f22cb033bf69e7f9995e7a41e4bc8e6ceeb47fa0f9ad3",
+      "feature_evidence_sha256": "7413d39f100178b5dc6133bf9b9ab24f30baa0cf07b8d0a91ccadc5f444d0979",
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "evidence_mode": "compact",
+      "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+    },
+    "vs_etcbc": {
+      "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+      "feature_context_sha256": "d7e432a39052281d6256e410f1c741e52e5117277d33cbb5d0aab385495e0fe7",
+      "feature_evidence_sha256": "45b16213ba3603924080b28fcc7570d0ff8d5e8b1bcf73fd15b2b5d1029b3b07",
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "evidence_mode": "compact",
+      "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+    },
+    "vt": {
+      "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+      "feature_context_sha256": "37e1a8a5ce153d2d70d576792b56dbf02b5ea9dc264af979fea1758628743fe1",
+      "feature_evidence_sha256": "55771c130c4aac393135510dfb60706cfc1b05f50663547e5791217e155c73dd",
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "evidence_mode": "compact",
+      "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+    },
+    "vt_etcbc": {
+      "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+      "feature_context_sha256": "d863346bb24c891ca32b3c40e01b5111a4f46097c31e2e72096e755655ac8c79",
+      "feature_evidence_sha256": "d10847df4ce0dbf1590fa28939af8e6bbe48a61d7cac1145f192691cec76d0a5",
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "evidence_mode": "compact",
+      "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
     }
   },
   "context_flags": {
@@ -1185,6 +1230,35 @@
         ]
       }
     ],
-    "vac": []
+    "vac": [],
+    "verse": [
+      {
+        "issue": "Coverage of non-biblical material by verse labeling is unclear from configuration alone.",
+        "status": "missing_evidence",
+        "evidence": [
+          "context.ambiguities: typeDisplay marks scroll/line/fragment features as biblical while the corpus includes non-biblical scrolls"
+        ]
+      }
+    ],
+    "vs": [],
+    "vs_etcbc": [
+      {
+        "issue": "vs_etcbc value semantics not explicitly defined",
+        "status": "missing_evidence",
+        "evidence": [
+          "features.vs_etcbc.metadata provides only a family-level description; interpretation inferred from frequent values"
+        ]
+      }
+    ],
+    "vt": [
+      {
+        "issue": "vt to vt_etcbc parallel scheme",
+        "status": "inconsistency",
+        "evidence": [
+          "feature_relationships entry cites features.vt.metadata and features.vt_etcbc.metadata; needs_review is true"
+        ]
+      }
+    ],
+    "vt_etcbc": []
   }
 }

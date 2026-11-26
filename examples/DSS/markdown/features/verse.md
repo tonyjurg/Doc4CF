@@ -6,6 +6,12 @@ label of the verse in which the word occurs
 
 Node · UTF-8 · str
 
+## Generated description
+
+The verse feature is a node\-level annotation recording the verse label in which each word occurs, with string values observed on 218,189 word nodes\. It does not cover every word node; missing values mean no verse label is recorded rather than a negative assignment\. Distinct verse labels number 152, and examples include "1" and "2"\. The feature may support locating words within biblical verse divisions, though coverage of non\-biblical material is unclear\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

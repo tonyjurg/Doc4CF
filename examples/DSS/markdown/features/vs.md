@@ -6,6 +6,12 @@ verbal stem (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The vs feature is a node\-level morphological tag recording verbal stem on word nodes in the Dead Sea Scrolls corpus\. Values are populated on word nodes; unattested words have no recorded value rather than a negative stem assignment\. Attested stems include qal and hifil among 41 distinct values, with one value marking cases where the stem is not identified\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -2,300 +2,6 @@
   "inventory_sha256": "15e81fe666b9e61402920ef2d8237df36b096ba83b4b004addd977d20d8037a9",
   "affected_descriptions": [
     {
-      "feature": "glypho",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "gn",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "gn2",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "gn3",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "gn_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "halfverse",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "intl",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lang",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lang_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lex",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lex_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lex_utf8_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lexe",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "lexo",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "line",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "md",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "merr",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "morph_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "morpho",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "note_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "nr",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "nu",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "nu2",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "nu3",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "nu_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "occ",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "oslots",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "otext",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "otype",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "ps",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "ps2",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "ps3",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "ps_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "punc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "punce",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "punco",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "rec",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "rem",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "script",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "scroll",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "sim",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "sp",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "sp_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "srcLn",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "st",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "type",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "unc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "uvf_etcbc",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
-      "feature": "vac",
-      "reasons": [
-        "No previously applied contextual description"
-      ]
-    },
-    {
       "feature": "verse",
       "reasons": [
         "No previously applied contextual description"
@@ -400,7 +106,12 @@
     "type",
     "unc",
     "uvf_etcbc",
-    "vac"
+    "vac",
+    "verse",
+    "vs",
+    "vs_etcbc",
+    "vt",
+    "vt_etcbc"
   ],
   "context_flags": [
     {
@@ -1034,6 +745,42 @@
           "evidence": [
             "feature_family.status",
             "feature_family.needs_review"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "verse",
+      "flags": [
+        {
+          "issue": "Coverage of non-biblical material by verse labeling is unclear from configuration alone.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: typeDisplay marks scroll/line/fragment features as biblical while the corpus includes non-biblical scrolls"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "vs_etcbc",
+      "flags": [
+        {
+          "issue": "vs_etcbc value semantics not explicitly defined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.vs_etcbc.metadata provides only a family-level description; interpretation inferred from frequent values"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "vt",
+      "flags": [
+        {
+          "issue": "vt to vt_etcbc parallel scheme",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_relationships entry cites features.vt.metadata and features.vt_etcbc.metadata; needs_review is true"
           ]
         }
       ]
@@ -2985,6 +2732,132 @@
         "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
         "feature_context_sha256": "4a859b7e5678e9c67e17eebe5385a14720397c138a0b9444ed896c68772258bb",
         "feature_evidence_sha256": "afd8ece5f8fa162c8fbb42d02964794c70314f146cc4bbd2403f118ad06ae8ac",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "verse": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether verse labels extend to non-biblical scrolls or only biblical material is unresolved; missing assignments indicate no recorded value, not a negative class."
+      ],
+      "context_flags": [
+        {
+          "issue": "Coverage of non-biblical material by verse labeling is unclear from configuration alone.",
+          "status": "missing_evidence",
+          "evidence": [
+            "context.ambiguities: typeDisplay marks scroll/line/fragment features as biblical while the corpus includes non-biblical scrolls"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "1eb50ec9b01183400ef4d65bfd661a4968ef410f53fadadebf0dececfe393461",
+        "feature_evidence_sha256": "c1074e4a5be933c95ecb78b50d47d42fd1fff700d7835c31749a2df8b03c2d87",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "vs": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "Whether the metadata value denoting an unidentifiable stem represents a genuine analytical unknown or an unassigned category is not stated.",
+        "Whether all 41 metadata values occur among populated word nodes or some are defined but unused is not established."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "60bbc1e8d2f3411acb3f22cb033bf69e7f9995e7a41e4bc8e6ceeb47fa0f9ad3",
+        "feature_evidence_sha256": "7413d39f100178b5dc6133bf9b9ab24f30baa0cf07b8d0a91ccadc5f444d0979",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "vs_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The explicit value gloss for vs_etcbc is not in the supplied metadata; 'verbal-stem' is inferred from attested values and BHSA provenance.",
+        "Coverage across Hebrew, Aramaic, and Greek words is unresolved; lang metadata treats Hebrew specially."
+      ],
+      "context_flags": [
+        {
+          "issue": "vs_etcbc value semantics not explicitly defined",
+          "status": "missing_evidence",
+          "evidence": [
+            "features.vs_etcbc.metadata provides only a family-level description; interpretation inferred from frequent values"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "d7e432a39052281d6256e410f1c741e52e5117277d33cbb5d0aab385495e0fe7",
+        "feature_evidence_sha256": "45b16213ba3603924080b28fcc7570d0ff8d5e8b1bcf73fd15b2b5d1029b3b07",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "vt": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The parallel-scheme link between vt and vt_etcbc is inferred from metadata and marked needs_review; it is not explicitly verified."
+      ],
+      "context_flags": [
+        {
+          "issue": "vt to vt_etcbc parallel scheme",
+          "status": "inconsistency",
+          "evidence": [
+            "feature_relationships entry cites features.vt.metadata and features.vt_etcbc.metadata; needs_review is true"
+          ]
+        }
+      ],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "37e1a8a5ce153d2d70d576792b56dbf02b5ea9dc264af979fea1758628743fe1",
+        "feature_evidence_sha256": "55771c130c4aac393135510dfb60706cfc1b05f50663547e5791217e155c73dd",
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "evidence_mode": "compact",
+        "prompt_sha256": "abc63af1c48114f81dee216497389e699c033df61b8bd1457c9bbbf1daaf7c04"
+      }
+    },
+    "vt_etcbc": {
+      "provider": "OpenRouter",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "responding_model": "nvidia/nemotron-3.5-super-vl:free",
+      "uncertainties": [
+        "The gloss \"verbal tense or aspect\" is inferred from value shapes such as perf and impf and the BHSA provenance, not explicitly defined in vt_etcbc metadata; the exact annotation scheme remains unspecified."
+      ],
+      "context_flags": [],
+      "evidence_requests": [],
+      "additional_evidence": [],
+      "input_fingerprints": {
+        "dataset_context_sha256": "88c7a0ff986e8fff9130add4f6dd8cf13afac7217ea37c42d1c274868c5a83ce",
+        "feature_context_sha256": "d863346bb24c891ca32b3c40e01b5111a4f46097c31e2e72096e755655ac8c79",
+        "feature_evidence_sha256": "d10847df4ce0dbf1590fa28939af8e6bbe48a61d7cac1145f192691cec76d0a5",
         "provider": "openrouter",
         "model": "nvidia/nemotron-3.5-super-vl:free",
         "evidence_mode": "compact",
