@@ -6,6 +6,12 @@ label of the chapter in which the word occurs
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature chapter records the chapter label in which a word occurs, as a string value on word nodes\. Missing assignments mean no value is recorded rather than a negative class\. Frequent labels include "1" and "5"\. The source description identifies values as chapter labels, but the inventory does not state whether labels are unique across scrolls or how non\-biblical material is chaptered\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

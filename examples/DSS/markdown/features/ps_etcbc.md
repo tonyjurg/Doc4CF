@@ -6,6 +6,14 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Reviewed description
+
+The ps_etcbc feature assigns string codes to word nodes in the DSS additions. Attested values include NA and p3. The metadata describes BHSA-based additions but does not supply a code-to-category mapping. A parallel-scheme relationship to ps is inferred in the context artifacts; it does not establish equivalence between their value sets.
+
+Editorial clarification: [pinned DSS ps_etcbc feature header](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/ps_etcbc.tf).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

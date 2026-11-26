@@ -6,6 +6,12 @@ representation (Unicode) of a lexeme leaving out non-letters
 
 Node · UTF-8 · str
 
+## Generated description
+
+The glex node feature records a Unicode representation of a lexeme with non\-letters omitted\. Values are populated on lex and word nodes; missing assignments mean no value is recorded rather than a negative class\. Concrete values include וְ and יהוה\. It may represent a normalized lexical form used across Hebrew and Aramaic material\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

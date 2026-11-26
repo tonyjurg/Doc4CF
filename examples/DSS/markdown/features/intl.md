@@ -6,6 +6,12 @@ interlinear material, the value indicates the sequence number of the interlinear
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature intl annotates interlinear material on sign and word nodes, with 1,189 populated sign nodes and 443 populated word nodes\. Its integer value indicates the sequence number of the interlinear line; two distinct values occur \(1 and 2\)\. Missing assignments mean no value is recorded, not a negative class\. Source: Martin Abegg's data files, personal communication\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

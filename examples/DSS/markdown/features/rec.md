@@ -6,6 +6,12 @@ reconstructed by a modern editor
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature rec records integer value 1 on sign nodes in the Dead Sea Scrolls corpus, annotated as 'reconstructed by a modern editor' in feature metadata\. Populated sign nodes carry this value; nodes without an assignment have no value recorded rather than a negative class\. The single value may indicate editorial reconstruction, but absence does not establish non\-reconstruction\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

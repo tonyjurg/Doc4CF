@@ -6,6 +6,12 @@ gender (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The gn feature is a node\-level morphological annotation on word nodes in the Dead Sea Scrolls corpus, recording gender as a morphology tag\. Populated assignments indicate recorded values; missing assignments mean no value is recorded rather than a negative class\. Concrete values include m and f, with additional values documented in the feature metadata sourced from Martin Abegg's data files\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

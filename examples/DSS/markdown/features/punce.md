@@ -6,6 +6,12 @@ trailing punctuation (ETCBC transliteration) of a word
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature punce records trailing punctuation in ETCBC transliteration for word nodes in the Dead Sea Scrolls corpus\. Missing assignments mean no value is recorded rather than a negative class\. It co\-occurs with glexe and after in the lex\-trans\-full text format\. Concrete values include "00" and "0000"\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

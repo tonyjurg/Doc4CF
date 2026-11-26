@@ -6,6 +6,12 @@ number (for part 3) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature nu3 records a morphology tag described as 'number \(for part 3\)' and is populated on word nodes, with one attested value, 's' \(valueType str\)\. Its source is Martin Abegg's data files via personal communication\. Because sources counts only populated nodes, missing assignments mean no value is recorded rather than a negative class\. The value 's' may indicate singular number, but the inventory does not explicitly define the value set\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

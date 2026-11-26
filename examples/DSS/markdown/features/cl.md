@@ -6,6 +6,14 @@ class (morphology tag)
 
 Node · UTF-8 · str
 
+## Reviewed description
+
+The cl feature records a morphological class tag on word nodes in the Dead Sea Scrolls corpus. Its metadata identifies Martin Abegg's data files as the source. Attested values include cmn and prep. Missing assignments mean no tag is recorded. Corpus credits and the Creative Commons Attribution-NonCommercial license remain recorded separately in the source metadata.
+
+Editorial clarification: [pinned DSS cl feature header](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/cl.tf).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

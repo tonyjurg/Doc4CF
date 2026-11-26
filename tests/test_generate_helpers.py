@@ -64,6 +64,39 @@ class ReviewCandidates(unittest.TestCase):
         self.assertEqual(found, [])
 
 
+class FeatureEvidence(unittest.TestCase):
+    def test_requests_include_matching_app_and_family_evidence(self):
+        measured = {"name": "word", "kind": "node", "sources": {"word": 2},
+                    "coverage": {"word": 1.0}, "value_count": 2,
+                    "endpoint_pairs": [], "degree_summary": {}, "frequent": [("logos", 2)]}
+        family = {"features": ["word", "lemma"]}
+        relation = {"source_feature": "word", "target_feature": "lemma"}
+        other = {"source_feature": "chapter", "target_feature": "verse"}
+        app = {"feature_application_links": {"word": {"setting": "shown"}, "other": {"secret": "omit"}},
+               "linked_documentation": {"features": {"word": [{"text": "Word docs"}]}}}
+        result = generator._feature_description_evidence(
+            "Corpus", measured, {"description": "Word"}, app, "Editor notes",
+            ({"dataset_profile": "Profile"}, [family], [relation, other], None))
+        self.assertEqual(result["sources"], {"word": 2})
+        self.assertEqual(result["frequent"], [("logos", 2)])
+        self.assertEqual(result["feature_metadata"], {"description": "Word"})
+        self.assertEqual(result["corpus_editor_notes"], "Editor notes")
+        self.assertEqual(result["context"]["feature_family"], family)
+        self.assertEqual(result["context"]["feature_relationships"], [relation])
+        self.assertEqual(result["application_evidence"]["feature_links"], {"setting": "shown"})
+        for key in ("coverage", "value_count", "endpoint_pairs", "degree_summary"):
+            self.assertNotIn(key, result)
+
+    def test_edge_requests_keep_endpoint_measurements(self):
+        measured = {"name": "frame", "kind": "edge", "endpoint_pairs": [{"edge_count": 2}],
+                    "degree_summary": {"word": {"max": 2}}}
+        result = generator._feature_description_evidence("Corpus", measured, {})
+        self.assertEqual(result["endpoint_pairs"], measured["endpoint_pairs"])
+        self.assertEqual(result["degree_summary"], measured["degree_summary"])
+        self.assertNotIn("context", result)
+        self.assertNotIn("application_evidence", result)
+
+
 class Sections(unittest.TestCase):
     def test_overview_escapes_editor_notes(self):
         html = generator._overview_section("one <b>\n\ntwo", None)

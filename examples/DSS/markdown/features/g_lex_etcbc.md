@@ -6,6 +6,12 @@ The consonantal representation of the realised lexeme of a word occurrence in BH
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_lex\_etcbc records the consonantal representation of the realised lexeme of a word occurrence in BHSA transliteration\. Values are observed on word nodes in the Dead Sea Scrolls corpus; missing assignments mean no value is recorded rather than a negative class\. Frequent values include W and L\. The feature belongs to the dss\-additions family, with metadata indicating automatic morphological parsing corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ verbal tense/aspect (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The vt feature is a node\-level morphological annotation observed on word nodes in the Dead Sea Scrolls corpus\. It encodes verbal tense/aspect as string values such as perf and impf, sourced from Martin Abegg's data files\. Unpopulated word nodes have no recorded value rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

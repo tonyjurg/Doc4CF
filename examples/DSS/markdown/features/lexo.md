@@ -6,6 +6,14 @@ representation (original source) of a lexeme
 
 Node · UTF-8 · str
 
+## Reviewed description
+
+The lexo feature records an original-source lexeme representation on lex and word nodes. The app lists it as a bare display feature for lex nodes. The TF configuration includes it in lex-default, with template word#{lang:h}-{lex}-{lexe}-{lexo}. The surface-text template text-orig-full uses glyph, punc, and after. Missing assignments indicate no recorded value.
+
+Editorial clarification: [pinned DSS text formats](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/otext.tf); [pinned DSS app configuration](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/app/config.yaml).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

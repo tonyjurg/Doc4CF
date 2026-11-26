@@ -6,6 +6,12 @@ class (for part 2) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature cl2 records a morphology class tag for part 2 on word nodes in the Dead Sea Scrolls corpus\. Missing assignments mean no value is recorded rather than a negative class\. Attested values include d and n among four distinct values\. The feature belongs to the morphology family and is sourced from Martin Abegg's data files\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

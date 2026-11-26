@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA
 
 Node · UTF-8 · str
 
+## Generated description
+
+lang\_etcbc is a node feature in the Dead Sea Scrolls Text\-Fabric corpus that records language for sign and word nodes\. Missing assignments indicate no recorded language rather than a negative class\. The feature explicitly includes Hebrew alongside Aramaic, which may indicate broader coverage than the related lang feature\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

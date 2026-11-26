@@ -6,6 +6,12 @@ removed by an ancient or modern editor
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature rem records editorial removal on sign nodes in the Dead Sea Scrolls corpus\. Its integer values are 1 = modern and 2 = ancient, indicating removal by a modern or ancient editor\. The sources inventory records 2264 populated sign nodes; nodes without a value have no recorded assignment rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

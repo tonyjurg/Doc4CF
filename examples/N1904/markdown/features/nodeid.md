@@ -2,106 +2,64 @@
 
 [← Corpus index](../index.md)
 
-node id (as in the XML source data)
+**Node feature** · UTF\-8 · str
 
-Node · UTF-8 · str
+## Description
+
+node id \(as in the XML source data\)
 
 ## Generated description
 
-*AI-assisted · OpenRouter · nvidia/nemotron-3.5-super-vl:free*
+nodeid stores the XML source node identifier as a string\. Populated values appear on clause, sentence, and wg nodes; sources counts populated nodes only, so missing types have no recorded value rather than a negative class\. The value 400010200010490 shows the opaque numeric format\. Metadata ties the identifier to the Nestle 1904 XML source processed by Text\-Fabric\.
 
-nodeid is a node-level string feature recording the XML source-data node ID. It is populated on clause (4720 nodes), sentence (838 nodes), and wg (5558 nodes), with 5,558 distinct values such as 400010200010490 (frequency 2). Sources count populated nodes only; absence on other node types means no value is recorded, not a negative assignment.
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
 
 ## Applies to
 
-| Node type | Populated nodes (% of node type) |
-| --- | --- |
-| [sentence](../../structure.html#type-sentence) | 838 (10.5%) |
-| [clause](../../structure.html#type-clause) | 4,720 (11.1%) |
-| [wg](../../structure.html#type-wg) | 5,558 (5.2%) |
+| Node type | Populated nodes |
+| --- | ---: |
+| sentence | 838 (10.5%) |
+| clause | 4,720 (11.1%) |
+| wg | 5,558 (5.2%) |
 
 ## Frequent values
 
-5,558 distinct values. Whitespace is shown in quotes.
-
 | Value | Occurrences | % of populated values |
-| --- | --- | --- |
-| "400010200010490" | 2 | 0.0% |
-| "400010200120390" | 2 | 0.0% |
-| "400010200130100" | 2 | 0.0% |
-| "400010210050150" | 2 | 0.0% |
-| "400010220140230" | 2 | 0.0% |
-| "400010230010220" | 2 | 0.0% |
-| "400020010140270" | 2 | 0.0% |
-| "400020020010200" | 2 | 0.0% |
-| "400020050010370" | 2 | 0.0% |
-| "400020050090290" | 2 | 0.0% |
-| "400020060030110" | 2 | 0.0% |
-| "400020080020210" | 2 | 0.0% |
+| --- | ---: | ---: |
+| `"400010200010490"` | 2 | 0.0% |
+| `"400010200120390"` | 2 | 0.0% |
+| `"400010200130100"` | 2 | 0.0% |
+| `"400010210050150"` | 2 | 0.0% |
+| `"400010220140230"` | 2 | 0.0% |
+| `"400010230010220"` | 2 | 0.0% |
+| `"400020010140270"` | 2 | 0.0% |
+| `"400020020010200"` | 2 | 0.0% |
+| `"400020050010370"` | 2 | 0.0% |
+| `"400020050090290"` | 2 | 0.0% |
+| `"400020060030110"` | 2 | 0.0% |
+| `"400020080020210"` | 2 | 0.0% |
 
-## Correlated features
-
-- [crule](crule.md) sentence · φ +1.00
-
-- [cls](cls.md) sentence · φ +0.56
-
-### Presence/absence associations
-
-Each comparison is calculated separately across all nodes of the listed type. Present means the feature has an assigned value; absent means no assignment. φ ranges from −1 (opposite presence patterns) to +1 (matching patterns). Only non-constant pairs with at least 10 present and 10 absent nodes per feature, and |φ| ≥ 0.10, are shown. Identical presence patterns are grouped. These are descriptive associations, not causal claims. [Read the scoring method](https://tonyjurg.github.io/Doc4CF/api/architecture.html#measured-feature-associations).
-
-### sentence nodes
-
-| Compared feature(s) | φ | nodeid present when compared feature is present | nodeid present when compared feature is absent |
-| --- | --- | --- | --- |
-| [crule](crule.md) | +1.00 | 838 / 838 (100.0%) | 0 / 7,173 (0.0%) |
-| [cls](cls.md) | +0.56 | 691 / 1,476 (46.8%) | 147 / 6,535 (2.2%) |
-| [rule](rule.md) | -1.00 | 0 / 7,173 (0.0%) | 838 / 838 (100.0%) |
-| [typems](typems.md) | -0.58 | 0 / 5,946 (0.0%) | 838 / 2,065 (40.6%) |
-
-### clause nodes
-
-| Compared feature(s) | φ | nodeid present when compared feature is present | nodeid present when compared feature is absent |
-| --- | --- | --- | --- |
-| [crule](crule.md) | +1.00 | 4,720 / 4,720 (100.0%) | 0 / 37,786 (0.0%) |
-| [cls](cls.md) | +0.18 | 4,281 / 28,676 (14.9%) | 439 / 13,830 (3.2%) |
-| [rule](rule.md) | -1.00 | 0 / 37,786 (0.0%) | 4,720 / 4,720 (100.0%) |
-| [function](function.md) | -0.36 | 0 / 21,568 (0.0%) | 4,720 / 20,938 (22.5%) |
-
-### wg nodes
-
-| Compared feature(s) | φ | nodeid present when compared feature is present | nodeid present when compared feature is absent |
-| --- | --- | --- | --- |
-| [crule](crule.md) | +1.00 | 5,558 / 5,558 (100.0%) | 0 / 101,310 (0.0%) |
-| [cls](cls.md) | +0.11 | 4,972 / 72,788 (6.8%) | 586 / 34,080 (1.7%) |
-| [rule](rule.md) | -0.61 | 0 / 93,234 (0.0%) | 5,558 / 13,634 (40.8%) |
-| [typems](typems.md) | -0.31 | 1 / 68,710 (0.0%) | 5,557 / 38,158 (14.6%) |
-
-## How the app uses this feature
-
-These settings describe configured app presentation and documented guidance; they are separate from the measured corpus data above.
-
-| App setting or format | Configured value |
-| --- | --- |
-| Feature documentation | [Open source documentation](https://github.com/CenterBLC/N1904/blob/main/docs/features/nodeid.md) Source: `docs/features/nodeid.md`; configured at `configuration.docs.featureBase` |
-
-### Source metadata
+<details>
+<summary>Source metadata</summary>
 
 | Field | Value |
 | --- | --- |
 | author | Evangelists and apostles |
-| converterSourceLocation | https://github.com/saulocantanhede/tfgreek2/tree/main/programs |
-| converterVersion | 1.0.0 (July 9, 2024) |
+| converterSourceLocation | https://github\.com/saulocantanhede/tfgreek2/tree/main/programs |
+| converterVersion | 1\.0\.0 \(July 9, 2024\) |
 | converters | Saulo de Oliveira Cantanhêde, Tony Jurg, Dirk Roorda |
-| dataSource | MACULA Greek Linguistic Datasets, available at https://github.com/Clear-Bible/macula-greek/tree/main/Nestle1904/lowfat |
+| dataSource | MACULA Greek Linguistic Datasets, available at https://github\.com/Clear\-Bible/macula\-greek/tree/main/Nestle1904/lowfat |
 | dataSourceFormat | XML lowfat tree data |
-| dataSourceLocation | https://github.com/saulocantanhede/tfgreek2/tree/main/xml/2022-11-01/gnt |
-| description | node id (as in the XML source data) |
-| editors | Eberhart Nestle (1904) |
-| institute | ETCBC (Eep Talstra Centre for Bible and Computer) at Vrije Universiteit Amsterdam, CBLC (Center of Biblical Languages and Computing) at Andrews University |
-| title | Greek New Testament (Nestle 1904) |
+| dataSourceLocation | https://github\.com/saulocantanhede/tfgreek2/tree/main/xml/2022\-11\-01/gnt |
+| description | node id \(as in the XML source data\) |
+| editors | Eberhart Nestle \(1904\) |
+| institute | ETCBC \(Eep Talstra Centre for Bible and Computer\) at Vrije Universiteit Amsterdam, CBLC \(Center of Biblical Languages and Computing\) at Andrews University |
+| title | Greek New Testament \(Nestle 1904\) |
 | valueType | str |
-| version | 1.0.0 |
+| version | 1\.0\.0 |
 | xmlSourceDate | February 9, 2023 |
-| xmlVersion | 2022-11-01 |
-| writtenBy | Text-Fabric |
-| dateWritten | 2024-07-28T01:57:14Z |
+| xmlVersion | 2022\-11\-01 |
+| writtenBy | Text\-Fabric |
+| dateWritten | 2024\-07\-28T01:57:14Z |
+
+</details>

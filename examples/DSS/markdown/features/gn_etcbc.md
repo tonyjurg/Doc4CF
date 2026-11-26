@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Generated description
+
+gn\_etcbc is a node feature on word nodes; missing assignments indicate no value rather than a negative class\. It has five distinct values, including m and f\. Part of the DSS additions family based on BHSA and machine learning, it may encode grammatical gender, paralleling gn, but this interpretation is unproven\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

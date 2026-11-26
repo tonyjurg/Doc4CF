@@ -6,6 +6,12 @@ The consonantal representation of the preformative of a word in BHSA translitera
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_pfm\_etcbc records the consonantal representation of a word's preformative in BHSA transliteration\. It is populated on word nodes, with missing assignments indicating no recorded value rather than a negative class\. Attested values include J and T among nine distinct strings\. The feature originates from automatic morphological parsing corrected by Thijs Amersfoort and is licensed CC\-BY\-NC\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ label of a fragment of a scroll
 
 Node · UTF-8 · str
 
+## Generated description
+
+The fragment feature is a node\-level string annotation recording the label of a fragment of a Dead Sea Scrolls scroll\. Values are populated on fragment nodes and line nodes; absent assignments mean no value is recorded, not a negative class\. Distinct labels include f1 and f2\. Source: Martin Abegg's data files, personal communication\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

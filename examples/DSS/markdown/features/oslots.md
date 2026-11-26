@@ -6,6 +6,12 @@ Maps each non-slot node to the slot nodes that make up its textual span. This co
 
 Edge · UTF-8 · str
 
+## Generated description
+
+The oslots edge feature maps non\-slot nodes to the sign slots they cover, so following an oslots edge returns a node's constituent slots and supports locating its text span\. Source\-node counts differ from edge counts\. These links show slot membership only, not parenthood, semantics, or order\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

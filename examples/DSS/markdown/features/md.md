@@ -6,6 +6,12 @@ mood (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The md node feature records mood as a morphological tag on word nodes, with values populated for 1984 word nodes\. Attested values include juss and coho among four distinct values \(coho, cons, juss, unknown\)\. The feature belongs to the DSS morphology tagging family and derives from Martin Abegg's data files via personal communication\. Missing assignments indicate no value is recorded rather than a negative class\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

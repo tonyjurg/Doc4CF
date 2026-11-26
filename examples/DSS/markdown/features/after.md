@@ -6,6 +6,12 @@ space behind the word, if any
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature after records the space behind a word or sign, if any, in the Dead Sea Scrolls corpus\. Populated values occur on word and sign nodes; the sole attested value is a space character\. Missing assignments mean no value is recorded rather than a negative class\. It is co\-used with full, fulle, and fullo in extra text formats\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

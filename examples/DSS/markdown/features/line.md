@@ -6,6 +6,12 @@ label of a line of a fragment of a scroll
 
 Node · UTF-8 · str
 
+## Generated description
+
+The line node feature records the label of a line of a fragment of a scroll in the Dead Sea Scrolls corpus\. Values are populated on 52895 line nodes; sources counts only nodes with recorded values, so absences are not negative assignments\. Frequent values include "1" and "2", likely indicating sequential line numbers within fragments or scrolls\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

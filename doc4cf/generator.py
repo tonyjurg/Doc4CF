@@ -632,7 +632,7 @@ _MAX_ASSOCIATION_WORK = 40_000_000
 
 
 def _bounded_association_features(feature_ids: dict[str, Any]) -> dict[str, Any]:
-    """Keep the best-covered features so pair counting stays within a fixed budget.
+    """Keep the best-covered eligible features within a fixed pair-counting budget.
 
     Counting co-occurrences costs about ``entries * (features - 1) / 2`` steps, so
     the work grows with the square of the number of features. Features are kept in
@@ -648,7 +648,7 @@ def _bounded_association_features(feature_ids: dict[str, Any]) -> dict[str, Any]
         kept.append(name)
         entries = proposed_entries
     if len(kept) < len(feature_ids):
-        logger.warning("Feature associations compare the %d best-covered of %d features for one node type.",
+        logger.warning("Feature associations compare the %d best-covered of %d eligible features for one node type.",
                        len(kept), len(feature_ids))
     return {name: feature_ids[name] for name in kept}
 
@@ -676,6 +676,11 @@ def _feature_associations(
     by_type: dict[str, dict[str, Any]] = {node_type: {} for node_type in order}
     for name, per_type in node_assignments.items():
         for node_type, ids in per_type.items():
+            # These margins cannot pass record() for any pair. Exclude them
+            # before the work budget so constant fields cannot displace useful
+            # comparisons simply because they have the most assignments.
+            if min(len(ids), node_counts.get(node_type, 0) - len(ids)) < 10:
+                continue
             if any(ids[index] > ids[index + 1] for index in range(len(ids) - 1)):
                 ids = array("Q", sorted(ids))
             by_type[node_type][name] = ids
@@ -790,16 +795,20 @@ def _feature_associations(
 
 def _association_limit_notice(
     name: str, node_types: dict[str, Any], limited_types: dict[str, tuple[int, set[str]]],
+    node_counts: dict[str, int] | None = None,
 ) -> str:
     """Explain partial comparisons on the affected feature pages."""
     notices = []
     for node_type in node_types:
+        if node_counts is not None and min(len(node_types[node_type]),
+                                          node_counts.get(node_type, 0) - len(node_types[node_type])) < 10:
+            continue
         if node_type not in limited_types:
             continue
         total, selected = limited_types[node_type]
         excluded = " This feature was excluded from that comparison." if name not in selected else ""
         notices.append(f"<p>Association analysis on {e(node_type)} nodes is limited to the "
-                       f"{len(selected):,} best-covered of {total:,} features.{excluded}</p>")
+                       f"{len(selected):,} best-covered of {total:,} eligible features.{excluded}</p>")
     return ('<aside class="association-limits"><h2>Association coverage</h2>'
             + "".join(notices) + "</aside>") if notices else ""
 
@@ -1249,6 +1258,37 @@ def _fallback_audit_body(feature_audit: dict[str, Any], application: dict[str, A
                         evidence_audit, "Show evidence details")
     )
 
+def _feature_description_evidence(
+    corpus: str, measured: dict[str, Any], metadata: dict[str, Any],
+    application: dict[str, Any] | None = None, notes: str = "",
+    context_data: tuple[Any, ...] | None = None,
+) -> dict[str, Any]:
+    """Build identical request evidence for notebook cache preparation and site generation."""
+    name = measured["name"]
+    omitted = {"coverage", "value_count"}
+    if measured["kind"] != "edge":
+        omitted.update(("endpoint_pairs", "degree_summary"))
+    evidence = dict(corpus=corpus, **{key: value for key, value in measured.items() if key not in omitted})
+    evidence["feature_metadata"] = metadata
+    if application:
+        feature_links = application.get("feature_application_links", {}).get(name)
+        linked_docs = application.get("linked_documentation", {}).get("features", {}).get(name)
+        if feature_links or linked_docs:
+            evidence["application_evidence"] = {"feature_links": feature_links or {},
+                                                "linked_documentation": linked_docs or []}
+    if notes:
+        evidence["corpus_editor_notes"] = notes
+    if context_data:
+        dataset, families, relationships, _ = context_data
+        evidence["context"] = {
+            "dataset": dataset,
+            "feature_family": next((family for family in families if name in family["features"]), None),
+            "feature_relationships": [relation for relation in relationships
+                                      if name in (relation["source_feature"], relation["target_feature"])],
+        }
+    return evidence
+
+
 def generate(args: argparse.Namespace) -> None:
     """Build a corpus reference in HTML and optionally Markdown.
 
@@ -1364,36 +1404,9 @@ def generate(args: argparse.Namespace) -> None:
             edges.append({"from":fid, "to":t, "relation":"valid on"})
         body = f'<p>{e(p["description"])}</p><p>{e(kind.title())} · {e(info["encoding"])} · {e(meta.get("valueType", "configuration" if kind=="config" else "unvalued"))}</p>'
         if args.model and n in selected:
-            omitted_evidence = {"coverage", "value_count"}
-            if kind != "edge":
-                omitted_evidence.update(("endpoint_pairs", "degree_summary"))
-            evidence = dict(corpus=corpus, **{
-                key: value for key, value in p.items()
-                if key not in omitted_evidence
-            })
-            # Raw headers are direct corpus evidence for every feature. Keep
-            # shared app context compact by attaching only matching settings
-            # and explicitly linked local docs to each feature request.
-            evidence["feature_metadata"] = meta
-            if application:
-                feature_links = application.get("feature_application_links", {}).get(n)
-                linked_docs = application.get("linked_documentation", {}).get("features", {}).get(n)
-                if feature_links or linked_docs:
-                    evidence["application_evidence"] = {
-                        "feature_links": feature_links or {},
-                        "linked_documentation": linked_docs or [],
-                    }
-            if notes:
-                evidence["corpus_editor_notes"] = notes
+            evidence = _feature_description_evidence(corpus, p, meta, application, notes, context_data)
             if context_data:
                 from .context import contextual_description_record
-                dataset_context, families, relationships, _ = context_data
-                related_family = next((family for family in families if n in family["features"]), None)
-                related_relationships = [relation for relation in relationships
-                                         if n in (relation["source_feature"], relation["target_feature"])]
-                evidence["context"] = {"dataset": dataset_context,
-                                        "feature_family": related_family,
-                                        "feature_relationships": related_relationships}
                 record = contextual_description_record(
                     evidence, feature_model, args.cache, provider, set(files), observed_values,
                     api=api, feature_kind=kind,
@@ -1452,7 +1465,7 @@ def generate(args: argparse.Namespace) -> None:
                 [(e(json.dumps(v, ensure_ascii=False)), f"{count:,}",
                   f"{count / p['value_count']:.1%}" if p["value_count"] else "—")
                  for v, count in p["frequent"]])
-        body += _association_limit_notice(n, node_assignments.get(n, {}), limited_association_types)
+        body += _association_limit_notice(n, node_assignments.get(n, {}), limited_association_types, node_counts)
         related = associations.get(n, [])
         if related:
             correlated: dict[str, dict[str, Any]] = {}

@@ -6,6 +6,12 @@ The consonantal representation of the nominal ending of a word in BHSA translite
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature g\_nme\_etcbc records the consonantal representation of a word's nominal ending in BHSA transliteration on word nodes\. Missing assignments mean no value is recorded, not a negative class\. Frequent values include the empty string and /J\. It belongs to the dss\-additions family; metadata attributes the data to automatic morphological parsing later corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

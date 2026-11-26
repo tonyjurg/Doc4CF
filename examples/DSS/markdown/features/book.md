@@ -6,6 +6,12 @@ acronym of the book in which the word occurs
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature book records, as a string acronym, the book in which each word occurs\. Values are observed on word nodes only; unassigned words have no recorded book rather than a negative class\. Distinct acronyms include Is and Deut\. Source metadata credits Martin Abegg's data files via personal communication, and the value type is string\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

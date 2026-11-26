@@ -6,6 +6,12 @@ state (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature st records a morphological state tag on word nodes in the Dead Sea Scrolls corpus\. Its values come from Martin Abegg's data files via personal communication\. Four string values occur, including a and c\. Missing assignments mean no state was recorded, not a negative class\. The tag may represent a morphological state category within the morphology feature family\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

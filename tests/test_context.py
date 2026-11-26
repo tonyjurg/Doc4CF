@@ -228,6 +228,23 @@ class ContextPipeline(unittest.TestCase):
         self.assertNotIn("inventory hash", pages["dataset.html"].lower())
         self.assertIn("ai-indicator", pages["dataset.html"])
 
+    def test_loaded_family_provenance_reaches_all_context_pages(self):
+        with TemporaryDirectory() as directory:
+            folder = Path(directory)
+            self.write_artifacts(folder, context.inventory_digest(self.inventory))
+            path = folder / "feature_families.json"
+            artifact = json.loads(path.read_text(encoding="utf-8"))
+            artifact["analysis"] = {**PROVENANCE, "requested_model": "family-request",
+                                    "responding_model": "family-response"}
+            path.write_text(json.dumps(artifact), encoding="utf-8")
+            dataset, families, relationships, analysis = context.load_context_artifacts(folder, self.inventory)
+            review = {"affected_descriptions": [], "processed_descriptions": [], "context_flags": []}
+            pages = context.context_pages(self.inventory, dataset, families, relationships, review, analysis)
+            for name in ("dataset.html", "relationships.html", "audit.html"):
+                with self.subTest(page=name):
+                    self.assertIn("family-response", pages[name])
+            self.assertIn("family-request", pages["audit.html"])
+
     def test_feature_context_hashes_change_with_evidence(self):
         dataset = {**deepcopy(DATASET), "inventory_sha256": "ignored"}
         base = context.feature_context_hashes(self.inventory, dataset, [FAMILY], [RELATIONSHIP], "openai", "m")
@@ -374,6 +391,51 @@ class ContextProviderPaths(unittest.TestCase):
             )
         self.assertEqual(result["data"], DATASET)
         self.assertEqual(request.call_count, 2)
+
+    def test_nemotron_context_budget_keeps_existing_cache_identity(self):
+        cases = [
+            ("dataset", DATASET, context.validate_dataset_context),
+            ("families", {"families": [FAMILY], "relationships": [RELATIONSHIP]},
+             lambda value: context.validate_family_context(value, {"word", "lemma"})),
+            ("feature-descriptions", FEATURE_RESPONSE,
+             lambda value: context.validate_feature_response(value, {"word", "lemma"}, {"word": {"logos"}})),
+        ]
+        for stage, data, validator in cases:
+            with self.subTest(stage=stage), TemporaryDirectory() as directory, \
+                    patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}), \
+                    patch.object(context, "request_with_completion_retry", return_value=self.reply(data)) as request:
+                cache = Path(directory)
+                result = context._analysis_record(
+                    "system", {"input": "evidence"}, "openrouter", "nvidia/nemotron-3.5-super-vl:free", cache,
+                    stage, validator,
+                )
+                sent = json.loads(request.call_args.args[0].data)
+                self.assertEqual(sent["max_tokens"], 24000 if stage == "families" else 12000)
+                sent["max_tokens"] = 6000
+                legacy_payload = json.dumps(sent, ensure_ascii=False)
+                key = context.hashlib.sha256((context.PROMPT_VERSION + "\0" + legacy_payload).encode()).hexdigest()
+                self.assertTrue((cache / "context/openrouter" / stage / f"{key}.json").is_file())
+                request.reset_mock()
+                cached = context._analysis_record(
+                    "system", {"input": "evidence"}, "openrouter", "nvidia/nemotron-3.5-super-vl:free", cache,
+                    stage, validator,
+                )
+                request.assert_not_called()
+                self.assertEqual(cached, result)
+
+    def test_other_models_keep_the_compact_allowance(self):
+        cases = [
+            ("test/other:free", "dataset", DATASET, context.validate_dataset_context),
+            ("test/other:free", "feature-descriptions", FEATURE_RESPONSE,
+             lambda value: context.validate_feature_response(value, {"word", "lemma"}, {"word": {"logos"}})),
+        ]
+        for model, stage, data, validator in cases:
+            with self.subTest(model=model, stage=stage), TemporaryDirectory() as directory, \
+                    patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}), \
+                    patch.object(context, "request_with_completion_retry", return_value=self.reply(data)) as request:
+                context._analysis_record("system", {"input": "evidence"}, "openrouter", model,
+                                         Path(directory), stage, validator)
+                self.assertEqual(json.loads(request.call_args.args[0].data)["max_tokens"], 6000)
 
 
 if __name__ == "__main__":

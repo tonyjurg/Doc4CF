@@ -90,6 +90,24 @@ class ShippedSchemas(unittest.TestCase):
             with self.subTest(schema=filename), self.assertRaises(ValidationError):
                 Draft202012Validator(schema, registry=self.registry).validate(malformed)
 
+    def test_review_schema_accepts_feature_audit_records(self):
+        artifact = deepcopy(ARTIFACTS["context-review-1.0.schema.json"])
+        artifact["feature_analysis"] = {"word": {"provider": "OpenAI", "uncertainties": [], "context_flags": []}}
+        validator = Draft202012Validator(self.schemas["context-review-1.0.schema.json"], registry=self.registry)
+        validator.validate(artifact)
+        artifact["feature_analysis"]["word"] = "not an audit record"
+        with self.assertRaises(ValidationError):
+            validator.validate(artifact)
+
+    def test_inventory_schema_accepts_harvested_application_context(self):
+        artifact = deepcopy(ARTIFACTS["dataset-inventory-1.0.schema.json"])
+        artifact["application"] = {"configuration": {"writing": "grc"}, "source_files": []}
+        validator = Draft202012Validator(self.schemas["dataset-inventory-1.0.schema.json"], registry=self.registry)
+        validator.validate(artifact)
+        artifact["application"] = []
+        with self.assertRaises(ValidationError):
+            validator.validate(artifact)
+
 
 if __name__ == "__main__":
     unittest.main()

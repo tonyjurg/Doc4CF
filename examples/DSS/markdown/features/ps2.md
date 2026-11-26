@@ -6,6 +6,12 @@ person (for part 2) (morphology tag)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature ps2 records person \(for part 2\), a morphology tag, on word nodes in the Dead Sea Scrolls corpus\. Nodes without a recorded value have no assignment rather than a negative class\. The metadata lists string values including 1 and 2, which may encode person categories, though the full mapping is not explicitly defined in the inventory\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

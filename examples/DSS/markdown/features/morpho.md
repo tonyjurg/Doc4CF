@@ -6,6 +6,12 @@ morphological tag (by Abegg)
 
 Node · UTF-8 · str
 
+## Generated description
+
+The morpho feature is a node\-level morphological tag observed on word nodes in the Dead Sea Scrolls corpus\. Populated assignments appear on word nodes, while nodes without a value have no recorded tag rather than a negative class\. Metadata attributes the tag to Martin Abegg's data files; values such as Pc and np may encode parts of speech and nominal forms\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

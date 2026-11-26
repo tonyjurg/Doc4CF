@@ -6,6 +6,12 @@ full transcription (ETCBC transliteration) of a word including flags and bracket
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature fulle stores the full ETCBC transliteration of a word, including flags and brackets, on word nodes in the Dead Sea Scrolls corpus\. Populated nodes are word nodes; missing assignments mean no value is recorded, not a negative class\. The text format fmt:text\-trans\-extra renders word\#\{fulle\}\{after\}\. Frequent values include " 0 " and "W"\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

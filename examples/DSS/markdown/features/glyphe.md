@@ -6,6 +6,12 @@ representation (ETCBC transliteration) of a word or sign
 
 Node · UTF-8 · str
 
+## Generated description
+
+The glyphe node feature records an ETCBC transliteration representation for word and sign nodes in the Dead Sea Scrolls corpus\. Populated assignments appear on word and sign nodes; missing values mean no recorded value, not a negative class\. Example values include W and J\. The feature feeds the text\-trans\-full format \{glyphe\}\{punce\}\{after\}\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

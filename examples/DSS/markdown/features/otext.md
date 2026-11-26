@@ -6,6 +6,14 @@ Configures Text-Fabric's Text API. Depending on the corpus, its settings can def
 
 Config · UTF-8 · configuration
 
+## Reviewed description
+
+The otext configuration defines the Text API's section labels and rendering templates for the DSS corpus. The section features are scroll, fragment, and line. Formats include Unicode text, original-source text, and ETCBC transliteration; text-trans-full uses glyphe, punce, and after. These declarations configure presentation and referencing rather than storing node-level annotations.
+
+Editorial clarification: [pinned DSS text formats](https://github.com/ETCBC/dss/blob/3a9ab5b5df4dba72f2179016e8163b61c0a1752d/tf/2.0.4/otext.tf).
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ### Source metadata
 
 | Field | Value |

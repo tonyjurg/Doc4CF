@@ -6,6 +6,12 @@ correction made by an ancient or modern editor
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature cor records corrections made by an ancient or modern editor on sign nodes in the Dead Sea Scrolls corpus\. Values are populated on 5,698 sign nodes; missing assignments mean no correction is recorded rather than a negative class\. Integer codes include 1 = modern and 2 = ancient\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

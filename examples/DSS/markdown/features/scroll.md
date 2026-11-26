@@ -6,6 +6,12 @@ acronym of a scroll
 
 Node · UTF-8 · str
 
+## Generated description
+
+The scroll node feature stores a scroll acronym as a string\. Values appear on scroll, fragment, and line nodes, including every scroll node\. Examples are 1Qisaa and 4Q418\. It identifies the Dead Sea Scroll containing each node, although the corpus also contains non\-biblical scrolls whose coverage under the 'biblical' display label is unclear\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

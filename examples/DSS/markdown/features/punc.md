@@ -6,6 +6,12 @@ trailing punctuation (Unicode) of a word
 
 Node · UTF-8 · str
 
+## Generated description
+
+The punc node feature records trailing punctuation \(Unicode\) attached to word nodes in the Dead Sea Scrolls Text\-Fabric corpus\. Nodes without a recorded value have no assignment rather than a negative class\. The two recorded values are ׃ and ׃׃\. It co\-occurs with glyph and after in the text\-orig\-full display format\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

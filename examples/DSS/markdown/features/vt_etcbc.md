@@ -6,6 +6,12 @@ Dead Sea Scrolls: additions based on BHSA and machine learning
 
 Node · UTF-8 · str
 
+## Generated description
+
+vt\_etcbc is a node feature on word nodes in the Dead Sea Scrolls corpus, part of the ETCBC\-based DSS additions\. Its string values include verbal\-category labels such as perf and impf, and may encode verbal tense or aspect derived from BHSA and machine learning for biblical and non\-biblical scrolls\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

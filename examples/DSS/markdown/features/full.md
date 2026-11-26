@@ -6,6 +6,12 @@ full transcription (Unicode) of a word including flags and brackets
 
 Node · UTF-8 · str
 
+## Generated description
+
+The full node feature assigns a Unicode string to word nodes in the Dead Sea Scrolls corpus, representing the full transcription of a word including flags and brackets\. Values are populated on word nodes; missing assignments mean no value is recorded rather than a negative class\. It co\-occurs with after in the text\-orig\-extra template word\#\{full\}\{after\}\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ Maps every Text-Fabric node to its node type. The type identifies what kind of s
 
 Node · UTF-8 · str
 
+## Generated description
+
+This core node feature assigns every Text\-Fabric node a type label \(otype\), identifying the kind of structural unit each node represents\. Other features use these labels to specify where they apply\. Evidenced labels include scroll and word, with additional labels for other structural units\. These labels describe the data model and do not by themselves establish linguistic meaning or hierarchy\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

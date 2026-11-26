@@ -6,6 +6,12 @@ alternative reading
 
 Node · UTF-8 · int
 
+## Generated description
+
+The node feature alt records an alternative reading on sign nodes in the Dead Sea Scrolls Text\-Fabric corpus\. It uses one integer value, 1, and appears only on sign nodes; missing assignments mean no value is recorded, not a negative class\. The source description defines alt as 'alternative reading'\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |

@@ -6,6 +6,12 @@ The consonantal representation of the univalent final consonant of a word in BHS
 
 Node · UTF-8 · str
 
+## Generated description
+
+The node feature uvf\_etcbc records the consonantal representation of the univalent final consonant of a word in BHSA transliteration on word nodes\. Missing assignments mean no value is recorded rather than a negative class\. Concrete values include H and N\. The source is Automatic generated morphological parsing corrected by Thijs Amersfoort\.
+
+*AI-assisted · OpenRouter · nvidia/nemotron\-3\.5\-super\-vl:free*
+
 ## Applies to
 
 | Node type | Populated nodes (% of node type) |
