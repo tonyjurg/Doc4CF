@@ -105,6 +105,13 @@ _FEATURE_KIND_GUIDANCE = {
 _STRUCTURAL_DESCRIPTIONS = {
     name: load_description(f"{name}.txt") for name in STRUCTURAL_FEATURES
 }
+# WARP feature descriptions from the N1904 feature index:
+# https://github.com/CenterBLC/N1904/blob/main/docs/features/featuresbygroup.md#warp-features
+_STRUCTURAL_SUMMARIES = {
+    "otype": "Maps node number to objecttype",
+    "otext": "Textformatting and corpus segmenting configuration used by the text API",
+    "oslots": "Represents set of slots associated with an object",
+}
 _STRUCTURAL_GUIDANCE = {
     name: load_prompt(f"feature-{name}.txt") for name in STRUCTURAL_FEATURES
 }
@@ -113,6 +120,11 @@ _STRUCTURAL_GUIDANCE = {
 def standard_feature_description(name: str, metadata_description: str = "") -> str:
     """Return the maintained baseline for a structural feature, else metadata."""
     return _STRUCTURAL_DESCRIPTIONS.get(name, metadata_description)
+
+
+def feature_index_description(name: str, description: str) -> str:
+    """Use compact structural labels in indexes while keeping detail text intact."""
+    return _STRUCTURAL_SUMMARIES.get(name, description)
 
 
 def feature_description_prompt(
@@ -1526,10 +1538,11 @@ def generate(args: argparse.Namespace) -> None:
         body += _feature_application_section(page_application, n, set(files))
         body += "<details><summary>Source metadata</summary>" + table(["Field","Value"],[(e(k),e(v)) for k,v in meta.items()]) + "</details>"
         page(f"features/{n}.html", n + ".tf", body)
-        rows.append((feature(n),e(kind),e(p["description"]),e(", ".join(p["sources"]))))
+        index_description = feature_index_description(n, p["description"])
+        rows.append((feature(n),e(kind),e(index_description),e(", ".join(p["sources"]))))
         if markdown_out is not None:
             applies_to = ", ".join(p["sources"])
-            markdown_rows.append((n, kind, p["description"], applies_to, p["frequent"][:2]))
+            markdown_rows.append((n, kind, index_description, applies_to, p["frequent"][:2]))
             write_markdown_feature(
                 markdown_out, n, kind, info["encoding"],
                 meta.get("valueType", "configuration" if kind == "config" else "unvalued"),
