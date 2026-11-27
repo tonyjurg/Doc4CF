@@ -3,7 +3,7 @@
 Open these notebooks from a Doc4CF checkout in Jupyter with a Python 3.13+ kernel:
 
 - [N1904 Notebook](generate_N1904.ipynb): version [`1.0.0`](https://github.com/CenterBLC/N1904/tree/main/tf/1.0.0), 61 features, with optional [editorial context](contexts/N1904.txt).
-- [Dead Sea Scrolls Notebook](generate_DSS.ipynb): base version [`2.0.4`](https://github.com/ETCBC/dss/tree/master/tf/2.0.4), 79 features.
+- [Dead Sea Scrolls (DSS) Notebook](generate_DSS.ipynb): base version [`2.0.4`](https://github.com/ETCBC/dss/tree/master/tf/2.0.4), 79 features.
 - [Old Babylonian letters Notebook](generate_OldBabylonian.ipynb): version [`1.0.6`](https://github.com/Nino-cunei/oldbabylonian/tree/master/tf/1.0.6), 67 features.
 
 Each notebook pins the source revision, installs Doc4CF, checks the corpus, and provides an optional step to update its checked-in example. All three default to the full context and feature-description workflow using the configured free OpenRouter model. Successful responses are cached, so reruns request only missing responses for unchanged inputs. Install Jupyter with `python -m pip install jupyterlab`, then start it with `python -m jupyterlab` from the repository root.
