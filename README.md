@@ -1,6 +1,7 @@
 # Doc4CF
 
-![Work in progress](https://img.shields.io/badge/status-work%20in%20progress-orange)
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)](https://www.python.org/) ![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 Doc4CF generates an offline, interactive HTML reference for a single Context-Fabric corpus version. After cloning this repository, open an example locally in a browser: [Nestle 1904 Greek New Testament](examples/N1904/index.html), [ETCBC Dead Sea Scrolls](examples/DSS/index.html), or [Old Babylonian letters](examples/OldBabylonian/index.html).
 
